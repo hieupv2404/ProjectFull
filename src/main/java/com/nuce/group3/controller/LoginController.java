@@ -4,14 +4,12 @@ import com.nuce.group3.controller.dto.request.Credential;
 import com.nuce.group3.data.model.Role;
 import com.nuce.group3.data.model.Users;
 import com.nuce.group3.exception.LogicException;
-import com.nuce.group3.utils.HashingPassword;
-import com.nuce.group3.utils.TokenManager;
 import com.nuce.group3.service.UserService;
+import com.nuce.group3.utils.HashingPassword;
 import com.nuce.group3.utils.TokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +30,7 @@ public class LoginController {
     private UserService userService;
 
 
-    @RequestMapping(value = "/login")
+    @GetMapping(value = "/login")
     public String login(HttpServletRequest request) {
         return "login";
     }
@@ -45,8 +43,7 @@ public class LoginController {
             String passMD = HashingPassword.encrypt(credential.getPassWord());
             if (user.getPassword().toUpperCase().equals(passMD.toUpperCase())) {
                 Set<String> roleName = new HashSet<>();
-                for(Role role: user.getRoles())
-                {
+                for (Role role : user.getRoles()) {
                     roleName.add(role.getRoleName());
                 }
                 String token = tokenManager.createToken(user.getUserName(), roleName);
@@ -56,10 +53,10 @@ public class LoginController {
                 user.setToken(token);
                 return user;
             }
-            return new LogicException("Invalid login", HttpStatus.NOT_FOUND);
+            return new LogicException("Tài khoản hoặc mật khẩu không đúng", HttpStatus.NOT_FOUND);
         }
 
-        return new LogicException("Invalid login", HttpStatus.NOT_FOUND);
+        return new LogicException("Tài khoản hoặc mật khẩu không đúng", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/logout")

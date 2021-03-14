@@ -23,6 +23,12 @@ public class AuthenticationAndLoggingInterceptor extends HandlerInterceptorAdapt
     public AuthenticationAndLoggingInterceptor() {
         allowURLs.add("doLogin");
         allowURLs.add("login");
+        allowURLs.add("/configuration/ui");
+        allowURLs.add("/swagger-resources/**");
+        allowURLs.add("/swagger-ui.html");
+        allowURLs.add("/swagger-ui.html");
+        allowURLs.add("/webjars/**");
+        allowURLs.add("/v2/api-docs");
     }
 
     @Override
