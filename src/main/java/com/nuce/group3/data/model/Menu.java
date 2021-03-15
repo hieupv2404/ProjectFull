@@ -17,34 +17,37 @@ import java.util.Set;
 @Entity
 @Data
 @NoArgsConstructor
-public class Role implements Serializable {
+public class Menu implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotBlank(message = Constant.REQUIRE_NAME)
-    @Column(name = "role_name", unique = true)
-    private String roleName;
-    private String description;
+    private String name;
+
+    @Column(name = "parent_id")
+    private int parentId;
+
+    private String url;
+
+    @Column(name = "order_index")
+    private int orderIndex;
+
     @Column(name = "active_flag")
     private int activeFlag;
+
     @Column(name = "create_date")
     private Date createDate;
+
     @Column(name = "update_date")
     private Date updateDate;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    @JsonIgnore
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private Set<Users> users = new HashSet<>();
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "auth",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "menu_id"))
+            joinColumns = @JoinColumn(name = "menu_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @JsonIgnore
-    private Set<Menu> menus = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 }

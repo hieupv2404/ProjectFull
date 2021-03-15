@@ -50,11 +50,8 @@ public class Users implements Serializable {
     @JoinTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @JsonIgnore
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
-
-    @Transient
-    private String token;
 }
