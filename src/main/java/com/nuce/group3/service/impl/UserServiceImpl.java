@@ -7,14 +7,23 @@ import com.nuce.group3.data.model.Users;
 import com.nuce.group3.data.repo.UserRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.UserService;
+import com.nuce.group3.utils.HashingPassword;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.security.SecureRandom;
+import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -95,8 +104,67 @@ public class UserServiceImpl implements UserService {
         Optional<Users> users = userRepo.findUsersByUserName(username);
         if(!users.isPresent())
         {
-            throw new ResourceNotFoundException("User with "+ username+ " not found");
+            throw new ResourceNotFoundException("User with username "+ username+ " not found");
         }
         return users;
     }
+
+    public String randomPassword(){
+        int leftLimit = 97; // letter 'a'
+        int rightLimit = 122; // letter 'z'
+        int targetStringLength = 10;
+        Random random = new Random();
+
+        String generatedString = random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return generatedString;
+    }
+
+    @Override
+    public String forgetPassword(String emailReceipt) throws ResourceNotFoundException, LogicException, MessagingException {
+        Optional<Users> users = userRepo.findUsersByEmailAndActiveFlag(emailReceipt,1);
+        if(!users.isPresent()){
+            throw new ResourceNotFoundException("User with email "+ emailReceipt + " not found");
+        }
+
+        Properties mailServerProperties;
+        Session getMailSession;
+        MimeMessage mailMessage;
+
+        mailServerProperties = System.getProperties();
+        mailServerProperties.put("mail.smtp.port", "587");
+        mailServerProperties.put("mail.smtp.auth", "true");
+        mailServerProperties.put("mail.smtp.starttls.enable", "true");
+
+        getMailSession = Session.getDefaultInstance(mailServerProperties, null);
+        mailMessage = new MimeMessage(getMailSession);
+
+        try {
+            mailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailReceipt));
+        } catch (MessagingException e) {
+            throw new LogicException("Send to mail "+ emailReceipt + " failed.", HttpStatus.BAD_REQUEST);
+        }
+
+        String newPass = randomPassword();
+        mailMessage.setSubject("New Password for system");
+        mailMessage.setText("New Password for login: " + newPass);
+
+        // Step3: Send mail
+        Transport transport = getMailSession.getTransport("smtp");
+
+        // Thay your_gmail thành gmail của bạn, thay your_password thành mật khẩu gmail của bạn
+        transport.connect("smtp.gmail.com", "hieuphan.dev@gmail.com", "Hieukaka@24041412");
+        transport.sendMessage(mailMessage, mailMessage.getAllRecipients());
+        transport.close();
+
+        users.get().setPassword(HashingPassword.encrypt(newPass));
+        users.get().setUpdateDate(new Date());
+        userRepo.save(users.get());
+        return "Send Success";
+    }
+
+
 }

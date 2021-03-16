@@ -20,4 +20,6 @@ public interface UserRepo extends JpaRepository<Users, Integer> {
 
     @Query(value = "select * from users where users.active_flag=1 and users.user_name =?1  ", nativeQuery = true)
     public Optional<Users> findUsersByUserName(String userName);
+
+    public Optional<Users> findUsersByEmailAndActiveFlag(String email, int activeFlag);
 }

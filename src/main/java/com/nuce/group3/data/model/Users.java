@@ -33,6 +33,7 @@ public class Users implements Serializable {
     @NotNull(message = "Không được để trống password")
     private String password;
 
+    @Pattern(regexp = "^(.+)@(.+)\\.(.+)$", message = "Định dạng email không hợp lệ")
     private String email;
 
     @NotBlank(message = Constant.REQUIRE_NAME)

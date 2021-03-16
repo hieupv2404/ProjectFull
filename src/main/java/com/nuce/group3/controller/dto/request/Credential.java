@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class Credential {
-    @NotBlank(message = "Không được để trống tài khoản")
+    @NotBlank(message = "Required username")
     private String userName;
-    @NotBlank(message = "Không được để trống mật khẩu")
+    @NotBlank(message = "Required password")
     private String passWord;
 }
