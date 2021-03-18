@@ -65,9 +65,9 @@ public class AuthenticationAndLoggingInterceptor extends HandlerInterceptorAdapt
                 if (TokenManager.getInstance().hasRole(request, method.getAnnotation(HasRole.class))) {
                     return true;
                 } else
-                    throw new LogicException("Bạn không có quyền thực hiện action", HttpStatus.FORBIDDEN);
+                    throw new LogicException("You don't have authority to do this action", HttpStatus.FORBIDDEN);
             else
-                throw new LogicException("Bạn chưa đăng nhập", HttpStatus.UNAUTHORIZED);
+                throw new LogicException("You haven't yet login", HttpStatus.UNAUTHORIZED);
         } else {
             return true; // Not check
         }

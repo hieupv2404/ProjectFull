@@ -155,7 +155,6 @@ public class UserServiceImpl implements UserService {
         // Step3: Send mail
         Transport transport = getMailSession.getTransport("smtp");
 
-        // Thay your_gmail thành gmail của bạn, thay your_password thành mật khẩu gmail của bạn
         transport.connect("smtp.gmail.com", "hieuphan.dev@gmail.com", "Hieukaka@24041412");
         transport.sendMessage(mailMessage, mailMessage.getAllRecipients());
         transport.close();

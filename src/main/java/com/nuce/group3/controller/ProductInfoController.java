@@ -2,6 +2,7 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
 import com.nuce.group3.data.model.ProductInfo;
+import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ProductInfoService;
 import com.nuce.group3.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,13 @@ public class ProductInfoController {
 
     @PostMapping
     public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest
-            , @RequestParam("image")MultipartFile multipartFile) throws IOException {
+            , @RequestParam("image")MultipartFile multipartFile) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         productInfoRequest.setImgUrl(fileName);
         String uploadDir = "product-info-img/";
 
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+        productInfoService.save(productInfoRequest);
 
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
