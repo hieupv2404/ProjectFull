@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -31,21 +33,24 @@ public class Users implements Serializable {
     private String userName;
 
     @NotNull(message = "Không được để trống password")
+    @JsonIgnore
     private String password;
 
     @Pattern(regexp = "^(.+)@(.+)\\.(.+)$", message = "Định dạng email không hợp lệ")
     private String email;
 
+    @Column(name = "active_flag")
+    private int activeFlag;
+    @Column(name = "create_date")
+    @CreatedDate
+    private Date createDate;
+    @Column(name = "update_date")
+    @LastModifiedDate
+    private Date updateDate;
     @NotBlank(message = Constant.REQUIRE_NAME)
     @Pattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêếìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹý ]+$",
             message = Constant.UNAVAILABLE_NAME)
     private String name;
-    @Column(name = "active_flag")
-    private int activeFlag;
-    @Column(name = "create_date")
-    private Date createDate;
-    @Column(name = "update_date")
-    private Date updateDate;
     private int status;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",

@@ -17,6 +17,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/products-info")
+@CrossOrigin(origins = "**")
 public class ProductInfoController {
     @Autowired
     private ProductInfoService productInfoService;

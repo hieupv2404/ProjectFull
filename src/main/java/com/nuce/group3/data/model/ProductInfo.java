@@ -3,6 +3,8 @@ package com.nuce.group3.data.model;
 import com.nuce.group3.utils.Constant;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -28,8 +30,10 @@ public class ProductInfo implements Serializable {
     @Column(name = "active_flag")
     private int activeFlag;
     @Column(name = "create_date")
+    @CreatedDate
     private Date createDate;
     @Column(name = "update_date")
+    @LastModifiedDate
     private Date updateDate;
     //    private MultipartFile multipartFile;
 //    private Integer cateId;

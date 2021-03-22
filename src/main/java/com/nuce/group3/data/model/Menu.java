@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -35,13 +37,12 @@ public class Menu implements Serializable {
 
     @Column(name = "active_flag")
     private int activeFlag;
-
     @Column(name = "create_date")
+    @CreatedDate
     private Date createDate;
-
     @Column(name = "update_date")
+    @LastModifiedDate
     private Date updateDate;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "auth",
             joinColumns = @JoinColumn(name = "menu_id"),
