@@ -16,8 +16,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/category")
-@CrossOrigin(origins = "**")
+@RequestMapping(value="/api/categories",  headers = "Accept=application/json")
+@CrossOrigin(origins = "**", maxAge = 3600, allowedHeaders = "*")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

@@ -16,8 +16,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/products-info")
-@CrossOrigin(origins = "**")
+@RequestMapping(value="/api/products-info",  headers = "Accept=application/json")
+@CrossOrigin(origins = "**", maxAge = 3600, allowedHeaders = "*")
 public class ProductInfoController {
     @Autowired
     private ProductInfoService productInfoService;

@@ -28,8 +28,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/")
-@CrossOrigin(origins = "**")
+@RequestMapping(value="/api/",  headers = "Accept=application/json")
+@CrossOrigin(origins = "**", maxAge = 3600, allowedHeaders = "*")
 public class LoginController {
 
     @Autowired

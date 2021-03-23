@@ -1,12 +1,21 @@
 package com.nuce.group3.service;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
+import com.nuce.group3.controller.dto.request.CategoryRequest;
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
-import com.nuce.group3.data.model.ProductInfo;
-import com.nuce.group3.data.repo.ProductInfoRepo;
+import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.exception.LogicException;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public interface ProductInfoService {
-    public void save(ProductInfoRequest productInfoRequest) throws LogicException, ResourceNotFoundException;
+    List<ProductInfoResponse> getAll();
+
+    List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qty);
+
+    void save(ProductInfoRequest productInfoRequest) throws LogicException, ResourceNotFoundException;
+
+    ProductInfoResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException;
+
+    void delete(Integer categoryId) throws ResourceNotFoundException;
 }

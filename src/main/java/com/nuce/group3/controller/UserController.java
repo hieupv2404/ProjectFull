@@ -18,8 +18,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
-@CrossOrigin(origins = "**")
+@RequestMapping(value="/api/users",  headers = "Accept=application/json")
+@CrossOrigin(origins = "**", maxAge = 3600, allowedHeaders = "*")
 
 public class UserController {
     @Autowired

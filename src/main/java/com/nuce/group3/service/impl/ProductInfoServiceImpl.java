@@ -1,6 +1,7 @@
 package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
+import com.nuce.group3.controller.dto.request.CategoryRequest;
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.data.model.Category;
@@ -14,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,4 +53,36 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         productInfoRepo.save(productInfo);
     }
 
+    @Override
+    public List<ProductInfoResponse> getAll() {
+        List<ProductInfoResponse> productInfoResponses = new ArrayList<>();
+        productInfoRepo.findProductInfoByActiveFlag(1).forEach(productInfo -> {
+            ProductInfoResponse productInfoResponse = ProductInfoResponse.builder()
+                    .name(productInfo.getName())
+                    .description(productInfo.getDescription())
+                    .imgUrl(productInfo.getImgUrl())
+                    .createDate(productInfo.getCreateDate())
+                    .updateDate(productInfo.getUpdateDate())
+                    .categoryName(productInfo.getCategory().getName())
+                    .qty(productInfo.getQty())
+                    .build();
+            productInfoResponses.add(productInfoResponse);
+        });
+        return productInfoResponses;
+    }
+
+    @Override
+    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qty) {
+        return null;
+    }
+
+    @Override
+    public ProductInfoResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException {
+        return null;
+    }
+
+    @Override
+    public void delete(Integer categoryId) throws ResourceNotFoundException {
+
+    }
 }
