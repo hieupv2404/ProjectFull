@@ -22,6 +22,6 @@ public interface ProductInfoRepo extends JpaRepository<ProductInfo, Integer> {
     List<ProductInfo> findProductInfoByFilter(@Param(value = "name") String name, @Param(value = "categoryName") String categoryName,
                                            @Param(value = "qtyFrom") int qtyFrom, @Param(value = "qtyTo") int  qtyTo );
 
-    ProductInfo findProductInfoByActiveFlagAndId(int activeFlag, int id);
+    Optional<ProductInfo> findProductInfoByActiveFlagAndId(int activeFlag, int id);
 
 }

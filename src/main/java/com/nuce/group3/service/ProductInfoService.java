@@ -11,11 +11,11 @@ import java.util.List;
 public interface ProductInfoService {
     List<ProductInfoResponse> getAll();
 
-    List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qty);
+    List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qtyFrom, int qtyTo);
 
     void save(ProductInfoRequest productInfoRequest) throws LogicException, ResourceNotFoundException;
 
-    ProductInfoResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException;
+    ProductInfoResponse edit(Integer productId, ProductInfoRequest productInfoRequest) throws ResourceNotFoundException;
 
-    void delete(Integer categoryId) throws ResourceNotFoundException;
+    void delete(Integer productId) throws ResourceNotFoundException;
 }

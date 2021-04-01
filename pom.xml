@@ -153,6 +153,14 @@
             <version>1.5.2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-elasticsearch -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-elasticsearch</artifactId>
+            <version>4.1.5</version>
+        </dependency>
+
+
 
         <!-- gen random password -->
         <dependency>

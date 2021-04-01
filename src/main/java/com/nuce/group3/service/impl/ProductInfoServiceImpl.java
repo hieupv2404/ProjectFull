@@ -31,16 +31,15 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     public void save(ProductInfoRequest productInfoRequest) throws LogicException, ResourceNotFoundException {
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByNameAndActiveFlag(productInfoRequest.getName(),1);
-        if(productInfoOptional.isPresent()){
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByNameAndActiveFlag(productInfoRequest.getName(), 1);
+        if (productInfoOptional.isPresent()) {
             throw new LogicException("Product Existed", HttpStatus.BAD_REQUEST);
         }
         Optional<Category> categoryOptional = categoryRepo.findById(productInfoRequest.getCategoryId());
-        if(!categoryOptional.isPresent())
-        {
-            throw new ResourceNotFoundException("Categroy with id "+ productInfoRequest.getCategoryId() + " not found");
+        if (!categoryOptional.isPresent()) {
+            throw new ResourceNotFoundException("Categroy with id " + productInfoRequest.getCategoryId() + " not found");
         }
-        ProductInfo productInfo= new ProductInfo();
+        ProductInfo productInfo = new ProductInfo();
         productInfo.setCategory(categoryOptional.get());
         productInfo.setName(productInfoRequest.getName());
         productInfo.setDescription(productInfoRequest.getDescription());
@@ -72,13 +71,30 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qty) {
-        return null;
+    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qtyFrom, int qtyTo) {
+        List<ProductInfoResponse> productInfoResponses = new ArrayList<>();
+        productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo).forEach(productInfo -> {
+            ProductInfoResponse productInfoResponse = ProductInfoResponse.builder()
+                    .name(productInfo.getName())
+                    .description(productInfo.getDescription())
+                    .imgUrl(productInfo.getImgUrl())
+                    .createDate(productInfo.getCreateDate())
+                    .updateDate(productInfo.getUpdateDate())
+                    .categoryName(productInfo.getCategory().getName())
+                    .qty(productInfo.getQty())
+                    .build();
+            productInfoResponses.add(productInfoResponse);
+        });
+        return productInfoResponses;
     }
 
     @Override
-    public ProductInfoResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException {
-        return null;
+    public ProductInfoResponse edit(Integer productId, ProductInfoRequest productInfoRequest) throws ResourceNotFoundException {
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1,productId);
+        if (!productInfoOptional.isPresent())
+        {
+            throw new ResourceNotFoundException("Product info with " + productId + " not found!");
+        }
     }
 
     @Override

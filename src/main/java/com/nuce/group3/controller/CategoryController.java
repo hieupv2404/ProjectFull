@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value="/api/categories",  headers = "Accept=application/json")
-@CrossOrigin(origins = "**", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;

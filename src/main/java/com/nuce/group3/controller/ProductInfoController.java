@@ -17,10 +17,11 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping(value="/api/products-info",  headers = "Accept=application/json")
-@CrossOrigin(origins = "**", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 public class ProductInfoController {
     @Autowired
     private ProductInfoService productInfoService;
+
 
     @PostMapping
     public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest
