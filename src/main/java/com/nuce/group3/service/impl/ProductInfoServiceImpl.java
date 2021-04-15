@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,9 +72,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qtyFrom, int qtyTo) {
+    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qtyFrom, int qtyTo, BigDecimal priceFrom, BigDecimal priceTo) {
         List<ProductInfoResponse> productInfoResponses = new ArrayList<>();
-        productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo).forEach(productInfo -> {
+        productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo).forEach(productInfo -> {
             ProductInfoResponse productInfoResponse = ProductInfoResponse.builder()
                     .name(productInfo.getName())
                     .description(productInfo.getDescription())
@@ -89,16 +90,63 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public ProductInfoResponse edit(Integer productId, ProductInfoRequest productInfoRequest) throws ResourceNotFoundException {
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1,productId);
-        if (!productInfoOptional.isPresent())
-        {
+    public ProductInfoResponse findProductInfoById(Integer productId) throws ResourceNotFoundException {
+        if (productId == null) {
+            throw new ResourceNotFoundException("Id not found!");
+        }
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1, productId);
+        if (!productInfoOptional.isPresent()) {
             throw new ResourceNotFoundException("Product info with " + productId + " not found!");
+        }
+        return ProductInfoResponse.builder()
+                .name(productInfoOptional.get().getName())
+                .description(productInfoOptional.get().getDescription())
+                .qty(productInfoOptional.get().getQty())
+                .categoryName(productInfoOptional.get().getCategory().getName())
+                .imgUrl(productInfoOptional.get().getImgUrl())
+                .createDate(productInfoOptional.get().getCreateDate())
+                .updateDate(productInfoOptional.get().getUpdateDate())
+                .price(productInfoOptional.get().getPrice())
+                .build();
+    }
+
+    @Override
+    public ProductInfoResponse edit(Integer productId, ProductInfoRequest productInfoRequest) throws ResourceNotFoundException, LogicException {
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1, productId);
+        if (!productInfoOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product info with " + productId + " not found!");
+        }
+        ProductInfo productInfo = productInfoOptional.get();
+        productInfo.setName(productInfoRequest.getName());
+        Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndId(1, productInfoRequest.getCategoryId());
+        if (!categoryOptional.isPresent()) {
+            throw new ResourceNotFoundException("Category with " + productInfoRequest.getCategoryId() + " not found!");
+        }
+        productInfo.setCategory(categoryOptional.get());
+        productInfo.setDescription(productInfoRequest.getDescription());
+        productInfo.setImgUrl(productInfoRequest.getImgUrl());
+        productInfo.setUpdateDate(new Date());
+        try {
+            productInfoRepo.save(productInfo);
+            return ProductInfoResponse.builder()
+                    .categoryName(productInfo.getCategory().getName())
+                    .imgUrl(productInfo.getImgUrl())
+                    .updateDate(productInfo.getUpdateDate())
+                    .description(productInfo.getDescription())
+                    .qty(productInfo.getQty())
+                    .build();
+        } catch (Exception e) {
+            throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
-    public void delete(Integer categoryId) throws ResourceNotFoundException {
-
+    public void delete(Integer productId) throws ResourceNotFoundException {
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1, productId);
+        if (!productInfoOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product info with " + productId + " not found!");
+        }
+        productInfoOptional.get().setActiveFlag(0);
+        productInfoRepo.save(productInfoOptional.get());
     }
 }

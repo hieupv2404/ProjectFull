@@ -9,12 +9,13 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @Entity
-public class ProductInfo implements Serializable {
+public class ProductInfo extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -27,17 +28,11 @@ public class ProductInfo implements Serializable {
     private String description;
     @Column(name = "img_url")
     private String imgUrl;
-    @Column(name = "active_flag")
-    private int activeFlag;
-    @Column(name = "create_date")
-    @CreatedDate
-    private Date createDate;
-    @Column(name = "update_date")
-    @LastModifiedDate
-    private Date updateDate;
+
     //    private MultipartFile multipartFile;
 //    private Integer cateId;
     private int qty;
+    private BigDecimal price;
 
 
 }
