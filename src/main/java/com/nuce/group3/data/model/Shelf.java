@@ -1,13 +1,12 @@
 package com.nuce.group3.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nuce.group3.utils.Constant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
@@ -29,6 +28,8 @@ public class Shelf extends BaseEntity implements Serializable {
     private int total;
     private int qty;
     private int qtyRest;
-    private Set productStatusDetails = new HashSet(0);
 
+    @OneToMany(mappedBy = "shelf", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<ProductDetail> productDetails = new HashSet<>(0);
     }

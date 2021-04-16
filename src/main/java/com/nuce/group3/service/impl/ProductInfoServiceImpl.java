@@ -65,6 +65,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
                     .qty(productInfo.getQty())
+                    .priceIn(productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -83,6 +85,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
                     .qty(productInfo.getQty())
+                    .priceIn(productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -106,7 +110,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                 .imgUrl(productInfoOptional.get().getImgUrl())
                 .createDate(productInfoOptional.get().getCreateDate())
                 .updateDate(productInfoOptional.get().getUpdateDate())
-                .price(productInfoOptional.get().getPrice())
+                .priceIn(productInfoOptional.get().getPriceIn())
+                .priceOut(productInfoOptional.get().getPriceOut())
                 .build();
     }
 

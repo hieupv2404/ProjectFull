@@ -2,8 +2,11 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
+import com.nuce.group3.controller.dto.response.ProductInfoResponseTest;
 import com.nuce.group3.data.model.ProductInfo;
+import com.nuce.group3.data.repo.ProductInfoRepo;
 import com.nuce.group3.exception.LogicException;
+import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.ProductInfoService;
 import com.nuce.group3.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +28,11 @@ public class ProductInfoController {
     @Autowired
     private ProductInfoService productInfoService;
 
+    @Autowired
+    private ProductInfoRepo productInfoRepo;
+
     @GetMapping
+    @HasRole({"ADMIN","ADMIN_PTTK"})
     public ResponseEntity<List<ProductInfoResponse>> findProductInfo(@RequestParam(name = "name", required = false) String name,
                                                                      @RequestParam(name = "categoryName", required = false) String categoryName,
                                                                      @RequestParam(name = "qtyFrom", required = false) int qtyFrom,
@@ -37,6 +44,7 @@ public class ProductInfoController {
     }
 
     @PostMapping
+    @HasRole({"ADMIN","ADMIN_PTTK"})
     public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest
             , @RequestParam("image") MultipartFile multipartFile) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -50,7 +58,14 @@ public class ProductInfoController {
     }
 
     @GetMapping("/{productId}")
+    @HasRole({"ADMIN","ADMIN_PTTK"})
     public  ResponseEntity<ProductInfoResponse> findById (@PathVariable Integer productId) throws ResourceNotFoundException {
         return new ResponseEntity<>(productInfoService.findProductInfoById(productId), HttpStatus.OK);
+    }
+
+    @GetMapping("/test")
+    @HasRole({"ADMIN","ADMIN_PTTK"})
+    public  ResponseEntity<List<ProductInfoResponseTest>> test () throws ResourceNotFoundException {
+        return new ResponseEntity<>(productInfoRepo.test(), HttpStatus.OK);
     }
 }

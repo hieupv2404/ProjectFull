@@ -2,5 +2,8 @@ package com.nuce.group3.enums;
 
 public enum StatusEnum {
     VALID,
-    INVALID
+    INVALID;
+
+    private StatusEnum() {
+    }
 }

@@ -1,8 +1,11 @@
 package com.nuce.group3.data.repo;
 
+import com.nuce.group3.controller.dto.response.ProductInfoResponse;
+import com.nuce.group3.controller.dto.response.ProductInfoResponseTest;
 import com.nuce.group3.data.model.Category;
 import com.nuce.group3.data.model.ProductInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,5 +28,10 @@ public interface ProductInfoRepo extends JpaRepository<ProductInfo, Integer> {
                                               @Param(value = "qtyFrom") int qtyFrom, @Param(value = "qtyTo") int  qtyTo,
                                               @Param(value = "priceFrom")BigDecimal priceFrom, @Param(value = "priceTo") BigDecimal priceTo);
     Optional<ProductInfo> findProductInfoByActiveFlagAndId(int activeFlag, int id);
+
+    @Modifying
+    @Query("select new com.nuce.group3.controller.dto.response.ProductInfoResponseTest(p.name, p.description) " +
+            "from ProductInfo p where p.activeFlag=1")
+    List<ProductInfoResponseTest> test();
 
 }

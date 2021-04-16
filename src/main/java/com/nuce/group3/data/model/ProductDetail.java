@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -24,6 +25,7 @@ public class ProductDetail extends BaseEntity implements Serializable {
 
 
     @NotBlank(message = "Required Imei")
+    @Pattern(regexp = "[^A-Za-z0-9]+", message = "Wrong Format Imei")
     private String imei;
 
     @ManyToOne
@@ -38,6 +40,7 @@ public class ProductDetail extends BaseEntity implements Serializable {
     @JoinColumn(name = "shelf_id")
     private Shelf shelf;
 
+    @Enumerated(value = EnumType.STRING)
     private StatusEnum status;
 
 }

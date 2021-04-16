@@ -28,15 +28,15 @@ public class Users implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Không được để trống username")
+    @NotBlank(message = "Required Username")
     @Column(name="user_name", unique = true)
     private String userName;
 
-    @NotNull(message = "Không được để trống password")
+    @NotNull(message = "Required Password")
     @JsonIgnore
     private String password;
 
-    @Pattern(regexp = "^(.+)@(.+)\\.(.+)$", message = "Định dạng email không hợp lệ")
+    @Pattern(regexp = "^(.+)@(.+)\\.(.+)$", message = "Wrong Format Email")
     private String email;
 
     @Column(name = "active_flag")
@@ -51,6 +51,9 @@ public class Users implements Serializable {
     @Pattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêếìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹý ]+$",
             message = Constant.UNAVAILABLE_NAME)
     private String name;
+
+    @Pattern(regexp = "(84|0[3|5|7|8|9])+([0-9]{8})\\b", message = "Wrong Format Number Phone")
+    private String phone;
     private int status;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_role",
@@ -60,4 +63,12 @@ public class Users implements Serializable {
     @ToString.Exclude
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Vat> vats = new HashSet<>(0);
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<ProductStatusList> productStatusLists = new HashSet<>(0);
 }
