@@ -1,17 +1,14 @@
 package com.nuce.group3.data.model;
 
-import com.nuce.group3.enums.StatusEnum;
+import com.nuce.group3.enums.EnumStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -41,6 +38,6 @@ public class ProductDetail extends BaseEntity implements Serializable {
     private Shelf shelf;
 
     @Enumerated(value = EnumType.STRING)
-    private StatusEnum status;
+    private EnumStatus status;
 
 }

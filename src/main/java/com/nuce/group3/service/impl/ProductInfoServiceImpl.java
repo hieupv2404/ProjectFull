@@ -98,7 +98,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         if (productId == null) {
             throw new ResourceNotFoundException("Id not found!");
         }
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1, productId);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productId,1);
         if (!productInfoOptional.isPresent()) {
             throw new ResourceNotFoundException("Product info with " + productId + " not found!");
         }
@@ -117,7 +117,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     public ProductInfoResponse edit(Integer productId, ProductInfoRequest productInfoRequest) throws ResourceNotFoundException, LogicException {
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1, productId);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productId,1);
         if (!productInfoOptional.isPresent()) {
             throw new ResourceNotFoundException("Product info with " + productId + " not found!");
         }
@@ -147,7 +147,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     public void delete(Integer productId) throws ResourceNotFoundException {
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByActiveFlagAndId(1, productId);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productId,1);
         if (!productInfoOptional.isPresent()) {
             throw new ResourceNotFoundException("Product info with " + productId + " not found!");
         }
