@@ -10,6 +10,9 @@ import com.nuce.group3.enums.EnumStatus;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ProductDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +41,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private ShelfRepo shelfRepo;
 
     @Override
-    public List<ProductDetailResponse> getAll() {
+    public List<ProductDetailResponse> getAll(Integer page, Integer size) {
         List<ProductDetailResponse> productDetailResponses = new ArrayList<>();
-        productDetailRepo.findProductDetailByActiveFlag(1).forEach(productDetail -> {
-            ProductDetailResponse productInfoResponse = ProductDetailResponse.builder()
+        if (page==null) page = 0;
+        if (size==null) size = 5;
+        productDetailRepo.findProductDetailByActiveFlag(1, PageRequest.of(page,size)).forEach(productDetail -> {
+            ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
                     .supplierName(productDetail.getSupplier().getName())
                     .categoryName(productDetail.getProductInfo().getCategory().getName())
@@ -53,16 +58,18 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .shelfName(productDetail.getShelf().getName())
                     .status(productDetail.getStatus())
                     .build();
-            productDetailResponses.add(productInfoResponse);
+            productDetailResponses.add(productDetailResponse);
         });
         return productDetailResponses;
     }
 
     @Override
-    public List<ProductDetailResponse> findProductDetailByFilter(String name, String supplierName, String imei) {
+    public List<ProductDetailResponse> findProductDetailByFilter(String name, String supplierName, String imei, Integer page, Integer size) {
         List<ProductDetailResponse> productDetailResponses = new ArrayList<>();
-        productDetailRepo.findProductDetailByFilter(name, supplierName, imei ).forEach(productDetail -> {
-            ProductDetailResponse productInfoResponse = ProductDetailResponse.builder()
+        if (page==null) page = 0;
+        if (size==null) size = 5;
+        productDetailRepo.findProductDetailByFilter(name, supplierName, imei, PageRequest.of(page, size)).forEach(productDetail -> {
+            ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
                     .supplierName(productDetail.getSupplier().getName())
                     .categoryName(productDetail.getProductInfo().getCategory().getName())
@@ -74,7 +81,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .shelfName(productDetail.getShelf().getName())
                     .status(productDetail.getStatus())
                     .build();
-            productDetailResponses.add(productInfoResponse);
+            productDetailResponses.add(productDetailResponse);
         });
         return productDetailResponses;
     }

@@ -8,9 +8,9 @@ import com.nuce.group3.exception.LogicException;
 import java.util.List;
 
 public interface ProductDetailService {
-    List<ProductDetailResponse> getAll();
+    List<ProductDetailResponse> getAll(Integer page, Integer size);
 
-    List<ProductDetailResponse> findProductDetailByFilter(String name, String supplierName, String imei);
+    List<ProductDetailResponse> findProductDetailByFilter(String name, String supplierName, String imei, Integer page, Integer size);
 
     ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException;
 

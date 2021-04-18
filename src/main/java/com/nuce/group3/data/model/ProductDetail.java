@@ -37,6 +37,10 @@ public class ProductDetail extends BaseEntity implements Serializable {
     @JoinColumn(name = "shelf_id")
     private Shelf shelf;
 
+    @ManyToOne
+    @JoinColumn(name = "product_status_list_id")
+    private ProductStatusList productStatusList;
+
     @Enumerated(value = EnumType.STRING)
     private EnumStatus status;
 

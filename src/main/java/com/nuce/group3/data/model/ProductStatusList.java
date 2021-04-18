@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.math3.stat.descriptive.summary.Product;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,6 +34,11 @@ public class ProductStatusList extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "productStatusList", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ProductStatusDetail> productStatusDetails = new HashSet(0);
+
+    @OneToMany(mappedBy = "productStatusList", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<ProductDetail> productDetails = new HashSet(0);
+
 
     @ManyToOne
     @JoinColumn(name="vat_id")

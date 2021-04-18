@@ -66,7 +66,7 @@ public class LoginController {
                 }
                     for(int menuId: menuIds)
                     {
-                            Optional<Menu> menu = menuRepo.findById(menuId);
+                            Optional<Menu> menu = menuRepo.findMenuByIdAndActiveFlag(menuId, 1);
                             if(menu.isPresent() && menu.get().getOrderIndex()>=0) {
                                 MenuResponseLogin menuResponseLogin = new MenuResponseLogin();
                                 menuResponseLogin.setName(menu.get().getName());
@@ -104,4 +104,3 @@ public class LoginController {
         return ResponseEntity.ok("Logout ");
     }
 }
-// set session co 3 thu: role la gi, auth cho user da dang nhap hay chua,
