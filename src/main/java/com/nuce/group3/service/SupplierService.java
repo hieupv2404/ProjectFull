@@ -13,9 +13,11 @@ public interface SupplierService {
 
     List<Supplier> findSupplierByFilter(String name, String phone, String address, Integer page, Integer size);
 
-    void save(SupplierRequest productDetailRequest) throws LogicException, ResourceNotFoundException;
+    void save(SupplierRequest supplierRequest) throws LogicException, ResourceNotFoundException;
 
-    Supplier edit(Integer supplierId, SupplierRequest productDetailRequest) throws ResourceNotFoundException, LogicException;
+    Supplier edit(Integer supplierId, SupplierRequest supplierRequest) throws ResourceNotFoundException, LogicException;
 
     void delete(Integer supplierId) throws ResourceNotFoundException;
+    
+    Supplier findSupplierById(Integer supplierId) throws ResourceNotFoundException;
 }

@@ -11,11 +11,16 @@ import com.nuce.group3.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@Transactional
 public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepo supplierRepo;
@@ -41,15 +46,52 @@ public class SupplierServiceImpl implements SupplierService {
         {
             throw new LogicException("Supplier with name: " + supplierRequest.getName() +" existed!", HttpStatus.BAD_REQUEST) ;
         }
+        Supplier supplier = new Supplier();
+        supplier.setName(supplierRequest.getName());
+        supplier.setPhone(supplierRequest.getPhone());
+        supplier.setAddress(supplierRequest.getAddress());
+        supplier.setActiveFlag(1);
+        supplier.setCreateDate(new Date());
+        supplier.setUpdateDate(new Date());
+        supplierRepo.save(supplier);
     }
 
     @Override
     public Supplier edit(Integer supplierId, SupplierRequest supplierRequest) throws ResourceNotFoundException, LogicException {
-        return null;
+        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId,1);
+        if(!supplierOptional.isPresent())
+        {
+            throw new ResourceNotFoundException("Supplier with ID: " + supplierId +" not found!");
+        }
+        Supplier supplier = supplierOptional.get();
+        supplier.setName(supplierRequest.getName());
+        supplier.setPhone(supplierRequest.getPhone());
+        supplier.setAddress(supplierRequest.getAddress());
+        supplier.setUpdateDate(new Date());
+        return supplierRepo.save(supplier);
     }
 
     @Override
     public void delete(Integer supplierId) throws ResourceNotFoundException {
+        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId,1);
+        if(!supplierOptional.isPresent())
+        {
+            throw new ResourceNotFoundException("Supplier with ID: " + supplierId +" not found!");
+        }
+        supplierOptional.get().setActiveFlag(1);
+        supplierRepo.save(supplierOptional.get());
+    }
 
+    @Override
+    public Supplier findSupplierById(Integer supplierId) throws ResourceNotFoundException {
+        if( supplierId == null)
+        {
+            throw new ResourceNotFoundException("Supplier ID is null");
+        }
+        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId, 1);
+        if (!supplierOptional.isPresent()){
+            throw new ResourceNotFoundException("Supplier with ID: "+ supplierId + " not found!");
+        }
+        return supplierOptional.get();
     }
 }
