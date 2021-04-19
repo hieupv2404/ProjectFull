@@ -48,7 +48,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetailRepo.findProductDetailByActiveFlag(1, PageRequest.of(page,size)).forEach(productDetail -> {
             ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
-                    .supplierName(productDetail.getSupplier().getName())
+                    .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
                     .categoryName(productDetail.getProductInfo().getCategory().getName())
                     .createDate(productDetail.getCreateDate())
                     .updateDate(productDetail.getUpdateDate())
@@ -71,7 +71,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetailRepo.findProductDetailByFilter(name, supplierName, imei, PageRequest.of(page, size)).forEach(productDetail -> {
             ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
-                    .supplierName(productDetail.getSupplier().getName())
+                    .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
                     .categoryName(productDetail.getProductInfo().getCategory().getName())
                     .createDate(productDetail.getCreateDate())
                     .updateDate(productDetail.getUpdateDate())
@@ -98,7 +98,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         ProductDetail productDetail = productDetailOptional.get();
         return ProductDetailResponse.builder()
                 .productName(productDetail.getProductInfo().getName())
-                .supplierName(productDetail.getSupplier().getName())
+                .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
                 .categoryName(productDetail.getProductInfo().getCategory().getName())
                 .createDate(productDetail.getCreateDate())
                 .updateDate(productDetail.getUpdateDate())
@@ -130,7 +130,6 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
 
         ProductDetail productDetail = new ProductDetail();
-        productDetail.setSupplier(supplierOptional.get());
         productDetail.setShelf(shelfOptional.get());
         productDetail.setProductInfo(productInfoOptional.get());
         productDetail.setActiveFlag(1);
@@ -166,7 +165,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
 
         productDetail.setProductInfo(productInfoOptional.get());
-        productDetail.setSupplier(supplierOptional.get());
+//        productDetail.setSupplier(supplierOptional.get());
         productDetail.setShelf(shelfOptional.get());
         productDetail.setImei(productDetailRequest.getImei());
         productDetail.setUpdateDate(new Date());
@@ -174,7 +173,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             productDetailRepo.save(productDetail);
             return ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
-                    .supplierName(productDetail.getSupplier().getName())
+                    .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
                     .categoryName(productDetail.getProductInfo().getCategory().getName())
                     .createDate(productDetail.getCreateDate())
                     .updateDate(productDetail.getUpdateDate())

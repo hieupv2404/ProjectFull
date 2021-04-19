@@ -30,10 +30,6 @@ public class ProductDetail extends BaseEntity implements Serializable {
     private ProductInfo productInfo;
 
     @ManyToOne
-    @JoinColumn(name = "supplier_id")
-    private Supplier supplier;
-
-    @ManyToOne
     @JoinColumn(name = "shelf_id")
     private Shelf shelf;
 

@@ -32,4 +32,8 @@ public class Shelf extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "shelf", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ProductDetail> productDetails = new HashSet<>(0);
+
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
     }
