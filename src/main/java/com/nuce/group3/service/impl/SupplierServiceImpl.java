@@ -78,7 +78,7 @@ public class SupplierServiceImpl implements SupplierService {
         {
             throw new ResourceNotFoundException("Supplier with ID: " + supplierId +" not found!");
         }
-        supplierOptional.get().setActiveFlag(1);
+        supplierOptional.get().setActiveFlag(0);
         supplierRepo.save(supplierOptional.get());
     }
 

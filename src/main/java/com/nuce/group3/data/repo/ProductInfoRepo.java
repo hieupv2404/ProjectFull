@@ -4,6 +4,7 @@ import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.controller.dto.response.ProductInfoResponseTest;
 import com.nuce.group3.data.model.Category;
 import com.nuce.group3.data.model.ProductInfo;
+import com.nuce.group3.utils.Constant;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,8 +18,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProductInfoRepo extends JpaRepository<ProductInfo, Integer> {
-    String CACHE_PRODUCT_INFO_BY_ID = "findProductInfoById";
-
     Optional<ProductInfo> findProductInfoByNameAndActiveFlag(String name, int activeFlag);
     List<ProductInfo> findProductInfoByActiveFlag(int activeFlag);
 
@@ -31,7 +30,7 @@ public interface ProductInfoRepo extends JpaRepository<ProductInfo, Integer> {
                                               @Param(value = "qtyFrom") int qtyFrom, @Param(value = "qtyTo") int  qtyTo,
                                               @Param(value = "priceFrom")BigDecimal priceFrom, @Param(value = "priceTo") BigDecimal priceTo);
 
-    @Cacheable(cacheNames = "findProductInfoById")
+    @Cacheable(cacheNames = Constant.CACHE_PRODUCT_INFO_BY_ID)
     Optional<ProductInfo> findProductInfoByIdAndActiveFlag(int id, int activeFlag);
 
     @Modifying

@@ -76,7 +76,7 @@ public class CategoryServiceImpl implements CategoryService {
         if(!categoryOptional.isPresent()){
             throw new ResourceNotFoundException("Category with id "+ categoryId + " not found");
         }
-        categoryOptional.get().setActiveFlag(1);
+        categoryOptional.get().setActiveFlag(0);
         categoryRepo.save(categoryOptional.get());
     }
 

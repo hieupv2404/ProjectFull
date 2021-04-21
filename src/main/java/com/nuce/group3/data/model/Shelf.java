@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,8 +26,6 @@ public class Shelf extends BaseEntity implements Serializable {
     private String description;
     private int total;
     private int qty;
-    private int qtyRest;
-
     @OneToMany(mappedBy = "shelf", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ProductDetail> productDetails = new HashSet<>(0);
@@ -36,4 +33,4 @@ public class Shelf extends BaseEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
-    }
+}

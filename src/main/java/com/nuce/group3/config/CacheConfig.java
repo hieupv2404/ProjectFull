@@ -2,6 +2,7 @@ package com.nuce.group3.config;
 
 import com.nuce.group3.data.repo.ProductInfoRepo;
 import com.nuce.group3.data.repo.ShelfRepo;
+import com.nuce.group3.utils.Constant;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
@@ -36,8 +37,8 @@ public class CacheConfig {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
-            createCache(cm, ProductInfoRepo.CACHE_PRODUCT_INFO_BY_ID);
-            createCache(cm, ShelfRepo.CACHE_FIND_SHELF_BY_ID);
+            createCache(cm, Constant.CACHE_PRODUCT_INFO_BY_ID);
+            createCache(cm, Constant.CACHE_FIND_SHELF_BY_ID);
         };
     }
 
