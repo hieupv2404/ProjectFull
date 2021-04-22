@@ -79,8 +79,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> testQuery(String query) {
-        List<Users> usersList = userRepo.testQuery(query);
+    public List<UserResponse> findUserByName(String name) {
+        List<Users> usersList = userRepo.findUsersByName(name);
         List<UserResponse> userResponses = new ArrayList<>();
         for (Users users1: usersList){
             UserResponse userResponse = new UserResponse();

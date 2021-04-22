@@ -15,7 +15,7 @@ public interface UserService {
     //    public List<Users> getAllUsers(Users users, Paging paging);
     public List<Users> getAllUsers();
     public List<UserResponse> getUserRole();
-    public List<UserResponse> testQuery(String query);
+    public List<UserResponse> findUserByName(String query);
     public Optional<Users> findByUsername(String username) throws ResourceNotFoundException;
     public String forgetPassword(String email) throws ResourceNotFoundException, LogicException, MessagingException;
 

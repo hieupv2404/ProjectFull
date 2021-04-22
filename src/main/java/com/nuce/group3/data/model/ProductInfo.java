@@ -42,7 +42,12 @@ public class ProductInfo extends BaseEntity implements Serializable {
 
     @Column(name = "price_out")
     private BigDecimal priceOut;
+
     @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
     @JsonIgnore
-    private Set<ProductStatusDetail> productStatusDetails = new HashSet<>();
+    private Set<ProductStatusDetail> productStatusDetails = new HashSet<>(0);
+
+    @OneToMany(mappedBy = "productInfo", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<IssueDetail> issueDetails = new HashSet<>(0);
 }

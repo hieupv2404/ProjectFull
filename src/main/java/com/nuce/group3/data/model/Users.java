@@ -71,4 +71,8 @@ public class Users implements Serializable {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<ProductStatusList> productStatusLists = new HashSet<>(0);
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Issue> issues = new HashSet<>(0);
 }

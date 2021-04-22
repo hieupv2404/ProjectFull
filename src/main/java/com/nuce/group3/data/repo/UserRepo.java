@@ -13,13 +13,13 @@ import java.util.Optional;
 @Repository
 public interface UserRepo extends JpaRepository<Users, Integer> {
     @Query(value = "select * from users where users.active_flag=1 ", nativeQuery = true)
-    public List<Users> getAllUsers();
+    List<Users> getAllUsers();
 
     @Query(value = "select * from users where users.active_flag=1 and users.name  like %:name%  ", nativeQuery = true)
-    public List<Users> testQuery(@Param(value="name") String query);
+    List<Users> findUsersByName(@Param(value="name") String name);
 
     @Query(value = "select * from users where users.active_flag=1 and users.user_name =?1  ", nativeQuery = true)
-    public Optional<Users> findUsersByUserName(String userName);
+    Optional<Users> findUsersByUserName(String userName);
 
-    public Optional<Users> findUsersByEmailAndActiveFlag(String email, int activeFlag);
+    Optional<Users> findUsersByEmailAndActiveFlag(String email, int activeFlag);
 }

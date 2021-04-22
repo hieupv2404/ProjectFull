@@ -2,13 +2,11 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.UserForgetPassword;
 import com.nuce.group3.controller.dto.response.UserResponse;
-import com.nuce.group3.data.model.Paging;
 import com.nuce.group3.data.model.Users;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +34,7 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> testQuery(){
         Users users= new Users();
         users.setName("");
-        return new ResponseEntity<>(userService.testQuery(users.getName()),HttpStatus.OK);
+        return new ResponseEntity<>(userService.findUserByName(users.getName()),HttpStatus.OK);
     }
 
     @PostMapping("/forget-password")
