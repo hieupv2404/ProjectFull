@@ -138,6 +138,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .imgUrl(productInfo.getImgUrl())
                     .updateDate(productInfo.getUpdateDate())
                     .description(productInfo.getDescription())
+                    .priceIn(productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut())
                     .qty(productInfo.getQty())
                     .build();
         } catch (Exception e) {

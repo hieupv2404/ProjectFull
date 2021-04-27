@@ -15,17 +15,14 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductDetailResponse {
-    private String productName;
+public class VatResponse {
+    private String userName;
     private String supplierName;
-    private String categoryName;
-    private String productStatusListCode;
-    private String imei;
-    @Enumerated(value = EnumType.STRING)
-    private EnumStatus status;
-    private String shelfName;
-    private BigDecimal priceIn;
-    private BigDecimal priceOut;
+    private String code;
+    private String tax;
+    private BigDecimal percent;
+    private BigDecimal price;
+    private BigDecimal total;
     private Date createDate;
     private Date updateDate;
 }

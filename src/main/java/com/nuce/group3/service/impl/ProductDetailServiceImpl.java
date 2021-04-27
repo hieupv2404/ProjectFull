@@ -40,6 +40,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Autowired
     private ShelfRepo shelfRepo;
 
+    @Autowired
+    private ProductStatusListRepo productStatusListRepo;
+
     @Override
     public List<ProductDetailResponse> getAll(Integer page, Integer size) {
         List<ProductDetailResponse> productDetailResponses = new ArrayList<>();
@@ -116,10 +119,6 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (productDetailOptional.isPresent()) {
             throw new LogicException("Product Detail Existed", HttpStatus.BAD_REQUEST);
         }
-        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(productDetailRequest.getSupplierId(), 1);
-        if (!supplierOptional.isPresent()) {
-            throw new ResourceNotFoundException("Supplier with id " + productDetailRequest.getSupplierId() + " not found");
-        }
         Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailRequest.getShelfId(),1);
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Shelf with id " + productDetailRequest.getShelfId() + " not found");
@@ -128,10 +127,14 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Info with id " + productDetailRequest.getShelfId() + " not found");
         }
-
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productDetailRequest.getProductStatusListId(), 1);
+        if (!productStatusListOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product Status List with id " + productDetailRequest.getProductStatusListId() + " not found");
+        }
         ProductDetail productDetail = new ProductDetail();
         productDetail.setShelf(shelfOptional.get());
         productDetail.setProductInfo(productInfoOptional.get());
+        productDetail.setProductStatusList(productStatusListOptional.get());
         productDetail.setActiveFlag(1);
         productDetail.setCreateDate(new Date());
         productDetail.setUpdateDate(new Date());
@@ -147,9 +150,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
         }
         ProductDetail productDetail = productDetailOptional.get();
-        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(productDetailRequest.getSupplierId(), 1);
-        if (!supplierOptional.isPresent()) {
-            throw new ResourceNotFoundException("Supplier with id " + productDetailRequest.getSupplierId() + " not found");
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productDetailRequest.getProductStatusListId(), 1);
+        if (!productStatusListOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product Status List with id " + productDetailRequest.getProductStatusListId() + " not found");
         }
         Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailRequest.getShelfId(),1);
         if (!shelfOptional.isPresent()) {
@@ -167,6 +170,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetail.setProductInfo(productInfoOptional.get());
 //        productDetail.setSupplier(supplierOptional.get());
         productDetail.setShelf(shelfOptional.get());
+        productDetail.setProductStatusList(productStatusListOptional.get());
         productDetail.setImei(productDetailRequest.getImei());
         productDetail.setUpdateDate(new Date());
         try {

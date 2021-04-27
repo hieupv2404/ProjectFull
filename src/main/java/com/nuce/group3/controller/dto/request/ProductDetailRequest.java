@@ -10,8 +10,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDetailRequest {
+    @NotBlank(message = "Required Product Name")
     private Integer productId;
-    private Integer supplierId;
+    @NotBlank(message = "Required Product Status Code")
+    private Integer productStatusListId;
     @NotBlank(message = "Required Imei")
     private String imei;
     private Integer shelfId;

@@ -7,6 +7,7 @@ public class Constant {
     public static final Integer PRODUCT_DONE = 1;
     public static final Integer PRODUCT_BACK = 2;
     public static final String CACHE_PRODUCT_INFO_BY_ID = "findProductInfoById";
+    public static final String CACHE_PRODUCT_STATUS_LIST_BY_ID = "findProductStatusListById";
     public static final String CACHE_FIND_SHELF_BY_ID = "findShelfById";
 
 
