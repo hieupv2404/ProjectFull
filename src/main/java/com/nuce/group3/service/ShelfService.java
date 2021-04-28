@@ -16,10 +16,10 @@ public interface ShelfService {
 
     void save(ShelfRequest shelfRequest) throws LogicException, ResourceNotFoundException;
 
-    ShelfResponse edit(Integer supplierId, ShelfRequest shelfRequest) throws ResourceNotFoundException, LogicException;
+    ShelfResponse edit(Integer shelfId, ShelfRequest shelfRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer supplierId) throws ResourceNotFoundException;
+    void delete(Integer shelfId) throws ResourceNotFoundException;
 
-    ShelfResponse findShelfById(Integer supplierId) throws ResourceNotFoundException;
+    ShelfResponse findShelfById(Integer shelfId) throws ResourceNotFoundException;
 
 }

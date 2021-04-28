@@ -33,7 +33,6 @@ public class Vat extends BaseEntity implements Serializable {
 
     private BigDecimal percent;
     private BigDecimal price;
-    private BigDecimal total;
 
     @OneToMany(mappedBy = "vat", fetch = FetchType.LAZY)
     @JsonIgnore

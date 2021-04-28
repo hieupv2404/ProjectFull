@@ -27,8 +27,8 @@ public class VatDetail implements Serializable {
     @JoinColumn(name = "product_id")
     private ProductInfo productInfo;
     private int qty;
+    @Column(name = "price_one")
     private BigDecimal priceOne;
-    private BigDecimal priceTotal;
     @Column(name = "active_flag")
     private int activeFlag;
 
