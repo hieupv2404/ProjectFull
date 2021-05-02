@@ -5,12 +5,13 @@ import com.nuce.group3.controller.dto.request.VatDetailRequest;
 import com.nuce.group3.controller.dto.response.VatDetailResponse;
 import com.nuce.group3.exception.LogicException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface VatDetailService {
     List<VatDetailResponse> getAll(Integer page, Integer size);
 
-    List<VatDetailResponse> findVatByFilter(String name, int qtyFrom, int qtyTo,  int qtyRestFrom,  int qtyRestTo, String branchName, Integer page, Integer size);
+    List<VatDetailResponse> findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size);
 
     void save(VatDetailRequest vatDetailRequest) throws LogicException, ResourceNotFoundException;
 

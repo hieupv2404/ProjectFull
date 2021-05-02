@@ -1,9 +1,11 @@
 package com.nuce.group3.controller;
 
+import com.nuce.group3.controller.dto.request.VatDetailRequest;
 import com.nuce.group3.controller.dto.request.VatRequest;
 import com.nuce.group3.controller.dto.response.VatResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
+import com.nuce.group3.service.VatDetailService;
 import com.nuce.group3.service.VatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ import java.util.List;
 public class VatController {
     @Autowired
     private VatService vatService;
+
+    @Autowired
+    private VatDetailService vatDetailService;
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
@@ -56,5 +61,13 @@ public class VatController {
     public ResponseEntity<String> deleteVat(@PathVariable Integer vatId) throws ResourceNotFoundException {
         vatService.delete(vatId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
+    }
+
+    @PostMapping("/{vatId}/add-items")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<String> createVatDetail(@PathVariable Integer vatId,@Valid @RequestBody VatDetailRequest vatDetailRequest) throws ResourceNotFoundException, LogicException {
+        vatDetailRequest.setVatId(vatId);
+        vatDetailService.save(vatDetailRequest);
+        return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 }

@@ -12,11 +12,13 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class VatDetailRequest {
+public class ProductStatusListRequest {
     @NotNull(message = "Required Vat")
     private int vatId;
-    @NotNull(message = "Required Product")
-    private int productId;
-    private int qty;
-    private BigDecimal priceOne;
+    @NotNull(message = "Required User")
+    private int userId;
+    @NotNull(message = "Required Type")
+    private int type;
+    @NotBlank(message = Constant.REQUIRE_CODE)
+    private String code;
 }

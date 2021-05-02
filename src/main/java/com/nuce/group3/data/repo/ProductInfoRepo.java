@@ -25,7 +25,7 @@ public interface ProductInfoRepo extends JpaRepository<ProductInfo, Integer> {
             " from product_info p where p.active_flag=1 and (:name is null or p.name like %:name%)" +
             " and (:categoryName is null or p.cate_id  = (select c.id from category c where c.name like %:categoryName%)) " +
             " and (:qtyTo is null or p.qty <= :qtyTo) and (:qtyFrom is null or p.qty >= :qtyFrom)"+
-            " and (:priceFrom is null or p.price >= :priceFrom) and (:priceTo is null or p.price <= :priceTo)", nativeQuery = true)
+            " and (:priceFrom is null or p.price_out >= :priceFrom) and (:priceTo is null or p.price_out <= :priceTo)", nativeQuery = true)
     List<ProductInfo> findProductInfoByFilter(@Param(value = "name") String name, @Param(value = "categoryName") String categoryName,
                                               @Param(value = "qtyFrom") int qtyFrom, @Param(value = "qtyTo") int  qtyTo,
                                               @Param(value = "priceFrom")BigDecimal priceFrom, @Param(value = "priceTo") BigDecimal priceTo);

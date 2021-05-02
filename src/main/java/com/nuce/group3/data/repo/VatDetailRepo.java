@@ -1,8 +1,10 @@
 package com.nuce.group3.data.repo;
 
+import com.nuce.group3.controller.dto.response.VatDetailResponse;
 import com.nuce.group3.data.model.VatDetail;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -24,5 +26,8 @@ public interface VatDetailRepo extends JpaRepository<VatDetail, Integer> {
     List<VatDetail> findVatDetailByFilter(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "vatCode") String vatCode, @Param(value = "productInfo") String productInfo, Pageable pageable);
 
     Optional<VatDetail> findVatDetailByIdAndActiveFlag(int id, int activeFlag);
+
+    @Query(value = "select vd.* from vat_detail vd where vd.vat_id=?1 and vd.product_id=?2 and vd.active_flag=1", nativeQuery = true)
+    Optional<VatDetail> findVatDetailByVatAndProduct(int vatId, int productId);
 
 }

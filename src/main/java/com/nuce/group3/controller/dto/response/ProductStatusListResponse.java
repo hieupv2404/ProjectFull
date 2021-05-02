@@ -12,10 +12,11 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VatDetailResponse {
+public class ProductStatusListResponse {
+    private String code;
     private String vatCode;
-    private String productInfo;
-    private int qty;
-    private BigDecimal priceOne;
-    private BigDecimal priceTotal;
+    private String userName;
+    private BigDecimal price;
+    private Date createDate;
+    private Date updateDate;
 }
