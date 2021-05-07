@@ -3,9 +3,10 @@ package com.nuce.group3.service.impl;
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
 import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
-import com.nuce.group3.data.model.Supplier;
+import com.nuce.group3.data.model.ProductStatusList;
 import com.nuce.group3.data.model.Users;
 import com.nuce.group3.data.model.ProductStatusList;
+import com.nuce.group3.data.model.Vat;
 import com.nuce.group3.data.repo.UserRepo;
 import com.nuce.group3.data.repo.ProductStatusListRepo;
 import com.nuce.group3.data.repo.VatRepo;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,80 +39,71 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
 
     @Override
     public List<ProductStatusListResponse> getAll(Integer page, Integer size) {
-        List<ProductStatusListResponse> vatResponses = new ArrayList<>();
+        List<ProductStatusListResponse> productStatusListResponses = new ArrayList<>();
         if (page==null) page = 0;
         if (size==null) size = 5;
-        vatRepo.findProductStatusListByActiveFlag(1, PageRequest.of(page,size)).forEach(vat -> {
-            ProductStatusListResponse vatResponse = ProductStatusListResponse.builder()
-                    .code(vat.getCode())
-                    .tax(vat.getTax())
-                    .percent(vat.getPercent())
-                    .price(vat.getPrice())
-                    .total(vat.getPrice().multiply(vat.getPercent()))
-                    .createDate(vat.getCreateDate())
-                    .userName(vat.getUser().getName())
-                    .supplierName(vat.getSupplier().getName())
-                    .updateDate(vat.getUpdateDate())
+        productStatusListRepo.findProductStatusListByActiveFlag(1, PageRequest.of(page,size)).forEach(productStatusList -> {
+            ProductStatusListResponse productStatusListResponse = ProductStatusListResponse.builder()
+                    .code(productStatusList.getCode())
+                    .vatCode(productStatusList.getVat().getCode())
+                    .userName(productStatusList.getUser().getName())
+                    .price(productStatusList.getPrice())
+                    .createDate(productStatusList.getCreateDate())
+                    .updateDate(productStatusList.getUpdateDate())
                     .build();
-            vatResponses.add(vatResponse);
+            productStatusListResponses.add(productStatusListResponse);
         });
-        return vatResponses;
+        return productStatusListResponses;
     }
 
     @Override
-    public List<ProductStatusListResponse> findProductStatusListByFilter(String code, String tax, String supplierName, String userName, Integer page, Integer size) {
-        List<ProductStatusListResponse> vatResponses = new ArrayList<>();
+    public List<ProductStatusListResponse> findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer page, Integer size) {
+        List<ProductStatusListResponse> productStatusListResponses = new ArrayList<>();
         if (page==null) page = 0;
         if (size==null) size = 5;
-        vatRepo.findProductStatusListByFilter(code, tax, supplierName, userName, PageRequest.of(page, size)).forEach(vat -> {
-            ProductStatusListResponse vatResponse = ProductStatusListResponse.builder()
-                    .code(vat.getCode())
-                    .tax(vat.getTax())
-                    .percent(vat.getPercent())
-                    .price(vat.getPrice())
-                    .total(vat.getPrice().multiply(vat.getPercent()))
-                    .createDate(vat.getCreateDate())
-                    .userName(vat.getUser().getName())
-                    .supplierName(vat.getSupplier().getName())
-                    .updateDate(vat.getUpdateDate())
+        productStatusListRepo.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type,PageRequest.of(page, size)).forEach(productStatusList -> {
+            ProductStatusListResponse productStatusListResponse = ProductStatusListResponse.builder()
+                    .code(productStatusList.getCode())
+                    .vatCode(productStatusList.getVat().getCode())
+                    .userName(productStatusList.getUser().getName())
+                    .price(productStatusList.getPrice())
+                    .createDate(productStatusList.getCreateDate())
+                    .updateDate(productStatusList.getUpdateDate())
                     .build();
-            vatResponses.add(vatResponse);
+            productStatusListResponses.add(productStatusListResponse);
         });
-        return vatResponses;
+        return productStatusListResponses;
     }
 
     @Override
-    public ProductStatusListResponse findProductStatusListById(Integer vatId) throws ResourceNotFoundException {
-        if (vatId == null) {
+    public ProductStatusListResponse findProductStatusListById(Integer productStatusListId) throws ResourceNotFoundException {
+        if (productStatusListId == null) {
             throw new ResourceNotFoundException("Id not found!");
         }
-        Optional<ProductStatusList> vatOptional = vatRepo.findProductStatusListByIdAndActiveFlag(vatId,1);
-        if (!vatOptional.isPresent()) {
-            throw new ResourceNotFoundException("ProductStatusList with " + vatId + " not found!");
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productStatusListId,1);
+        if (!productStatusListOptional.isPresent()) {
+            throw new ResourceNotFoundException("ProductStatusList with " + productStatusListId + " not found!");
         }
-        ProductStatusList vat = vatOptional.get();
+        ProductStatusList productStatusList = productStatusListOptional.get();
         return ProductStatusListResponse.builder()
-                .code(vat.getCode())
-                .tax(vat.getTax())
-                .percent(vat.getPercent())
-                .price(vat.getPrice())
-                .total(vat.getPrice().multiply(vat.getPercent()))
-                .createDate(vat.getCreateDate())
-                .userName(vat.getUser().getName())
-                .supplierName(vat.getSupplier().getName())
-                .updateDate(vat.getUpdateDate())
+                .code(productStatusList.getCode())
+                .vatCode(productStatusList.getVat().getCode())
+                .userName(productStatusList.getUser().getName())
+                .price(productStatusList.getPrice())
+                .createDate(productStatusList.getCreateDate())
+                .updateDate(productStatusList.getUpdateDate())
                 .build();
     }
 
     @Override
-    public void save(ProductStatusListRequest vatRequest, String userName) throws LogicException, ResourceNotFoundException {
-        Optional<ProductStatusList> vatOptional = vatRepo.findProductStatusListByCodeAndActiveFlag(vatRequest.getCode(), 1);
-        if (vatOptional.isPresent()) {
+    public void save(ProductStatusListRequest productStatusListRequest, String userName) throws LogicException, ResourceNotFoundException {
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByCodeAndActiveFlag(productStatusListRequest.getCode(), 1);
+        if (productStatusListOptional.isPresent()) {
             throw new LogicException("ProductStatusList Existed", HttpStatus.BAD_REQUEST);
         }
-        Optional<Supplier> supplierOptional = vatRepo1.findSupplierByIdAndActiveFlag(vatRequest.getSupplierId(), 1);
-        if (!supplierOptional.isPresent()) {
-            throw new ResourceNotFoundException("Supplier with id " + vatRequest.getSupplierId() + " not found");
+        Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(productStatusListRequest.getVatId(), 1);
+        if (!productStatusListOptional.isPresent()) {
+            throw new ResourceNotFoundException("Vat with id " + productStatusListRequest.getVatId() + " not found");
         }
 
         Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
@@ -118,31 +111,28 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
             throw new ResourceNotFoundException("User with user name: " +  userName+ " not found");
         }
 
-        ProductStatusList vat = new ProductStatusList();
-        vat.setCode(vatRequest.getCode());
-        vat.setPercent(vatRequest.getPercent());
-        vat.setSupplier(supplierOptional.get());
-        vat.setUser(usersOptional.get());
-        if(vatRequest.getTax() == null || vatRequest.getTax().equals("")){
-            vat.setTax("123456");
-        } else vat.setTax(vatRequest.getTax());
-        vat.setActiveFlag(1);
-        vat.setCreateDate(new Date());
-        vat.setUpdateDate(new Date());
-
-        vatRepo.save(vat);
+        ProductStatusList productStatusList = new ProductStatusList();
+        productStatusList.setCode(productStatusListRequest.getCode());
+        productStatusList.setPrice(new BigDecimal(0));
+        productStatusList.setUser(usersOptional.get());
+        productStatusList.setVat(vatOptional.get());
+        productStatusList.setType(productStatusListRequest.getType());
+        productStatusList.setActiveFlag(1);
+        productStatusList.setCreateDate(new Date());
+        productStatusList.setUpdateDate(new Date());
+        productStatusListRepo.save(productStatusList);
     }
 
     @Override
-    public ProductStatusListResponse edit(Integer vatId, ProductStatusListRequest vatRequest, String userName) throws ResourceNotFoundException, LogicException {
-        Optional<ProductStatusList> vatOptional = vatRepo.findProductStatusListByIdAndActiveFlag(vatId, 1);
-        if (!vatOptional.isPresent()) {
-            throw new ResourceNotFoundException("ProductStatusList with " + vatId + " not found!");
+    public ProductStatusListResponse edit(Integer productStatusListId, ProductStatusListRequest productStatusListRequest, String userName) throws ResourceNotFoundException, LogicException {
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productStatusListId, 1);
+        if (!productStatusListOptional.isPresent()) {
+            throw new ResourceNotFoundException("ProductStatusList with " + productStatusListId + " not found!");
         }
-        ProductStatusList vat = vatOptional.get();
-        Optional<Supplier> supplierOptional = vatRepo1.findSupplierByIdAndActiveFlag(vatRequest.getSupplierId(), 1);
-        if (!supplierOptional.isPresent()) {
-            throw new ResourceNotFoundException("Supplier with id " + vatRequest.getSupplierId() + " not found");
+        ProductStatusList productStatusList = productStatusListOptional.get();
+        Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(productStatusListRequest.getVatId(), 1);
+        if (!productStatusListOptional.isPresent()) {
+            throw new ResourceNotFoundException("Vat with id " + productStatusListRequest.getVatId() + " not found");
         }
 
         Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
@@ -150,31 +140,24 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
             throw new ResourceNotFoundException("User with user name: " +  userName+ " not found");
         }
 
-        Optional<ProductStatusList> vatByCode = vatRepo.findProductStatusListByCodeAndActiveFlag(vatRequest.getCode(), 1);
-        if (vatByCode.isPresent()) {
-            throw new ResourceNotFoundException("ProductStatusList with code" + vatRequest.getCode() + " existed!");
+        Optional<ProductStatusList> productStatusListByCode = productStatusListRepo.findProductStatusListByCodeAndActiveFlag(productStatusListRequest.getCode(), 1);
+        if (productStatusListByCode.isPresent()) {
+            throw new ResourceNotFoundException("ProductStatusList with code" + productStatusListRequest.getCode() + " existed!");
         }
 
-        if(vatRequest.getTax() == null){
-            vat.setTax("123456");
-        } else vat.setTax(vatRequest.getTax());
-        vat.setCode(vatRequest.getCode());
-        vat.setPercent(vatRequest.getPercent());
-        vat.setSupplier(supplierOptional.get());
-        vat.setUser(usersOptional.get());
-        vat.setUpdateDate(new Date());
+        productStatusList.setCode(productStatusListRequest.getCode());
+        productStatusList.setVat(vatOptional.get());
+        productStatusList.setUser(usersOptional.get());
+        productStatusList.setUpdateDate(new Date());
         try {
-            vatRepo.save(vat);
+            productStatusListRepo.save(productStatusList);
             return ProductStatusListResponse.builder()
-                    .code(vat.getCode())
-                    .tax(vat.getTax())
-                    .percent(vat.getPercent())
-                    .price(vat.getPrice())
-                    .total(vat.getPrice().multiply(vat.getPercent()))
-                    .createDate(vat.getCreateDate())
-                    .userName(vat.getUser().getName())
-                    .supplierName(vat.getSupplier().getName())
-                    .updateDate(vat.getUpdateDate())
+                    .code(productStatusList.getCode())
+                    .vatCode(productStatusList.getVat().getCode())
+                    .userName(productStatusList.getUser().getName())
+                    .price(productStatusList.getPrice())
+                    .createDate(productStatusList.getCreateDate())
+                    .updateDate(productStatusList.getUpdateDate())
                     .build();
         } catch (Exception e) {
             throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);
@@ -182,12 +165,12 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     }
 
     @Override
-    public void delete(Integer vatId) throws ResourceNotFoundException {
-        Optional<ProductStatusList> vatOptional = vatRepo.findProductStatusListByIdAndActiveFlag(vatId,1);
-        if (!vatOptional.isPresent()) {
-            throw new ResourceNotFoundException("ProductStatusList with " + vatId + " not found!");
+    public void delete(Integer productStatusListId) throws ResourceNotFoundException {
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productStatusListId,1);
+        if (!productStatusListOptional.isPresent()) {
+            throw new ResourceNotFoundException("ProductStatusList with " + productStatusListId + " not found!");
         }
-        vatOptional.get().setActiveFlag(0);
-        vatRepo.save(vatOptional.get());
+        productStatusListOptional.get().setActiveFlag(0);
+        productStatusListRepo.save(productStatusListOptional.get());
     }
 }

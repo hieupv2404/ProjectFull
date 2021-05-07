@@ -5,18 +5,19 @@ import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
 import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
 import com.nuce.group3.exception.LogicException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductStatusListService {
     List<ProductStatusListResponse> getAll(Integer page, Integer size);
 
-    List<ProductStatusListResponse> findProductStatusListByFilter(String code, String tax, String supplierName, String userName, Integer page, Integer size);
+    List<ProductStatusListResponse> findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer page, Integer size);
 
-    ProductStatusListResponse findProductStatusListById(Integer vatId) throws ResourceNotFoundException;
+    ProductStatusListResponse findProductStatusListById(Integer productStatusListId) throws ResourceNotFoundException;
 
-    void save(ProductStatusListRequest vatRequest, String userName) throws LogicException, ResourceNotFoundException;
+    void save(ProductStatusListRequest productStatusListRequest, String userName) throws LogicException, ResourceNotFoundException;
 
-    ProductStatusListResponse edit(Integer vatId, ProductStatusListRequest vatRequest, String userName) throws ResourceNotFoundException, LogicException;
+    ProductStatusListResponse edit(Integer productStatusListId, ProductStatusListRequest productStatusListRequest, String userName) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer vatId) throws ResourceNotFoundException;
+    void delete(Integer productStatusListId) throws ResourceNotFoundException;
 }

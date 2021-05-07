@@ -4,6 +4,7 @@ import com.nuce.group3.data.model.ProductStatusList;
 import com.nuce.group3.data.model.ProductStatusList;
 import com.nuce.group3.utils.Constant;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +18,7 @@ import java.util.Optional;
 @Repository
 public interface ProductStatusListRepo extends JpaRepository<ProductStatusList, Integer> {
     Optional<ProductStatusList> findProductStatusListByCodeAndActiveFlag(String code, int activeFlag);
-    List<ProductStatusList> findProductStatusListByActiveFlag(int activeFlag);
+    List<ProductStatusList> findProductStatusListByActiveFlag(int activeFlag, Pageable pageable);
 
     @Query(value = "select p.*" +
             " from product_status_list p where p.active_flag=1 and (:code is null or p.code like %:code%)" +
@@ -25,7 +26,7 @@ public interface ProductStatusListRepo extends JpaRepository<ProductStatusList, 
             " and (:priceFrom is null or p.price >= :priceFrom) and (:priceTo is null or p.price <= :priceTo)" +
             " and (:type is null or p.type = :type)", nativeQuery = true)
     List<ProductStatusList> findProductStatusListByFilter(@Param(value = "code") String code, @Param(value = "vatCode") String vatCode,
-                                              @Param(value = "priceFrom")BigDecimal priceFrom, @Param(value = "priceTo") BigDecimal priceTo, int type);
+                                              @Param(value = "priceFrom")BigDecimal priceFrom, @Param(value = "priceTo") BigDecimal priceTo, int type, Pageable pageable);
 
     @Cacheable(cacheNames = Constant.CACHE_PRODUCT_STATUS_LIST_BY_ID)
     Optional<ProductStatusList> findProductStatusListByIdAndActiveFlag(int id, int activeFlag);
