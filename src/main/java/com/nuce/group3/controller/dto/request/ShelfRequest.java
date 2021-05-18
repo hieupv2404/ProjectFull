@@ -3,6 +3,7 @@ package com.nuce.group3.controller.dto.request;
 import com.nuce.group3.utils.Constant;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
@@ -14,6 +15,7 @@ public class ShelfRequest {
     private String name;
     private String description;
     @NotBlank(message = "Required total quantity")
+    @Min(value = 0, message = "Must be Greater or Equal 0")
     private int total;
     @NotBlank(message = "Required branch")
     private int branchId;

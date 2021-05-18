@@ -12,7 +12,6 @@ import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.UserService;
 import com.nuce.group3.utils.HashingPassword;
 import com.nuce.group3.utils.TokenManager;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value="/api/",  headers = "Accept=application/json")
+@RequestMapping(value = "/api/", headers = "Accept=application/json")
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 public class LoginController {
 
@@ -64,18 +61,17 @@ public class LoginController {
                     roleName.add(role.getRoleName());
                     menuIds = authRepo.findIdMenu(role.getId());
                 }
-                    for(int menuId: menuIds)
-                    {
-                            Optional<Menu> menu = menuRepo.findMenuByIdAndActiveFlag(menuId, 1);
-                            if(menu.isPresent() && menu.get().getOrderIndex()>=0) {
-                                MenuResponseLogin menuResponseLogin = new MenuResponseLogin();
-                                menuResponseLogin.setName(menu.get().getName());
-                                menuResponseLogin.setParentId(menu.get().getParentId());
-                                menuResponseLogin.setUrl(menu.get().getUrl());
-                                menuResponseLogin.setOrderIndex(menu.get().getOrderIndex());
-                                menuResponseLogins.add(menuResponseLogin);
-                            }
+                for (int menuId : menuIds) {
+                    Optional<Menu> menu = menuRepo.findMenuByIdAndActiveFlag(menuId, 1);
+                    if (menu.isPresent() && menu.get().getOrderIndex() >= 0) {
+                        MenuResponseLogin menuResponseLogin = new MenuResponseLogin();
+                        menuResponseLogin.setName(menu.get().getName());
+                        menuResponseLogin.setParentId(menu.get().getParentId());
+                        menuResponseLogin.setUrl(menu.get().getUrl());
+                        menuResponseLogin.setOrderIndex(menu.get().getOrderIndex());
+                        menuResponseLogins.add(menuResponseLogin);
                     }
+                }
                 String token = tokenManager.createToken(user.getUserName(), roleName);
                 request.getSession().setAttribute("role", roleName);
                 request.getSession().setAttribute("AuthToken", token);

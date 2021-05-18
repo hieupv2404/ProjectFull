@@ -19,10 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Service
 @Transactional
@@ -38,11 +36,11 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     private ProductStatusListRepo productStatusListRepo;
 
     @Override
-    public List<ProductStatusListResponse> getAll(Integer page, Integer size) {
+    public List<ProductStatusListResponse> getAll(int type, Integer page, Integer size) {
         List<ProductStatusListResponse> productStatusListResponses = new ArrayList<>();
         if (page==null) page = 0;
         if (size==null) size = 5;
-        productStatusListRepo.findProductStatusListByActiveFlag(1, PageRequest.of(page,size)).forEach(productStatusList -> {
+        productStatusListRepo.findProductStatusListByActiveFlag(type,1, PageRequest.of(page,size)).forEach(productStatusList -> {
             ProductStatusListResponse productStatusListResponse = ProductStatusListResponse.builder()
                     .code(productStatusList.getCode())
                     .vatCode(productStatusList.getVat().getCode())
@@ -97,7 +95,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
 
     @Override
     public void save(ProductStatusListRequest productStatusListRequest, String userName) throws LogicException, ResourceNotFoundException {
-        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByCodeAndActiveFlag(productStatusListRequest.getCode(), 1);
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByVatAndType(productStatusListRequest.getVatId(), 1);
         if (productStatusListOptional.isPresent()) {
             throw new LogicException("ProductStatusList Existed", HttpStatus.BAD_REQUEST);
         }
@@ -111,8 +109,10 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
             throw new ResourceNotFoundException("User with user name: " +  userName+ " not found");
         }
 
+        Calendar calendar = Calendar.getInstance();
+        int maxId = productStatusListRepo.countProductStatusListByTypeAndActiveFlag(productStatusListRequest.getType(),1) +1;
         ProductStatusList productStatusList = new ProductStatusList();
-        productStatusList.setCode(productStatusListRequest.getCode());
+        productStatusList.setCode("DONE"+ calendar.get(Calendar.DAY_OF_MONTH)+calendar.get(Calendar.MONTH)+calendar.get(Calendar.YEAR)+maxId);
         productStatusList.setPrice(new BigDecimal(0));
         productStatusList.setUser(usersOptional.get());
         productStatusList.setVat(vatOptional.get());
@@ -140,12 +140,14 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
             throw new ResourceNotFoundException("User with user name: " +  userName+ " not found");
         }
 
-        Optional<ProductStatusList> productStatusListByCode = productStatusListRepo.findProductStatusListByCodeAndActiveFlag(productStatusListRequest.getCode(), 1);
-        if (productStatusListByCode.isPresent()) {
-            throw new ResourceNotFoundException("ProductStatusList with code" + productStatusListRequest.getCode() + " existed!");
+        Optional<ProductStatusList> productStatusListByVatOptional = productStatusListRepo.findProductStatusListByVatAndType(productStatusListRequest.getVatId(), 1);
+        if (productStatusListByVatOptional.isPresent()) {
+            throw new LogicException("ProductStatusList Existed", HttpStatus.BAD_REQUEST);
         }
 
-        productStatusList.setCode(productStatusListRequest.getCode());
+        Calendar calendar = Calendar.getInstance();
+
+        productStatusList.setCode("DONE"+ calendar.get(Calendar.DAY_OF_MONTH)+calendar.get(Calendar.MONTH)+calendar.get(Calendar.YEAR));
         productStatusList.setVat(vatOptional.get());
         productStatusList.setUser(usersOptional.get());
         productStatusList.setUpdateDate(new Date());

@@ -18,7 +18,7 @@ import java.util.Optional;
 @Repository
 public interface ProductStatusListRepo extends JpaRepository<ProductStatusList, Integer> {
     Optional<ProductStatusList> findProductStatusListByCodeAndActiveFlag(String code, int activeFlag);
-    List<ProductStatusList> findProductStatusListByActiveFlag(int activeFlag, Pageable pageable);
+    List<ProductStatusList> findProductStatusListByActiveFlag(int type, int activeFlag, Pageable pageable);
 
     @Query(value = "select p.*" +
             " from product_status_list p where p.active_flag=1 and (:code is null or p.code like %:code%)" +
@@ -31,5 +31,10 @@ public interface ProductStatusListRepo extends JpaRepository<ProductStatusList, 
     @Cacheable(cacheNames = Constant.CACHE_PRODUCT_STATUS_LIST_BY_ID)
     Optional<ProductStatusList> findProductStatusListByIdAndActiveFlag(int id, int activeFlag);
 
+    @Query(value = "select p" +
+            " from product_status_list p where p.active_flag=1 and p.vat_id = ?1 and p.type = ?2", nativeQuery = true)
+    Optional<ProductStatusList> findProductStatusListByVatAndType(int vatId, int type);
+
+    int countProductStatusListByTypeAndActiveFlag(int type, int activeFlag);
 
 }

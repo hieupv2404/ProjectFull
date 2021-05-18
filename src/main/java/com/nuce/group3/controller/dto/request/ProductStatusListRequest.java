@@ -19,6 +19,4 @@ public class ProductStatusListRequest {
     private int userId;
     @NotNull(message = "Required Type")
     private int type;
-    @NotBlank(message = Constant.REQUIRE_CODE)
-    private String code;
 }

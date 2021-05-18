@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductStatusListService {
-    List<ProductStatusListResponse> getAll(Integer page, Integer size);
+    List<ProductStatusListResponse> getAll(int type, Integer page, Integer size);
 
     List<ProductStatusListResponse> findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer page, Integer size);
 

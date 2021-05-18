@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +26,11 @@ public class Shelf extends BaseEntity implements Serializable {
     @NotBlank(message = Constant.REQUIRE_NAME)
     private String name;
     private String description;
+    @NotNull(message = "Required Total")
+    @Min(value = 0, message = "Must be Greater or Equal 0")
     private int total;
+    @NotNull(message = "Required Quantity")
+    @Min(value = 0, message = "Must be Greater or Equal 0")
     private int qty;
     @OneToMany(mappedBy = "shelf", fetch = FetchType.LAZY)
     @JsonIgnore

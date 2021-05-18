@@ -1,11 +1,11 @@
 package com.nuce.group3.controller;
 
-import com.nuce.group3.controller.dto.request.ProductStatusListDetailRequest;
+import com.nuce.group3.controller.dto.request.ProductStatusDetailRequest;
 import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
 import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
-import com.nuce.group3.service.ProductStatusListDetailService;
+import com.nuce.group3.service.ProductStatusDetailService;
 import com.nuce.group3.service.ProductStatusListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,24 +14,29 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/productStatusLists", headers = "Accept=application/json")
+@RequestMapping(value = "/api/product-status-lists", headers = "Accept=application/json")
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
 public class ProductStatusListController {
     @Autowired
     private ProductStatusListService productStatusListService;
-    
+
+    @Autowired
+    private ProductStatusDetailService productStatusDetailService;
+
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<ProductStatusListResponse>> findProductStatusList(@RequestParam(name = "code", required = false) String code,
-                                                     @RequestParam(name = "vatCode", required = false) String vatCode,
-                                                     @RequestParam(name = "supplierName", required = false) String supplierName,
-                                                     @RequestParam(name = "userName", required = false) String userName,
-                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, tax, supplierName, userName, page, size), HttpStatus.OK);
+                                                                                 @RequestParam(name = "vatCode", required = false) String vatCode,
+                                                                                 @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
+                                                                                 @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
+                                                                                 @RequestParam(name = "type", required = false) int type,
+                                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, page, size), HttpStatus.OK);
 
     }
 
@@ -63,9 +68,9 @@ public class ProductStatusListController {
 
     @PostMapping("/{productStatusListId}/add-items")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createProductStatusListDetail(@PathVariable Integer productStatusListId,@Valid @RequestBody ProductStatusListDetailRequest productStatusListDetailRequest) throws ResourceNotFoundException, LogicException {
-        productStatusListDetailRequest.setProductStatusListId(productStatusListId);
-        productStatusListDetailService.save(productStatusListDetailRequest);
+    public ResponseEntity<String> createProductStatusListDetail(@PathVariable Integer productStatusListId, @Valid @RequestBody ProductStatusDetailRequest productStatusDetailRequest) throws ResourceNotFoundException, LogicException {
+        productStatusDetailRequest.setProductStatusListId(productStatusListId);
+        productStatusDetailService.save(productStatusDetailRequest);
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 }
