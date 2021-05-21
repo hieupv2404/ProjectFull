@@ -3,8 +3,12 @@ package com.nuce.group3.service.impl;
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.VatDetailRequest;
 import com.nuce.group3.controller.dto.response.VatDetailResponse;
-import com.nuce.group3.data.model.*;
-import com.nuce.group3.data.repo.*;
+import com.nuce.group3.data.model.ProductInfo;
+import com.nuce.group3.data.model.Vat;
+import com.nuce.group3.data.model.VatDetail;
+import com.nuce.group3.data.repo.ProductInfoRepo;
+import com.nuce.group3.data.repo.VatDetailRepo;
+import com.nuce.group3.data.repo.VatRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.VatDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +103,7 @@ public class VatDetailServiceImpl implements VatDetailService {
 
         Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(vatDetailRequest.getProductId(),1);
         if (!productInfoOptional.isPresent()) {
-            throw new ResourceNotFoundException("Product Info with id: " + vatDetailRequest.getProductId()+ " not found");
+            throw new ResourceNotFoundException("Product Info with id: " + vatDetailRequest.getProductId() + " not found");
         }
 
         VatDetail vatDetail = new VatDetail();
@@ -110,6 +113,9 @@ public class VatDetailServiceImpl implements VatDetailService {
         vatDetail.setPriceOne(vatDetailRequest.getPriceOne());
         vatDetail.setActiveFlag(1);
         vatDetailRepo.save(vatDetail);
+
+        vatOptional.get().setPrice(vatOptional.get().getPrice().add(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty()))));
+        vatRepo.save(vatOptional.get());
     }
 
     @Override
@@ -124,9 +130,9 @@ public class VatDetailServiceImpl implements VatDetailService {
             throw new ResourceNotFoundException("Vat with id " + vatDetailRequest.getVatId() + " not found");
         }
 
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(vatDetailRequest.getProductId(),1);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(vatDetailRequest.getProductId(), 1);
         if (!productInfoOptional.isPresent()) {
-            throw new ResourceNotFoundException("Product Info with id: " + vatDetailRequest.getProductId()+ " not found");
+            throw new ResourceNotFoundException("Product Info with id: " + vatDetailRequest.getProductId() + " not found");
         }
 
         Optional<VatDetail> vatDetailOptional2 = vatDetailRepo.findVatDetailByVatAndProduct(vatDetailRequest.getVatId(), vatDetailRequest.getProductId());
@@ -134,12 +140,16 @@ public class VatDetailServiceImpl implements VatDetailService {
             throw new LogicException("Vat Detail Existed", HttpStatus.BAD_REQUEST);
         }
 
+        BigDecimal oldPriceFromVatDetail = vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty()));
+
         vatDetail.setVat(vatOptional.get());
         vatDetail.setProductInfo(productInfoOptional.get());
         vatDetail.setQty(vatDetailRequest.getQty());
         vatDetail.setPriceOne(vatDetailRequest.getPriceOne());
         try {
             vatDetailRepo.save(vatDetail);
+            vatOptional.get().setPrice(vatOptional.get().getPrice().subtract(oldPriceFromVatDetail).add(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty()))));
+            vatRepo.save(vatOptional.get());
             return VatDetailResponse.builder()
                     .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
                     .priceOne(vatDetail.getPriceOne())
@@ -154,11 +164,14 @@ public class VatDetailServiceImpl implements VatDetailService {
 
     @Override
     public void delete(Integer vatDetailId) throws ResourceNotFoundException {
-        Optional<VatDetail> vatDetailOptional = vatDetailRepo.findVatDetailByIdAndActiveFlag(vatDetailId,1);
+        Optional<VatDetail> vatDetailOptional = vatDetailRepo.findVatDetailByIdAndActiveFlag(vatDetailId, 1);
         if (!vatDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("VatDetail with " + vatDetailId + " not found!");
         }
         vatDetailOptional.get().setActiveFlag(0);
         vatDetailRepo.save(vatDetailOptional.get());
+        Vat vat = vatDetailOptional.get().getVat();
+        vat.setPrice(vat.getPrice().subtract(vatDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(vatDetailOptional.get().getQty()))));
+        vatRepo.save(vat);
     }
 }

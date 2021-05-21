@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +18,4 @@ public class ProductStatusDetailRequest {
     @NotNull(message = "Required Quantity")
     @Min(value = 0, message = "Must be Greater or Equal 0")
     private int qty;
-    @NotNull(message = "Required Price")
-    @Min(value = 0, message = "Must be Greater or Equal 0")
-    private BigDecimal priceOne;
 }
