@@ -34,4 +34,8 @@ public class Branch extends BaseEntity implements Serializable {
     @JsonIgnore
     private Set<Shelf> shelves = new HashSet(0);
 
+    @OneToMany(mappedBy = "branch", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Users> users = new HashSet(0);
+
 }

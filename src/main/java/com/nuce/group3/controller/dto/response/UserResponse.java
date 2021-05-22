@@ -1,6 +1,5 @@
 package com.nuce.group3.controller.dto.response;
 
-import com.nuce.group3.data.model.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,5 +16,6 @@ public class UserResponse {
     private Date createDate;
     private Date updateDate;
     private Set<String> roleName = new HashSet<>();
+    private String branchName;
 //    private Integer roleId;
 }

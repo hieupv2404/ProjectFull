@@ -1,14 +1,17 @@
 package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
+import com.nuce.group3.controller.dto.request.UsersRequest;
 import com.nuce.group3.controller.dto.response.UserResponse;
+import com.nuce.group3.data.model.Branch;
 import com.nuce.group3.data.model.Role;
 import com.nuce.group3.data.model.Users;
+import com.nuce.group3.data.repo.BranchRepo;
+import com.nuce.group3.data.repo.RoleRepo;
 import com.nuce.group3.data.repo.UserRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.UserService;
 import com.nuce.group3.utils.HashingPassword;
-import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,10 +23,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.security.SecureRandom;
 import java.util.*;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -32,26 +32,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo userRepo;
 
-//    @Autowired
-//    private UserDAO<Users> userDAO;
+    @Autowired
+    private BranchRepo branchRepo;
 
-//    @Override
-//    public List<Users> getAllUsers(Users users, Paging paging) {
-//        StringBuilder queryStr = new StringBuilder();
-//        Map<String, Object> mapParams = new HashMap<>();
-//        if (users != null) {
-//            if (!StringUtils.isEmpty(users.getName())) {
-//                queryStr.append(" and model.name like :name");
-//                mapParams.put("name", "%" + users.getName() + "%");
-//            }
-//            if (!StringUtils.isEmpty(users.getUserName())) {
-//                queryStr.append(" and model.userName like :userName");
-//                mapParams.put("userName", "%" + users.getUserName() + "%");
-//            }
-//        }
-//        return userDAO.findAll(queryStr.toString(), mapParams, paging);
-//    }
-
+    @Autowired
+    private RoleRepo roleRepo;
 
     @Override
     public List<Users> getAllUsers() {
@@ -59,9 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<UserResponse> getUserRole() {
-        List<Users> users= userRepo.getAllUsers();
+        List<Users> users = userRepo.getAllUsers();
         List<UserResponse> userResponses = new ArrayList<>();
-        for (Users users1: users){
+        for (Users users1 : users) {
             UserResponse userResponse = new UserResponse();
             userResponse.setUserName(users1.getUserName());
             userResponse.setEmail(users1.getEmail());
@@ -165,5 +150,56 @@ public class UserServiceImpl implements UserService {
         return "Send Success";
     }
 
+    @Override
+    public void save(UsersRequest usersRequest) throws LogicException, ResourceNotFoundException {
+        Optional<Users> usersOptionalByUsername = userRepo.findUsersByUserName(usersRequest.getUserName());
+        if (usersOptionalByUsername.isPresent()) {
+            throw new LogicException("Username " + usersRequest.getUserName() + " is existed!", HttpStatus.BAD_REQUEST);
+        }
+        Optional<Users> usersOptionalByEmail = userRepo.findUsersByEmailAndActiveFlag(usersRequest.getEmail(), 1);
+        if (usersOptionalByEmail.isPresent()) {
+            throw new LogicException("Email " + usersRequest.getEmail() + " is existed!", HttpStatus.BAD_REQUEST);
+        }
+        Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(usersRequest.getBranchId(), 1);
+        if (!branchOptional.isPresent()) {
+            throw new ResourceNotFoundException("Branch with ID " + usersRequest.getBranchId() + " is not existed!");
+        }
+        Set<Role> roles = new HashSet<>();
+        usersRequest.getRoles().forEach(roleId -> {
+            Optional<Role> roleOptional = roleRepo.findRoleByIdAndActiveFlag(roleId, 1);
+            if (!roleOptional.isPresent()) {
+                try {
+                    throw new ResourceNotFoundException("Role with ID " + roleId + "is not existed!");
+                } catch (ResourceNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                roles.add(roleOptional.get());
+            }
+        });
 
+        Users users = new Users();
+        users.setName(usersRequest.getName());
+        users.setUserName(usersRequest.getUserName());
+        users.setPassword(usersRequest.getPassword());
+        users.setCreateDate(new Date());
+        users.setUpdateDate(new Date());
+        users.setActiveFlag(1);
+        users.setEmail(usersRequest.getEmail());
+        users.setPhone(usersRequest.getPhone());
+        users.setBranch(branchOptional.get());
+        users.setRoles(roles);
+
+        userRepo.save(users);
+    }
+
+    @Override
+    public UserResponse edit(Integer userId, UsersRequest usersRequest) throws ResourceNotFoundException, LogicException {
+        return null;
+    }
+
+    @Override
+    public void delete(Integer userId) throws ResourceNotFoundException {
+
+    }
 }
