@@ -168,6 +168,7 @@ public class VatDetailServiceImpl implements VatDetailService {
         if (!vatDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("VatDetail with " + vatDetailId + " not found!");
         }
+
         vatDetailOptional.get().setActiveFlag(0);
         vatDetailRepo.save(vatDetailOptional.get());
         Vat vat = vatDetailOptional.get().getVat();

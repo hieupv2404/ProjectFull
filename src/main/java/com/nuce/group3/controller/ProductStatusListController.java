@@ -2,6 +2,7 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ProductStatusDetailRequest;
 import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
+import com.nuce.group3.controller.dto.response.ProductStatusDetailResponse;
 import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
@@ -72,5 +73,17 @@ public class ProductStatusListController {
         productStatusDetailRequest.setProductStatusListId(productStatusListId);
         productStatusDetailService.save(productStatusDetailRequest);
         return new ResponseEntity<>("Created", HttpStatus.OK);
+    }
+
+    @GetMapping("/{productStatusListCode}/product-status-details")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<List<ProductStatusDetailResponse>> findProductStatusDetailByCode(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
+                                                                                           @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
+                                                                                           @PathVariable(name = "productStatusListCode", required = false) String productStatusListCode,
+                                                                                           @RequestParam(name = "productInfo", required = false) String productInfo,
+                                                                                           @RequestParam(name = "type", required = false) int type,
+                                                                                           @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, page, size), HttpStatus.OK);
+
     }
 }
