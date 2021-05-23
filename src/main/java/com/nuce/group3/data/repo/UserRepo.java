@@ -1,6 +1,5 @@
 package com.nuce.group3.data.repo;
 
-import com.nuce.group3.controller.dto.response.UserResponse;
 import com.nuce.group3.data.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,10 +15,12 @@ public interface UserRepo extends JpaRepository<Users, Integer> {
     List<Users> getAllUsers();
 
     @Query(value = "select * from users where users.active_flag=1 and users.name  like %:name%  ", nativeQuery = true)
-    List<Users> findUsersByName(@Param(value="name") String name);
+    List<Users> findUsersByName(@Param(value = "name") String name);
 
     @Query(value = "select * from users where users.active_flag=1 and users.user_name =?1  ", nativeQuery = true)
     Optional<Users> findUsersByUserName(String userName);
 
     Optional<Users> findUsersByEmailAndActiveFlag(String email, int activeFlag);
+
+    Optional<Users> findUsersByIdAndActiveFlag(int id, int activeFlag);
 }

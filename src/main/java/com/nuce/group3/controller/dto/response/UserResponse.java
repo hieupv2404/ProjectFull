@@ -13,6 +13,7 @@ public class UserResponse {
     private String userName;
     private String email;
     private String name;
+    private String phone;
     private Date createDate;
     private Date updateDate;
     private Set<String> roleName = new HashSet<>();

@@ -51,11 +51,12 @@ public class UserServiceImpl implements UserService {
             userResponse.setUserName(users1.getUserName());
             userResponse.setEmail(users1.getEmail());
             userResponse.setName(users1.getName());
+            userResponse.setPhone(users1.getPhone());
             userResponse.setCreateDate(users1.getCreateDate());
             userResponse.setUpdateDate(users1.getUpdateDate());
+            userResponse.setBranchName(users1.getBranch().getName());
             Set<Role> roleSet = users1.getRoles();
-            for (Role role:roleSet)
-            {
+            for (Role role : roleSet) {
                 userResponse.getRoleName().add(role.getRoleName());
             }
             userResponses.add(userResponse);
@@ -67,16 +68,17 @@ public class UserServiceImpl implements UserService {
     public List<UserResponse> findUserByName(String name) {
         List<Users> usersList = userRepo.findUsersByName(name);
         List<UserResponse> userResponses = new ArrayList<>();
-        for (Users users1: usersList){
+        for (Users users1 : usersList) {
             UserResponse userResponse = new UserResponse();
             userResponse.setUserName(users1.getUserName());
             userResponse.setEmail(users1.getEmail());
             userResponse.setName(users1.getName());
+            userResponse.setPhone(users1.getPhone());
             userResponse.setCreateDate(users1.getCreateDate());
             userResponse.setUpdateDate(users1.getUpdateDate());
+            userResponse.setBranchName(users1.getBranch().getName());
             Set<Role> roleSet = users1.getRoles();
-            for (Role role:roleSet)
-            {
+            for (Role role : roleSet) {
                 userResponse.getRoleName().add(role.getRoleName());
             }
             userResponses.add(userResponse);
@@ -87,14 +89,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<Users> findByUsername(String username) throws ResourceNotFoundException {
         Optional<Users> users = userRepo.findUsersByUserName(username);
-        if(!users.isPresent())
-        {
-            throw new ResourceNotFoundException("User with username "+ username+ " not found");
+        if (!users.isPresent()) {
+            throw new ResourceNotFoundException("User with username " + username + " not found");
         }
         return users;
     }
 
-    public String randomPassword(){
+    public String randomPassword() {
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
         int targetStringLength = 10;
@@ -110,9 +111,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String forgetPassword(String emailReceipt) throws ResourceNotFoundException, LogicException, MessagingException {
-        Optional<Users> users = userRepo.findUsersByEmailAndActiveFlag(emailReceipt,1);
-        if(!users.isPresent()){
-            throw new ResourceNotFoundException("User with email "+ emailReceipt + " not found");
+        Optional<Users> users = userRepo.findUsersByEmailAndActiveFlag(emailReceipt, 1);
+        if (!users.isPresent()) {
+            throw new ResourceNotFoundException("User with email " + emailReceipt + " not found");
         }
 
         Properties mailServerProperties;
@@ -130,7 +131,7 @@ public class UserServiceImpl implements UserService {
         try {
             mailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(emailReceipt));
         } catch (MessagingException e) {
-            throw new LogicException("Send to mail "+ emailReceipt + " failed.", HttpStatus.BAD_REQUEST);
+            throw new LogicException("Send to mail " + emailReceipt + " failed.", HttpStatus.BAD_REQUEST);
         }
 
         String newPass = randomPassword();
@@ -181,7 +182,7 @@ public class UserServiceImpl implements UserService {
         Users users = new Users();
         users.setName(usersRequest.getName());
         users.setUserName(usersRequest.getUserName());
-        users.setPassword(usersRequest.getPassword());
+        users.setPassword(HashingPassword.encrypt(usersRequest.getPassword()));
         users.setCreateDate(new Date());
         users.setUpdateDate(new Date());
         users.setActiveFlag(1);
@@ -195,11 +196,61 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse edit(Integer userId, UsersRequest usersRequest) throws ResourceNotFoundException, LogicException {
-        return null;
+        Optional<Users> usersOptional = userRepo.findUsersByIdAndActiveFlag(userId, 1);
+        if (!usersOptional.isPresent()) {
+            throw new ResourceNotFoundException("User with ID: " + userId + " not found!");
+        }
+        Users users = usersOptional.get();
+
+        Set<Role> roles = new HashSet<>();
+        usersRequest.getRoles().forEach(roleId -> {
+            Optional<Role> roleOptional = roleRepo.findRoleByIdAndActiveFlag(roleId, 1);
+            if (!roleOptional.isPresent()) {
+                try {
+                    throw new ResourceNotFoundException("Role with ID " + roleId + "is not existed!");
+                } catch (ResourceNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                roles.add(roleOptional.get());
+            }
+        });
+
+        Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(usersRequest.getBranchId(), 1);
+        if (!branchOptional.isPresent()) {
+            throw new ResourceNotFoundException("Branch with ID " + usersRequest.getBranchId() + " is not existed!");
+        }
+
+        users.setPhone(usersRequest.getPhone());
+        users.setName(usersRequest.getName());
+        users.setRoles(roles);
+        users.setBranch(branchOptional.get());
+        users.setUpdateDate(new Date());
+        users.setPassword(HashingPassword.encrypt(usersRequest.getPassword()));
+        UserResponse userResponse = new UserResponse();
+
+        userRepo.save(users);
+        userResponse.setUserName(users.getUserName());
+        userResponse.setEmail(users.getEmail());
+        userResponse.setName(users.getName());
+        userResponse.setPhone(users.getPhone());
+        userResponse.setCreateDate(users.getCreateDate());
+        userResponse.setUpdateDate(users.getUpdateDate());
+        userResponse.setBranchName(users.getBranch().getName());
+        Set<Role> roleSet = users.getRoles();
+        for (Role role : roleSet) {
+            userResponse.getRoleName().add(role.getRoleName());
+        }
+        return userResponse;
     }
 
     @Override
     public void delete(Integer userId) throws ResourceNotFoundException {
-
+        Optional<Users> usersOptional = userRepo.findUsersByIdAndActiveFlag(userId, 1);
+        if (!usersOptional.isPresent()) {
+            throw new ResourceNotFoundException("User with ID " + userId + " not found!");
+        }
+        usersOptional.get().setActiveFlag(1);
+        userRepo.save(usersOptional.get());
     }
 }
