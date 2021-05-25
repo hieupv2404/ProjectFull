@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BranchRepo extends JpaRepository<Branch, Integer> {
-    Optional<Branch> findBranchByNameAndActiveFlag(String branchName, int activeFlag);
+    @Query(value = "select b.*" +
+            " from branch b where b.active_flag=1 and (:name is null or b.name like %:name%)", nativeQuery = true)
+    List<Branch> findBranchByNameAndActiveFlag(String name);
 
     Optional<Branch> findBranchByCodeAndActiveFlag(String code, int activeFlag);
 
@@ -18,6 +20,7 @@ public interface BranchRepo extends JpaRepository<Branch, Integer> {
     @Query(value = "select b.*" +
             " from branch b where b.active_flag=1 and (:name is null or b.name like %:name%)" +
             " and (:code is null or b.code like %:code%)", nativeQuery = true)
-    List<Branch> findCategoryByFilter(@Param(value = "name") String name, @Param(value = "code") String code);
+    List<Branch> findBranchByFilter(@Param(value = "name") String name, @Param(value = "code") String code);
 
+    List<Branch> findBranchByActiveFlag(int activeFlag);
 }

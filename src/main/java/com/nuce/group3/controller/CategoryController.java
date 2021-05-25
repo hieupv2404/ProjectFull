@@ -3,7 +3,6 @@ package com.nuce.group3.controller;
 import com.nuce.group3.controller.dto.request.CategoryRequest;
 import com.nuce.group3.controller.dto.response.CategoryResponse;
 import com.nuce.group3.data.model.Category;
-import com.nuce.group3.data.repo.CategoryRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.CategoryService;
@@ -31,14 +30,14 @@ public class CategoryController {
     }
 
     @PostMapping
-    @HasRole({"ADMIN","ADMIN_PTTK"})
-    public ResponseEntity<String> createCategory(@RequestBody @Valid CategoryRequest categoryRequest)
-    {
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<String> createCategory(@RequestBody @Valid CategoryRequest categoryRequest) throws LogicException {
+        categoryService.save(categoryRequest);
         return new ResponseEntity<>("Created!", HttpStatus.OK);
     }
 
-    @PutMapping("/edit/{id}")
-    @HasRole({"ADMIN","ADMIN_PTTK"})
+    @PutMapping("/edit/{categoryId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<CategoryResponse> updateCategory(@RequestBody @Valid CategoryRequest categoryRequest,
                                                            @PathVariable Integer categoryId) throws LogicException, ResourceNotFoundException {
         if(categoryId==null)
@@ -46,8 +45,8 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.edit(categoryId, categoryRequest), HttpStatus.OK);
     }
 
-    @PutMapping("/delete/{id}")
-    @HasRole({"ADMIN","ADMIN_PTTK"})
+    @PutMapping("/delete/{categoryId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> deleteCategory(@PathVariable Integer categoryId) throws ResourceNotFoundException, LogicException {
         if(categoryId==null)
             throw  new LogicException("Category is null", HttpStatus.BAD_REQUEST);
