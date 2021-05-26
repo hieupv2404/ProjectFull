@@ -2,7 +2,6 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ShelfRequest;
 import com.nuce.group3.controller.dto.response.ShelfResponse;
-import com.nuce.group3.data.model.Shelf;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.ShelfService;
@@ -11,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -35,8 +35,8 @@ public class ShelfController {
 
     @PostMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createShelf(@Valid @RequestBody ShelfRequest shelfRequest) throws ResourceNotFoundException, LogicException {
-        shelfService.save(shelfRequest);
+    public ResponseEntity<String> createShelf(@Valid @RequestBody ShelfRequest shelfRequest, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
+        shelfService.save(shelfRequest, (Integer) request.getSession().getAttribute("BranchId"));
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 

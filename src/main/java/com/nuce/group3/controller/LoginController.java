@@ -76,6 +76,7 @@ public class LoginController {
                 request.getSession().setAttribute("role", roleName);
                 request.getSession().setAttribute("AuthToken", token);
                 request.getSession().setAttribute("Username", credential.getUserName());
+                request.getSession().setAttribute("BranchId", user.getBranch().getId());
                 UserResponseLogin userResponseLogin = new UserResponseLogin();
                 userResponseLogin.setToken(token);
                 userResponseLogin.setName(user.getName());
@@ -97,6 +98,7 @@ public class LoginController {
         session.removeAttribute("role");
         session.removeAttribute("AuthToken");
         session.removeAttribute("Username");
+        session.removeAttribute("BranchId");
         return ResponseEntity.ok("Logout ");
     }
 }

@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface CategoryService {
     List<Category> getAll();
-    List<Category> findCategoryByFilter(String name, String code);
+
+    List<CategoryResponse> findCategoryByFilter(String name, String code);
+
     void save(CategoryRequest categoryRequest) throws LogicException;
     CategoryResponse edit(Integer categoryId,CategoryRequest categoryRequest) throws ResourceNotFoundException;
     void delete(Integer categoryId) throws ResourceNotFoundException;

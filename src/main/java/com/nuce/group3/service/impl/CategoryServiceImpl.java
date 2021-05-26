@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +30,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<Category> findCategoryByFilter(String name, String code) {
-        return categoryRepo.findCategoryByFilter(name, code);
+    public List<CategoryResponse> findCategoryByFilter(String name, String code) {
+        List<CategoryResponse> categoryResponses = new ArrayList<>();
+        categoryRepo.findCategoryByFilter(name, code).forEach(category -> {
+            CategoryResponse categoryResponse = CategoryResponse.builder()
+                    .name(category.getName())
+                    .description(category.getDescription())
+                    .code(category.getCode())
+                    .createDate(category.getCreateDate())
+                    .updateDate(category.getUpdateDate())
+                    .build();
+            categoryResponses.add(categoryResponse);
+        });
+        return categoryResponses;
     }
 
     @Override
@@ -60,14 +72,13 @@ public class CategoryServiceImpl implements CategoryService {
         categoryOptional.get().setActiveFlag(1);
         categoryOptional.get().setUpdateDate(new Date());
         Category category = categoryRepo.save(categoryOptional.get());
-        CategoryResponse categoryResponse = CategoryResponse.builder()
+        return CategoryResponse.builder()
                 .name(category.getName())
                 .description(category.getDescription())
                 .code(category.getCode())
                 .createDate(category.getCreateDate())
                 .updateDate(category.getUpdateDate())
                 .build();
-                return categoryResponse;
     }
 
     @Override

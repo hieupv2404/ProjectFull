@@ -2,7 +2,6 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.CategoryRequest;
 import com.nuce.group3.controller.dto.response.CategoryResponse;
-import com.nuce.group3.data.model.Category;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.CategoryService;
@@ -22,11 +21,10 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    @HasRole({"ADMIN","ADMIN_PTTK"})
-    public ResponseEntity<List<Category>> findCategoryByFilter(@RequestParam(name = "name", required = false) String name,
-                                                               @RequestParam(name="code", required = false) String code)
-    {
-        return new ResponseEntity<>(categoryService.findCategoryByFilter(name,code), HttpStatus.OK);
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<List<CategoryResponse>> findCategoryByFilter(@RequestParam(name = "name", required = false) String name,
+                                                                       @RequestParam(name = "code", required = false) String code) {
+        return new ResponseEntity<>(categoryService.findCategoryByFilter(name, code), HttpStatus.OK);
     }
 
     @PostMapping

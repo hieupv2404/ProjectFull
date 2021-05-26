@@ -34,15 +34,16 @@ public class VatController {
                                                      @RequestParam(name = "tax", required = false) String tax,
                                                      @RequestParam(name = "supplierName", required = false) String supplierName,
                                                      @RequestParam(name = "userName", required = false) String userName,
-                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, page, size), HttpStatus.OK);
+                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size,
+                                                     HttpServletRequest request) {
+        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, (Integer) request.getSession().getAttribute("BranchId"), page, size), HttpStatus.OK);
 
     }
 
     @PostMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> createVat(@Valid @RequestBody VatRequest vatRequest, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
-        vatService.save(vatRequest, String.valueOf(request.getSession().getAttribute("Username")));
+        vatService.save(vatRequest, String.valueOf(request.getSession().getAttribute("Username")), (Integer) request.getSession().getAttribute("BranchId"));
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 

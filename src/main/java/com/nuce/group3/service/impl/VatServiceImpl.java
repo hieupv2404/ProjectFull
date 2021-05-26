@@ -2,13 +2,16 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.VatRequest;
-import com.nuce.group3.controller.dto.response.UserResponse;
 import com.nuce.group3.controller.dto.response.VatResponse;
-import com.nuce.group3.data.model.*;
-import com.nuce.group3.data.repo.*;
-import com.nuce.group3.enums.EnumStatus;
+import com.nuce.group3.data.model.Branch;
+import com.nuce.group3.data.model.Supplier;
+import com.nuce.group3.data.model.Users;
+import com.nuce.group3.data.model.Vat;
+import com.nuce.group3.data.repo.BranchRepo;
+import com.nuce.group3.data.repo.SupplierRepo;
+import com.nuce.group3.data.repo.UserRepo;
+import com.nuce.group3.data.repo.VatRepo;
 import com.nuce.group3.exception.LogicException;
-import com.nuce.group3.service.VatService;
 import com.nuce.group3.service.VatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,19 +30,22 @@ public class VatServiceImpl implements VatService {
 
     @Autowired
     private SupplierRepo supplierRepo;
-    
+
     @Autowired
     private UserRepo userRepo;
-    
+
     @Autowired
     private VatRepo vatRepo;
+
+    @Autowired
+    private BranchRepo branchRepo;
 
     @Override
     public List<VatResponse> getAll(Integer page, Integer size) {
         List<VatResponse> vatResponses = new ArrayList<>();
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        vatRepo.findVatByActiveFlag(1, PageRequest.of(page,size)).forEach(vat -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        vatRepo.findVatByActiveFlag(1, PageRequest.of(page, size)).forEach(vat -> {
             VatResponse vatResponse = VatResponse.builder()
                     .code(vat.getCode())
                     .tax(vat.getTax())
@@ -57,11 +63,11 @@ public class VatServiceImpl implements VatService {
     }
 
     @Override
-    public List<VatResponse> findVatByFilter(String code, String tax, String supplierName, String userName, Integer page, Integer size) {
+    public List<VatResponse> findVatByFilter(String code, String tax, String supplierName, String userName, int branchId, Integer page, Integer size) {
         List<VatResponse> vatResponses = new ArrayList<>();
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        vatRepo.findVatByFilter(code, tax, supplierName, userName, PageRequest.of(page, size)).forEach(vat -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        vatRepo.findVatByFilter(code, tax, supplierName, userName, branchId, PageRequest.of(page, size)).forEach(vat -> {
             VatResponse vatResponse = VatResponse.builder()
                     .code(vat.getCode())
                     .tax(vat.getTax())
@@ -102,19 +108,25 @@ public class VatServiceImpl implements VatService {
     }
 
     @Override
-    public void save(VatRequest vatRequest, String userName) throws LogicException, ResourceNotFoundException {
+    public void save(VatRequest vatRequest, String userName, int branchId) throws LogicException, ResourceNotFoundException {
         Optional<Vat> vatOptional = vatRepo.findVatByCodeAndActiveFlag(vatRequest.getCode(), 1);
         if (vatOptional.isPresent()) {
             throw new LogicException("Vat Existed", HttpStatus.BAD_REQUEST);
         }
+
         Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(vatRequest.getSupplierId(), 1);
         if (!supplierOptional.isPresent()) {
             throw new ResourceNotFoundException("Supplier with id " + vatRequest.getSupplierId() + " not found");
         }
 
+        Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(branchId, 1);
+        if (!branchOptional.isPresent()) {
+            throw new ResourceNotFoundException("Branch with id " + branchId + " not found");
+        }
+
         Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
         if (!usersOptional.isPresent()) {
-            throw new ResourceNotFoundException("User with user name: " +  userName+ " not found");
+            throw new ResourceNotFoundException("User with user name: " + userName + " not found");
         }
 
         Vat vat = new Vat();
@@ -122,6 +134,7 @@ public class VatServiceImpl implements VatService {
         vat.setPercent(vatRequest.getPercent());
         vat.setSupplier(supplierOptional.get());
         vat.setUser(usersOptional.get());
+        vat.setBranch(branchOptional.get());
         if(vatRequest.getTax() == null || vatRequest.getTax().equals("")){
             vat.setTax("123456");
         } else vat.setTax(vatRequest.getTax());
