@@ -185,7 +185,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
     }
 
     @Override
-    public void delete(Integer productStatusDetailId) throws ResourceNotFoundException {
+    public void delete(Integer productStatusDetailId, boolean isDeletedList) throws ResourceNotFoundException {
         Optional<ProductStatusDetail> productStatusDetailOptional = productStatusDetailRepo.findProductStatusDetailByIdAndActiveFlag(productStatusDetailId, 1);
         if (!productStatusDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("ProductStatusDetail with " + productStatusDetailId + " not found!");
@@ -193,8 +193,12 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         productStatusDetailOptional.get().setActiveFlag(0);
         productStatusDetailRepo.save(productStatusDetailOptional.get());
 
-        ProductStatusList productStatusList = productStatusDetailOptional.get().getProductStatusList();
-        productStatusList.setPrice(productStatusList.getPrice().subtract(productStatusDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(productStatusDetailOptional.get().getQty()))));
-        productStatusListRepo.save(productStatusList);
+        if (!isDeletedList) {
+            ProductStatusList productStatusList = productStatusDetailOptional.get().getProductStatusList();
+            productStatusList.setPrice(productStatusList.getPrice().subtract(productStatusDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(productStatusDetailOptional.get().getQty()))));
+            productStatusListRepo.save(productStatusList);
+        }
+
+
     }
 }

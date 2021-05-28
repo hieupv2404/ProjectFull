@@ -48,7 +48,7 @@ public class ProductStatusDetailController {
     @PutMapping("/delete/{productStatusDetailId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> deleteProductStatusDetail(@PathVariable Integer productStatusDetailId) throws ResourceNotFoundException {
-        productStatusDetailService.delete(productStatusDetailId);
+        productStatusDetailService.delete(productStatusDetailId, false);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 

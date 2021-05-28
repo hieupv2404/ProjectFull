@@ -29,6 +29,10 @@ public interface ProductStatusDetailRepo extends JpaRepository<ProductStatusDeta
 
     Optional<ProductStatusDetail> findProductStatusDetailByIdAndActiveFlag(int id, int activeFlag);
 
+    @Query(value = "select pd.* from product_status_detail pd where pd.active_flag=1" +
+            " and (:productStatusListId is null or pd.product_status_list_id=:productStatusListId)", nativeQuery = true)
+    List<ProductStatusDetail> findProductStatusDetailByProductStatusListId(int productStatusListId);
+
     @Query(value = "select pd.* from product_status_detail pd where pd.product_status_list_id=?1 and pd.product_id=?2 and pd.active_flag=1", nativeQuery = true)
     Optional<ProductStatusDetail> findProductStatusDetailByProductStatusAndProduct(int productStatusListId, int productId);
 

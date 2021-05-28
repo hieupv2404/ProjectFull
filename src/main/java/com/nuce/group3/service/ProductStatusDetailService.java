@@ -17,7 +17,7 @@ public interface ProductStatusDetailService {
 
     ProductStatusDetailResponse edit(Integer productStatusDetailId, ProductStatusDetailRequest productStatusDetailRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer productStatusDetailId) throws ResourceNotFoundException;
+    void delete(Integer productStatusDetailId, boolean isDeletedList) throws ResourceNotFoundException;
 
     ProductStatusDetailResponse findProductStatusDetailById(Integer productStatusDetailId) throws ResourceNotFoundException;
 
