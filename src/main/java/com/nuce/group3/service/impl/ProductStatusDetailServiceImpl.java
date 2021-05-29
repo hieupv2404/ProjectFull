@@ -10,6 +10,7 @@ import com.nuce.group3.data.model.VatDetail;
 import com.nuce.group3.data.repo.*;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ProductStatusDetailService;
+import com.nuce.group3.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -190,13 +191,28 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         if (!productStatusDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("ProductStatusDetail with " + productStatusDetailId + " not found!");
         }
-        productStatusDetailOptional.get().setActiveFlag(0);
-        productStatusDetailRepo.save(productStatusDetailOptional.get());
+        ProductStatusDetail productStatusDetail = productStatusDetailOptional.get();
+        productStatusDetail.setActiveFlag(0);
+        productStatusDetailRepo.save(productStatusDetail);
 
         if (!isDeletedList) {
-            ProductStatusList productStatusList = productStatusDetailOptional.get().getProductStatusList();
-            productStatusList.setPrice(productStatusList.getPrice().subtract(productStatusDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(productStatusDetailOptional.get().getQty()))));
+            ProductStatusList productStatusList = productStatusDetail.getProductStatusList();
+            productStatusList.setPrice(productStatusList.getPrice().subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))));
             productStatusListRepo.save(productStatusList);
+        }
+
+        if (productStatusDetail.getProductStatusList().getType() == Constant.PRODUCT_DONE) {
+            Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productStatusDetail.getProductInfo().getId(), 1);
+            if (!productInfoOptional.isPresent()) {
+                throw new ResourceNotFoundException("Product Info with ID: " + productStatusDetail.getProductInfo().getId() + " not found!");
+            }
+            ProductInfo productInfo = productInfoOptional.get();
+            int oldQty = productInfo.getQty();
+            productInfo.setQty(oldQty - productStatusDetail.getQty());
+            productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty())));
+            productInfo.setPriceOut(productInfo.getPriceIn().add(productInfo.getPriceIn().multiply(BigDecimal.valueOf(0.2))));
+            productInfoRepo.save(productInfo);
+
         }
 
 
