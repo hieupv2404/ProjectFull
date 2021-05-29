@@ -9,6 +9,7 @@ import com.nuce.group3.data.model.ProductStatusList;
 import com.nuce.group3.data.model.VatDetail;
 import com.nuce.group3.data.repo.*;
 import com.nuce.group3.exception.LogicException;
+import com.nuce.group3.service.ProductDetailService;
 import com.nuce.group3.service.ProductStatusDetailService;
 import com.nuce.group3.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,13 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
     private ProductInfoRepo productInfoRepo;
 
     @Autowired
+    private ProductDetailService productDetailService;
+
+    @Autowired
     private VatRepo vatRepo;
+
+    @Autowired
+    private ProductDetailRepo productDetailRepo;
 
     @Override
     public List<ProductStatusDetailResponse> getAll(int type, Integer page, Integer size) {
@@ -213,6 +220,13 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             productInfo.setPriceOut(productInfo.getPriceIn().add(productInfo.getPriceIn().multiply(BigDecimal.valueOf(0.2))));
             productInfoRepo.save(productInfo);
 
+            productDetailRepo.findProductDetailsByProductStatusList(productStatusDetail.getProductStatusList().getId()).forEach(productDetail -> {
+                try {
+                    productDetailService.delete(productDetail.getId());
+                } catch (ResourceNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
 

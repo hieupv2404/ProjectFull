@@ -24,9 +24,8 @@ public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer>
 
     Optional<ProductDetail> findProductDetailByIdAndActiveFlag(int id, int activeFlag);
 
-//    @Modifying
-//    @Query("select new com.nuce.group3.controller.dto.response.ProductDetailResponseTest(p.name, p.description) " +
-//            "from ProductDetail p where p.activeFlag=1")
-//    List<ProductDetailResponseTest> test();
+    @Query(value = "select p.*" +
+            " from product_detail p where p.active_flag=1 and (:productStatusListId is null or p.product_status_list_id = :productStatusListId)", nativeQuery = true)
+    List<ProductDetail> findProductDetailsByProductStatusList(int productStatusListId);
 
 }

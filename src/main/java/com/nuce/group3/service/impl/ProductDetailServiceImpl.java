@@ -3,16 +3,16 @@ package com.nuce.group3.service.impl;
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductDetailRequest;
 import com.nuce.group3.controller.dto.response.ProductDetailResponse;
-import com.nuce.group3.data.model.*;
+import com.nuce.group3.data.model.ProductDetail;
+import com.nuce.group3.data.model.ProductInfo;
+import com.nuce.group3.data.model.ProductStatusList;
+import com.nuce.group3.data.model.Shelf;
 import com.nuce.group3.data.repo.*;
-import com.nuce.group3.data.repo.ProductDetailRepo;
 import com.nuce.group3.enums.EnumStatus;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ProductDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -194,11 +194,20 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public void delete(Integer productId) throws ResourceNotFoundException {
-        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productId,1);
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productId, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
         }
         productDetailOptional.get().setActiveFlag(0);
         productDetailRepo.save(productDetailOptional.get());
+
+        Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailOptional.get().getShelf().getId(), 1);
+        if (!shelfOptional.isPresent()) {
+            throw new ResourceNotFoundException("Shelf with ID: " + productDetailOptional.get().getShelf().getId() + " not found");
+        }
+
+        shelfOptional.get().setQty(shelfOptional.get().getQty() - 1);
+        shelfRepo.save(shelfOptional.get());
     }
+
 }
