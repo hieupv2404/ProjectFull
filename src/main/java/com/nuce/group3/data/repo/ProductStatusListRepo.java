@@ -31,7 +31,8 @@ public interface ProductStatusListRepo extends JpaRepository<ProductStatusList, 
             " from product_status_list p where p.active_flag=1 and p.vat_id = ?1 and p.type = ?2", nativeQuery = true)
     Optional<ProductStatusList> findProductStatusListByVatAndType(int vatId, int type);
 
-    int countProductStatusListByTypeAndActiveFlag(int type, int activeFlag);
+    @Query(value = "SELECT COUNT(p) FROM product_status_list p WHERE p.type=:type and p.active_flag=1", nativeQuery = true)
+    long countProductStatusListByTypeAndActiveFlag(int type);
 
     @Query(value = "select p" +
             " from product_status_list p where p.active_flag=1 and p.vat_id = ?1", nativeQuery = true)

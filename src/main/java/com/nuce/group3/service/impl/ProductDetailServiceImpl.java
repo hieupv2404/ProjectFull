@@ -198,6 +198,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
         }
+
+
         productDetailOptional.get().setActiveFlag(0);
         productDetailRepo.save(productDetailOptional.get());
 

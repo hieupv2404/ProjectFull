@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface VatRepo extends JpaRepository<Vat, Integer> {
-    Optional<Vat> findVatByCodeAndActiveFlag(String imei, int activeFlag);
+    Optional<Vat> findVatByCodeAndActiveFlag(String code, int activeFlag);
 
     List<Vat> findVatByActiveFlag(int activeFlag, Pageable pageable);
 

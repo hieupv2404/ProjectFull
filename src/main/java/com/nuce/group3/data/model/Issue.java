@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ public class Issue extends BaseEntity implements Serializable {
     @JoinColumn(name = "user_id")
     private Users user;
 
+    @Min(value = 0, message = "Price must be greater than 0")
     private BigDecimal price;
 
     @ManyToOne
