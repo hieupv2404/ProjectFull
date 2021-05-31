@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class CustomerServiceImpl implements CustomerService {
     @Autowired
     private CustomerRepo customerRepo;

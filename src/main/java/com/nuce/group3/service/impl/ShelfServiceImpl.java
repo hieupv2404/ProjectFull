@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ShelfServiceImpl implements ShelfService {
     @Autowired
     private ShelfRepo shelfRepo;

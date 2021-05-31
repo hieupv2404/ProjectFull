@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchServiceImpl implements BranchService {
     @Autowired
     private BranchRepo branchRepo;

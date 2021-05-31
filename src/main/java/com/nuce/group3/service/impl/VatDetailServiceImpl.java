@@ -23,24 +23,24 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class VatDetailServiceImpl implements VatDetailService {
 
     @Autowired
     private VatRepo vatRepo;
-    
+
     @Autowired
     private ProductInfoRepo productInfoRepo;
-    
+
     @Autowired
     private VatDetailRepo vatDetailRepo;
 
     @Override
     public List<VatDetailResponse> getAll(Integer page, Integer size) {
         List<VatDetailResponse> vatDetailResponses = new ArrayList<>();
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        vatDetailRepo.findVatDetailByActiveFlag(1, PageRequest.of(page,size)).forEach(vatDetail -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        vatDetailRepo.findVatDetailByActiveFlag(1, PageRequest.of(page, size)).forEach(vatDetail -> {
             VatDetailResponse vatDetailResponse = VatDetailResponse.builder()
                     .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
                     .priceOne(vatDetail.getPriceOne())
@@ -56,8 +56,8 @@ public class VatDetailServiceImpl implements VatDetailService {
     @Override
     public List<VatDetailResponse> findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size) {
         List<VatDetailResponse> vatDetailResponses = new ArrayList<>();
-        if (page==null) page = 0;
-        if (size==null) size = 5;
+        if (page == null) page = 0;
+        if (size == null) size = 5;
         vatDetailRepo.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, PageRequest.of(page, size)).forEach(vatDetail -> {
             VatDetailResponse vatDetailResponse = VatDetailResponse.builder()
                     .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
@@ -76,7 +76,7 @@ public class VatDetailServiceImpl implements VatDetailService {
         if (vatDetailId == null) {
             throw new ResourceNotFoundException("Id not found!");
         }
-        Optional<VatDetail> vatDetailOptional = vatDetailRepo.findVatDetailByIdAndActiveFlag(vatDetailId,1);
+        Optional<VatDetail> vatDetailOptional = vatDetailRepo.findVatDetailByIdAndActiveFlag(vatDetailId, 1);
         if (!vatDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Vat Detail with " + vatDetailId + " not found!");
         }
@@ -101,7 +101,7 @@ public class VatDetailServiceImpl implements VatDetailService {
             throw new ResourceNotFoundException("Vat with id " + vatDetailRequest.getVatId() + " not found");
         }
 
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(vatDetailRequest.getProductId(),1);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(vatDetailRequest.getProductId(), 1);
         if (!productInfoOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Info with id: " + vatDetailRequest.getProductId() + " not found");
         }
@@ -163,7 +163,7 @@ public class VatDetailServiceImpl implements VatDetailService {
     }
 
     @Override
-    public void delete(Integer vatDetailId) throws ResourceNotFoundException {
+    public void delete(Integer vatDetailId, boolean isDeletedParent) throws ResourceNotFoundException {
         Optional<VatDetail> vatDetailOptional = vatDetailRepo.findVatDetailByIdAndActiveFlag(vatDetailId, 1);
         if (!vatDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("VatDetail with " + vatDetailId + " not found!");
@@ -171,8 +171,12 @@ public class VatDetailServiceImpl implements VatDetailService {
 
         vatDetailOptional.get().setActiveFlag(0);
         vatDetailRepo.save(vatDetailOptional.get());
-        Vat vat = vatDetailOptional.get().getVat();
-        vat.setPrice(vat.getPrice().subtract(vatDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(vatDetailOptional.get().getQty()))));
-        vatRepo.save(vat);
+        if (!isDeletedParent) {
+            Vat vat = vatDetailOptional.get().getVat();
+            vat.setPrice(vat.getPrice().subtract(vatDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(vatDetailOptional.get().getQty()))));
+            vatRepo.save(vat);
+        }
+
+
     }
 }

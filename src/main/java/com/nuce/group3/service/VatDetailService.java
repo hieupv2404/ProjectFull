@@ -17,7 +17,7 @@ public interface VatDetailService {
 
     VatDetailResponse edit(Integer vatDetailId, VatDetailRequest vatDetailRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer vatDetailId) throws ResourceNotFoundException;
+    void delete(Integer vatDetailId, boolean isDeletedParent) throws ResourceNotFoundException;
 
     VatDetailResponse findVatDetailById(Integer vatDetailId) throws ResourceNotFoundException;
 

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ProductStatusListServiceImpl implements ProductStatusListService {
 
     @Autowired

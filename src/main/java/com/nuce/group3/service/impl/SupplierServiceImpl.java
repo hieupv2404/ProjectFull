@@ -2,8 +2,6 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.SupplierRequest;
-import com.nuce.group3.controller.dto.response.ProductDetailResponse;
-import com.nuce.group3.controller.dto.response.SupplierResponse;
 import com.nuce.group3.data.model.Supplier;
 import com.nuce.group3.data.repo.SupplierRepo;
 import com.nuce.group3.exception.LogicException;
@@ -14,13 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepo supplierRepo;

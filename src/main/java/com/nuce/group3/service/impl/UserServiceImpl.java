@@ -26,7 +26,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.*;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
     @Autowired

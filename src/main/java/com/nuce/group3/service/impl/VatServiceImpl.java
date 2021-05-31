@@ -7,11 +7,10 @@ import com.nuce.group3.data.model.Branch;
 import com.nuce.group3.data.model.Supplier;
 import com.nuce.group3.data.model.Users;
 import com.nuce.group3.data.model.Vat;
-import com.nuce.group3.data.repo.BranchRepo;
-import com.nuce.group3.data.repo.SupplierRepo;
-import com.nuce.group3.data.repo.UserRepo;
-import com.nuce.group3.data.repo.VatRepo;
+import com.nuce.group3.data.repo.*;
 import com.nuce.group3.exception.LogicException;
+import com.nuce.group3.service.ProductStatusListService;
+import com.nuce.group3.service.VatDetailService;
 import com.nuce.group3.service.VatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class VatServiceImpl implements VatService {
 
     @Autowired
@@ -39,6 +38,18 @@ public class VatServiceImpl implements VatService {
 
     @Autowired
     private BranchRepo branchRepo;
+
+    @Autowired
+    private VatDetailRepo vatDetailRepo;
+
+    @Autowired
+    private VatDetailService vatDetailService;
+
+    @Autowired
+    private ProductStatusListRepo productStatusListRepo;
+
+    @Autowired
+    private ProductStatusListService productStatusListService;
 
     @Override
     public List<VatResponse> getAll(Integer page, Integer size) {
@@ -195,11 +206,26 @@ public class VatServiceImpl implements VatService {
 
     @Override
     public void delete(Integer vatId) throws ResourceNotFoundException {
-        Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(vatId,1);
+        Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(vatId, 1);
         if (!vatOptional.isPresent()) {
             throw new ResourceNotFoundException("Vat with " + vatId + " not found!");
         }
         vatOptional.get().setActiveFlag(0);
         vatRepo.save(vatOptional.get());
+        vatDetailRepo.findVatDetailByVat(vatId).forEach(vatDetail -> {
+            try {
+                vatDetailService.delete(vatDetail.getId(), true);
+            } catch (ResourceNotFoundException resourceNotFoundException) {
+                resourceNotFoundException.printStackTrace();
+            }
+        });
+        productStatusListRepo.findProductStatusListByVat(vatId).forEach(productStatusList -> {
+            try {
+                productStatusListService.delete(productStatusList.getId());
+            } catch (ResourceNotFoundException resourceNotFoundException) {
+                resourceNotFoundException.printStackTrace();
+            }
+        });
+
     }
 }

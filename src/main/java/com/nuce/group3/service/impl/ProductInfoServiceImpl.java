@@ -1,7 +1,6 @@
 package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
-import com.nuce.group3.controller.dto.request.CategoryRequest;
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.data.model.Category;
@@ -22,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ProductInfoServiceImpl implements ProductInfoService {
     @Autowired
     private ProductInfoRepo productInfoRepo;

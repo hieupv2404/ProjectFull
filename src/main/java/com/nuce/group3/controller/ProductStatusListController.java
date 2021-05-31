@@ -4,6 +4,8 @@ import com.nuce.group3.controller.dto.request.ProductStatusDetailRequest;
 import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
 import com.nuce.group3.controller.dto.response.ProductStatusDetailResponse;
 import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
+import com.nuce.group3.data.repo.ProductStatusDetailRepo;
+import com.nuce.group3.data.repo.ProductStatusListRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.ProductStatusDetailService;
@@ -27,6 +29,12 @@ public class ProductStatusListController {
 
     @Autowired
     private ProductStatusDetailService productStatusDetailService;
+
+    @Autowired
+    private ProductStatusListRepo productStatusListRepo;
+
+    @Autowired
+    private ProductStatusDetailRepo productStatusDetailRepo;
 
 
     @GetMapping

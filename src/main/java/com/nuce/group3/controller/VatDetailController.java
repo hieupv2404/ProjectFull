@@ -47,7 +47,7 @@ public class VatDetailController {
     @PutMapping("/delete/{vatDetailId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> deleteVatDetail(@PathVariable Integer vatDetailId) throws ResourceNotFoundException {
-        vatDetailService.delete(vatDetailId);
+        vatDetailService.delete(vatDetailId, false);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
