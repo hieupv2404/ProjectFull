@@ -3,12 +3,9 @@ package com.nuce.group3.service.impl;
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.IssueDetailRequest;
 import com.nuce.group3.controller.dto.response.IssueDetailResponse;
-import com.nuce.group3.data.model.Issue;
-import com.nuce.group3.data.model.IssueDetail;
-import com.nuce.group3.data.model.ProductInfo;
-import com.nuce.group3.data.repo.IssueDetailRepo;
-import com.nuce.group3.data.repo.IssueRepo;
-import com.nuce.group3.data.repo.ProductInfoRepo;
+import com.nuce.group3.data.model.*;
+import com.nuce.group3.data.repo.*;
+import com.nuce.group3.enums.EnumStatus;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.IssueDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +31,12 @@ public class IssueDetailServiceImpl implements IssueDetailService {
 
     @Autowired
     private IssueDetailRepo issueDetailRepo;
+
+    @Autowired
+    private ProductDetailRepo productDetailRepo;
+
+    @Autowired
+    private ShelfRepo shelfRepo;
 
     @Override
     public List<IssueDetailResponse> getAll(Integer page, Integer size) {
@@ -89,7 +92,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
 
     @Override
     public void save(IssueDetailRequest issueDetailRequest) throws LogicException, ResourceNotFoundException {
-        Optional<IssueDetail> issueDetailOptional = issueDetailRepo.findIssueDetailByIssueAndProduct(issueDetailRequest.getIssueId(), issueDetailRequest.getProductId());
+        Optional<IssueDetail> issueDetailOptional = issueDetailRepo.findIssueDetailByIssueAndProductAndImei(issueDetailRequest.getIssueId(), issueDetailRequest.getProductId(), issueDetailRequest.getImei());
         if (issueDetailOptional.isPresent()) {
             throw new LogicException("Issue Detail Existed", HttpStatus.BAD_REQUEST);
         }
@@ -103,16 +106,35 @@ public class IssueDetailServiceImpl implements IssueDetailService {
             throw new ResourceNotFoundException("Product Info with id: " + issueDetailRequest.getProductId() + " not found");
         }
 
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(issueDetailRequest.getImei(), EnumStatus.VALID.name(), 1);
+        if (!productDetailOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product Detail with imei: " + issueDetailRequest.getImei() + " not found");
+        }
+
         IssueDetail issueDetail = new IssueDetail();
         issueDetail.setIssue(issueOptional.get());
         issueDetail.setProductInfo(productInfoOptional.get());
-        issueDetail.setQty(issueDetailRequest.getQty());
-        issueDetail.setPriceOne(issueDetailRequest.getPriceOne());
+        issueDetail.setImei(issueDetailRequest.getImei());
+        issueDetail.setPriceOne(productInfoOptional.get().getPriceOut());
         issueDetail.setActiveFlag(1);
         issueDetailRepo.save(issueDetail);
 
-        issueOptional.get().setPrice(issueOptional.get().getPrice().add(issueDetail.getPriceOne().multiply(BigDecimal.valueOf(issueDetail.getQty()))));
+        productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
+        productInfoRepo.save(productInfoOptional.get());
+
+        issueOptional.get().setPrice(issueOptional.get().getPrice().add(issueDetail.getPriceOne()));
         issueRepo.save(issueOptional.get());
+
+        productDetailOptional.get().setStatus(EnumStatus.INVALID);
+        productDetailRepo.save(productDetailOptional.get());
+
+        Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailOptional.get().getShelf().getId(), 1);
+        if (!shelfOptional.isPresent()) {
+            throw new ResourceNotFoundException("Shelf with ID: " + productDetailOptional.get().getShelf().getId() + " not found");
+        }
+
+        shelfOptional.get().setQty(shelfOptional.get().getQty() - 1);
+        shelfRepo.save(shelfOptional.get());
     }
 
     @Override
