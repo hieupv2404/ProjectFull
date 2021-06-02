@@ -7,6 +7,7 @@ import com.nuce.group3.data.model.Category;
 import com.nuce.group3.data.model.ProductInfo;
 import com.nuce.group3.data.repo.CategoryRepo;
 import com.nuce.group3.data.repo.ProductInfoRepo;
+import com.nuce.group3.data.repo.VatDetailRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Autowired
     private CategoryRepo categoryRepo;
 
+    @Autowired
+    private VatDetailRepo vatDetailRepo;
+
     @Override
     public void save(ProductInfoRequest productInfoRequest) throws LogicException, ResourceNotFoundException {
         Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByNameAndActiveFlag(productInfoRequest.getName(), 1);
@@ -49,6 +53,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         productInfo.setDescription(productInfoRequest.getDescription());
         productInfo.setImgUrl(productInfoRequest.getImgUrl());
         productInfo.setQty(0);
+        productInfo.setPriceIn(new BigDecimal(1));
+        productInfo.setPriceOut(new BigDecimal(1));
         productInfoRepo.save(productInfo);
     }
 
@@ -64,8 +70,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
                     .qty(productInfo.getQty())
-                    .priceIn(productInfo.getPriceIn())
-                    .priceOut(productInfo.getPriceOut())
+                    .priceIn(productInfo.getPriceIn().equals(1) ? new BigDecimal(0) : productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut().equals(1) ? new BigDecimal(0) : productInfo.getPriceOut())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -84,8 +90,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
                     .qty(productInfo.getQty())
-                    .priceIn(productInfo.getPriceIn())
-                    .priceOut(productInfo.getPriceOut())
+                    .priceIn(productInfo.getPriceIn().equals(1) ? new BigDecimal(0) : productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut().equals(1) ? new BigDecimal(0) : productInfo.getPriceOut())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -109,8 +115,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                 .imgUrl(productInfoOptional.get().getImgUrl())
                 .createDate(productInfoOptional.get().getCreateDate())
                 .updateDate(productInfoOptional.get().getUpdateDate())
-                .priceIn(productInfoOptional.get().getPriceIn())
-                .priceOut(productInfoOptional.get().getPriceOut())
+                .priceIn(productInfoOptional.get().getPriceIn().equals(1) ? new BigDecimal(0) : productInfoOptional.get().getPriceIn())
+                .priceOut(productInfoOptional.get().getPriceOut().equals(1) ? new BigDecimal(0) : productInfoOptional.get().getPriceOut())
                 .build();
     }
 
@@ -137,8 +143,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .imgUrl(productInfo.getImgUrl())
                     .updateDate(productInfo.getUpdateDate())
                     .description(productInfo.getDescription())
-                    .priceIn(productInfo.getPriceIn())
-                    .priceOut(productInfo.getPriceOut())
+                    .priceIn(productInfo.getPriceIn().equals(1) ? new BigDecimal(0) : productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut().equals(1) ? new BigDecimal(0) : productInfo.getPriceOut())
                     .qty(productInfo.getQty())
                     .build();
         } catch (Exception e) {

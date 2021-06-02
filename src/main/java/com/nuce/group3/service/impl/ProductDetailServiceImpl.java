@@ -35,7 +35,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private ProductInfoRepo productInfoRepo;
 
     @Autowired
-    private SupplierRepo supplierRepo;
+    private IssueDetailRepo issueDetailRepo;
 
     @Autowired
     private ShelfRepo shelfRepo;
@@ -168,7 +168,6 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
 
         productDetail.setProductInfo(productInfoOptional.get());
-//        productDetail.setSupplier(supplierOptional.get());
         productDetail.setShelf(shelfOptional.get());
         productDetail.setProductStatusList(productStatusListOptional.get());
         productDetail.setImei(productDetailRequest.getImei());
@@ -193,15 +192,26 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public void delete(Integer productId) throws ResourceNotFoundException {
+    public void delete(Integer productId) throws ResourceNotFoundException, LogicException {
         Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productId, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
         }
-
+        if (productDetailOptional.get().getStatus().equals(EnumStatus.INVALID.name())) {
+            throw new LogicException("The product has been purchased", HttpStatus.BAD_REQUEST);
+        }
 
         productDetailOptional.get().setActiveFlag(0);
         productDetailRepo.save(productDetailOptional.get());
+
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productDetailOptional.get().getProductInfo().getId(), 1);
+        if (!productInfoOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product info with ID: " + productDetailOptional.get().getProductInfo().getId() + " not found");
+        }
+
+        productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
+        productInfoRepo.save(productInfoOptional.get());
+
 
         Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailOptional.get().getShelf().getId(), 1);
         if (!shelfOptional.isPresent()) {

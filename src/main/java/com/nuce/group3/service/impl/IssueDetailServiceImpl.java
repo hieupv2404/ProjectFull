@@ -138,50 +138,6 @@ public class IssueDetailServiceImpl implements IssueDetailService {
     }
 
     @Override
-    public IssueDetailResponse edit(Integer issueDetailId, IssueDetailRequest issueDetailRequest) throws ResourceNotFoundException, LogicException {
-        Optional<IssueDetail> issueDetailOptional = issueDetailRepo.findIssueDetailByIdAndActiveFlag(issueDetailId, 1);
-        if (!issueDetailOptional.isPresent()) {
-            throw new ResourceNotFoundException("IssueDetail with ID: " + issueDetailId + " not found!");
-        }
-        IssueDetail issueDetail = issueDetailOptional.get();
-        Optional<Issue> issueOptional = issueRepo.findIssueByIdAndActiveFlag(issueDetailRequest.getIssueId(), 1);
-        if (!issueOptional.isPresent()) {
-            throw new ResourceNotFoundException("Issue with id " + issueDetailRequest.getIssueId() + " not found");
-        }
-
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(issueDetailRequest.getProductId(), 1);
-        if (!productInfoOptional.isPresent()) {
-            throw new ResourceNotFoundException("Product Info with id: " + issueDetailRequest.getProductId() + " not found");
-        }
-
-        Optional<IssueDetail> issueDetailOptional2 = issueDetailRepo.findIssueDetailByIssueAndProduct(issueDetailRequest.getIssueId(), issueDetailRequest.getProductId());
-        if (issueDetailOptional2.isPresent()) {
-            throw new LogicException("Issue Detail Existed", HttpStatus.BAD_REQUEST);
-        }
-
-        BigDecimal oldPriceFromIssueDetail = issueDetail.getPriceOne().multiply(BigDecimal.valueOf(issueDetail.getQty()));
-
-        issueDetail.setIssue(issueOptional.get());
-        issueDetail.setProductInfo(productInfoOptional.get());
-        issueDetail.setQty(issueDetailRequest.getQty());
-        issueDetail.setPriceOne(issueDetailRequest.getPriceOne());
-        try {
-            issueDetailRepo.save(issueDetail);
-            issueOptional.get().setPrice(issueOptional.get().getPrice().subtract(oldPriceFromIssueDetail).add(issueDetail.getPriceOne().multiply(BigDecimal.valueOf(issueDetail.getQty()))));
-            issueRepo.save(issueOptional.get());
-            return IssueDetailResponse.builder()
-                    .priceTotal(issueDetail.getPriceOne().multiply(BigDecimal.valueOf(issueDetail.getQty())))
-                    .priceOne(issueDetail.getPriceOne())
-                    .productInfo(issueDetail.getProductInfo().getName())
-                    .qty(issueDetail.getQty())
-                    .issueCode(issueDetail.getIssue().getCode())
-                    .build();
-        } catch (Exception e) {
-            throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @Override
     public void delete(Integer issueDetailId, boolean isDeletedParent) throws ResourceNotFoundException {
         Optional<IssueDetail> issueDetailOptional = issueDetailRepo.findIssueDetailByIdAndActiveFlag(issueDetailId, 1);
         if (!issueDetailOptional.isPresent()) {
@@ -192,10 +148,24 @@ public class IssueDetailServiceImpl implements IssueDetailService {
         issueDetailRepo.save(issueDetailOptional.get());
         if (!isDeletedParent) {
             Issue issue = issueDetailOptional.get().getIssue();
-            issue.setPrice(issue.getPrice().subtract(issueDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(issueDetailOptional.get().getQty()))));
+            issue.setPrice(issue.getPrice().subtract(issueDetailOptional.get().getPriceOne()));
             issueRepo.save(issue);
         }
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(issueDetailOptional.get().getImei(), EnumStatus.INVALID.name(), 1);
+        if (!productDetailOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product Detail  with imei: " + issueDetailOptional.get().getImei() + "not found");
+        }
+        productDetailOptional.get().setStatus(EnumStatus.VALID);
+        productDetailRepo.save(productDetailOptional.get());
 
+        issueDetailOptional.get().getProductInfo().setQty(issueDetailOptional.get().getProductInfo().getQty() + 1);
+        productInfoRepo.save(issueDetailOptional.get().getProductInfo());
 
+        Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailOptional.get().getShelf().getId(), 1);
+        if (!shelfOptional.isPresent()) {
+            throw new ResourceNotFoundException("Shelf  with ID: " + productDetailOptional.get().getShelf().getId() + "not found");
+        }
+        shelfOptional.get().setQty(shelfOptional.get().getQty() + 1);
+        shelfRepo.save(shelfOptional.get());
     }
 }

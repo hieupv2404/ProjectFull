@@ -136,6 +136,14 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         productStatusDetail.setActiveFlag(1);
         productStatusDetailRepo.save(productStatusDetail);
 
+        BigDecimal currentPrice = productInfoOptional.get().getPriceIn().multiply(BigDecimal.valueOf(productInfoOptional.get().getQty()));
+        BigDecimal newPrice = productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()));
+        int totalQty = productInfoOptional.get().getQty() + productStatusDetail.getQty();
+        productInfoOptional.get().setPriceIn((currentPrice.add(newPrice)).divide(BigDecimal.valueOf(totalQty)));
+        productInfoOptional.get().setPriceOut(productInfoOptional.get().getPriceIn().add(productInfoOptional.get().getPriceIn().multiply(new BigDecimal(0.2))));
+        productInfoOptional.get().setQty(totalQty);
+        productInfoRepo.save(productInfoOptional.get());
+
         productStatusListOptional.get().setPrice(productStatusListOptional.get().getPrice().add(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))));
         productStatusListRepo.save(productStatusListOptional.get());
     }
@@ -179,6 +187,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             productStatusDetailRepo.save(productStatusDetail);
             productStatusListOptional.get().setPrice(productStatusListOptional.get().getPrice().subtract(oldPrice).add(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))));
             productStatusListRepo.save(productStatusListOptional.get());
+
             return ProductStatusDetailResponse.builder()
                     .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
                     .priceOne(productStatusDetail.getPriceOne())
@@ -187,9 +196,11 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
                     .productInfo(productStatusDetail.getProductInfo().getName())
                     .productStatusListCode(productStatusDetail.getProductStatusList().getCode())
                     .build();
+
         } catch (Exception e) {
             throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);
         }
+
     }
 
     @Override
@@ -223,7 +234,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             productDetailRepo.findProductDetailsByProductStatusList(productStatusDetail.getProductStatusList().getId()).forEach(productDetail -> {
                 try {
                     productDetailService.delete(productDetail.getId());
-                } catch (ResourceNotFoundException e) {
+                } catch (ResourceNotFoundException | LogicException e) {
                     e.printStackTrace();
                 }
             });

@@ -15,8 +15,6 @@ public interface IssueDetailService {
 
     void save(IssueDetailRequest issueDetailRequest) throws LogicException, ResourceNotFoundException;
 
-    IssueDetailResponse edit(Integer issueDetailId, IssueDetailRequest issueDetailRequest) throws ResourceNotFoundException, LogicException;
-
     void delete(Integer issueDetailId, boolean isDeletedParent) throws ResourceNotFoundException;
 
     IssueDetailResponse findIssueDetailById(Integer issueDetailId) throws ResourceNotFoundException;

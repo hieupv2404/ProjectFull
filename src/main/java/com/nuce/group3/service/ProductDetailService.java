@@ -18,6 +18,6 @@ public interface ProductDetailService {
 
     ProductDetailResponse edit(Integer productId, ProductDetailRequest productDetailRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer productId) throws ResourceNotFoundException;
+    void delete(Integer productId) throws ResourceNotFoundException, LogicException;
 
 }
