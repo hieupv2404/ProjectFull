@@ -128,6 +128,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         }
 
         BigDecimal priceOneFromVatDetail = vatDetailOptional.get().getPriceOne();
+
         ProductStatusDetail productStatusDetail = new ProductStatusDetail();
         productStatusDetail.setProductStatusList(productStatusListOptional.get());
         productStatusDetail.setProductInfo(productInfoOptional.get());
@@ -166,7 +167,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         }
 
         Optional<ProductStatusDetail> productStatusDetailOptional2 = productStatusDetailRepo.findProductStatusDetailByProductStatusAndProduct(productStatusDetailRequest.getProductStatusListId(), productStatusDetailRequest.getProductId());
-        if (productStatusDetailOptional2.isPresent()) {
+        if (productStatusDetailOptional2.isPresent() && !productStatusDetailOptional2.equals(productStatusDetailOptional)) {
             throw new LogicException("ProductStatus Detail Existed", HttpStatus.BAD_REQUEST);
         }
 
@@ -175,18 +176,34 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             throw new ResourceNotFoundException("The product is not existed in this Vat");
         }
 
+
         BigDecimal priceOneFromVatDetail = vatDetailOptional.get().getPriceOne();
 
         BigDecimal oldPrice = productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()));
+
+        ProductInfo productInfo = productInfoOptional.get();
+        int oldQty = productInfo.getQty();
+        productInfo.setQty(productInfo.getQty() - productStatusDetail.getQty() + productStatusDetailRequest.getQty());
+        productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty())));
+
 
         productStatusDetail.setProductStatusList(productStatusListOptional.get());
         productStatusDetail.setProductInfo(productInfoOptional.get());
         productStatusDetail.setQty(productStatusDetailRequest.getQty());
         productStatusDetail.setPriceOne(priceOneFromVatDetail);
+
+        BigDecimal currentPrice = productInfo.getPriceIn().multiply(BigDecimal.valueOf(productInfo.getQty()));
+        BigDecimal newPrice = productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()));
+
+
         try {
             productStatusDetailRepo.save(productStatusDetail);
             productStatusListOptional.get().setPrice(productStatusListOptional.get().getPrice().subtract(oldPrice).add(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))));
             productStatusListRepo.save(productStatusListOptional.get());
+
+            productInfo.setPriceIn((currentPrice.add(newPrice)).divide(BigDecimal.valueOf(productInfo.getQty() + productStatusDetail.getQty())));
+            productInfo.setPriceOut(productInfo.getPriceOut().add(productInfo.getPriceOut().multiply(new BigDecimal(0.2))));
+            productInfoRepo.save(productInfo);
 
             return ProductStatusDetailResponse.builder()
                     .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
