@@ -4,12 +4,12 @@ import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.VatDetailRequest;
 import com.nuce.group3.controller.dto.response.VatDetailResponse;
 import com.nuce.group3.data.model.ProductInfo;
+import com.nuce.group3.data.model.ProductStatusDetail;
 import com.nuce.group3.data.model.Vat;
 import com.nuce.group3.data.model.VatDetail;
-import com.nuce.group3.data.repo.ProductInfoRepo;
-import com.nuce.group3.data.repo.VatDetailRepo;
-import com.nuce.group3.data.repo.VatRepo;
+import com.nuce.group3.data.repo.*;
 import com.nuce.group3.exception.LogicException;
+import com.nuce.group3.service.ProductStatusDetailService;
 import com.nuce.group3.service.VatDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +34,15 @@ public class VatDetailServiceImpl implements VatDetailService {
 
     @Autowired
     private VatDetailRepo vatDetailRepo;
+
+    @Autowired
+    private ProductStatusListRepo productStatusListRepo;
+
+    @Autowired
+    private ProductStatusDetailService productStatusDetailService;
+
+    @Autowired
+    private ProductStatusDetailRepo productStatusDetailRepo;
 
     @Override
     public List<VatDetailResponse> getAll(Integer page, Integer size) {
@@ -175,6 +184,23 @@ public class VatDetailServiceImpl implements VatDetailService {
             Vat vat = vatDetailOptional.get().getVat();
             vat.setPrice(vat.getPrice().subtract(vatDetailOptional.get().getPriceOne().multiply(BigDecimal.valueOf(vatDetailOptional.get().getQty()))));
             vatRepo.save(vat);
+
+            productStatusListRepo.findProductStatusListByVat(vat.getId()).forEach(productStatusList -> {
+                Optional<ProductStatusDetail> productStatusDetail = productStatusDetailRepo.findProductStatusDetailByProductStatusAndProduct(productStatusList.getId(), vatDetailOptional.get().getProductInfo().getId());
+                if (!productStatusDetail.isPresent()) {
+                    try {
+                        throw new ResourceNotFoundException("Product Status Detail not found!");
+                    } catch (ResourceNotFoundException resourceNotFoundException) {
+                        resourceNotFoundException.printStackTrace();
+                    }
+                }
+                try {
+                    productStatusDetailService.delete(productStatusDetail.get().getId(), false);
+                } catch (ResourceNotFoundException resourceNotFoundException) {
+                    resourceNotFoundException.printStackTrace();
+                }
+            });
+
         }
 
 

@@ -9,7 +9,7 @@ import java.util.List;
 public interface IssueService {
     List<IssueResponse> getAll(Integer page, Integer size);
 
-    List<IssueResponse> findIssueByFilter(String code, String customerName, String userName, Integer page, Integer size);
+    List<IssueResponse> findIssueByFilter(String code, String customerName, String userName, int branchId, Integer page, Integer size);
 
     IssueResponse findIssueById(Integer issueId) throws ResourceNotFoundException;
 
