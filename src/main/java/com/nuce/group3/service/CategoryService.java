@@ -14,7 +14,10 @@ public interface CategoryService {
     List<CategoryResponse> findCategoryByFilter(String name, String code);
 
     void save(CategoryRequest categoryRequest) throws LogicException;
-    CategoryResponse edit(Integer categoryId,CategoryRequest categoryRequest) throws ResourceNotFoundException;
+
+    CategoryResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException;
+
     void delete(Integer categoryId) throws ResourceNotFoundException;
+
     Category findById(Integer categoryId) throws ResourceNotFoundException;
 }
