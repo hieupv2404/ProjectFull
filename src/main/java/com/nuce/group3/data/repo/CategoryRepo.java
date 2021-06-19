@@ -1,6 +1,7 @@
 package com.nuce.group3.data.repo;
 
 import com.nuce.group3.data.model.Category;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,7 @@ public interface CategoryRepo extends JpaRepository<Category, Integer> {
     @Query(value = "select c.*" +
             " from category c where c.active_flag=1 and (:name is null or c.name like %:name%)" +
             " and (:code is null or c.code like %:code%)", nativeQuery = true)
-    List<Category> findCategoryByFilter(@Param(value = "name") String name, @Param(value = "code") String code);
+    List<Category> findCategoryByFilter(@Param(value = "name") String name, @Param(value = "code") String code, Pageable pageable);
 
     Optional<Category> findCategoryByActiveFlagAndCode(int activeFlag, String code);
 

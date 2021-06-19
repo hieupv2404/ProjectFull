@@ -8,6 +8,7 @@ import com.nuce.group3.data.repo.CategoryRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +31,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> findCategoryByFilter(String name, String code) {
+    public List<CategoryResponse> findCategoryByFilter(String name, String code, Integer page, Integer size) {
         List<CategoryResponse> categoryResponses = new ArrayList<>();
-        categoryRepo.findCategoryByFilter(name, code).forEach(category -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        categoryRepo.findCategoryByFilter(name, code, PageRequest.of(page, size)).forEach(category -> {
             CategoryResponse categoryResponse = CategoryResponse.builder()
                     .name(category.getName())
                     .description(category.getDescription())
@@ -48,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void save(CategoryRequest categoryRequest) throws LogicException {
         Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndCode(1, categoryRequest.getCode());
-        if(categoryOptional.isPresent()){
+        if (categoryOptional.isPresent()) {
             throw new LogicException("Code is existed!", HttpStatus.BAD_REQUEST);
         }
         Category category = new Category();
@@ -62,10 +65,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException {
-            Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndId(1, categoryId);
-            if(!categoryOptional.isPresent())
-                throw new ResourceNotFoundException("Category with id "+ categoryId + " not found");
+    public CategoryResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException, LogicException {
+        Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndId(1, categoryId);
+        if (!categoryOptional.isPresent())
+            throw new ResourceNotFoundException("Category with id " + categoryId + " not found");
+        Optional<Category> categoryFindByCodeOptional = categoryRepo.findCategoryByActiveFlagAndCode(1, categoryRequest.getCode());
+        if (categoryFindByCodeOptional.isPresent())
+            throw new LogicException("Category with code existed!", HttpStatus.BAD_REQUEST);
         categoryOptional.get().setName(categoryRequest.getName());
         categoryOptional.get().setCode(categoryRequest.getCode());
         categoryOptional.get().setDescription(categoryRequest.getDescription());
@@ -84,8 +90,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(Integer categoryId) throws ResourceNotFoundException {
         Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndId(1, categoryId);
-        if(!categoryOptional.isPresent()){
-            throw new ResourceNotFoundException("Category with id "+ categoryId + " not found");
+        if (!categoryOptional.isPresent()) {
+            throw new ResourceNotFoundException("Category with id " + categoryId + " not found");
         }
         categoryOptional.get().setActiveFlag(0);
         categoryRepo.save(categoryOptional.get());
@@ -93,9 +99,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category findById(Integer categoryId) throws ResourceNotFoundException {
-        Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndId(1,categoryId);
-        if(!categoryOptional.isPresent()){
-            throw new ResourceNotFoundException("Category with id "+ categoryId + " not found");
+        Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndId(1, categoryId);
+        if (!categoryOptional.isPresent()) {
+            throw new ResourceNotFoundException("Category with id " + categoryId + " not found");
         }
         return categoryOptional.get();
     }

@@ -23,8 +23,9 @@ public class BranchController {
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<BranchResponse>> findBranchByFilter(@RequestParam(name = "name", required = false) String name,
-                                                                   @RequestParam(name = "code", required = false) String code) {
-        return new ResponseEntity<>(branchService.findBranchByFilter(name, code), HttpStatus.OK);
+                                                                   @RequestParam(name = "code", required = false) String code,
+                                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        return new ResponseEntity<>(branchService.findBranchByFilter(name, code, page, size), HttpStatus.OK);
     }
 
     @PostMapping

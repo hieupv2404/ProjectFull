@@ -1,13 +1,11 @@
 package com.nuce.group3.controller.dto.response;
 
-import com.nuce.group3.enums.EnumStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -23,6 +21,8 @@ public class VatResponse {
     private BigDecimal percent;
     private BigDecimal price;
     private BigDecimal total;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateDate;
 }

@@ -1,5 +1,6 @@
 package com.nuce.group3.controller.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,9 @@ public class UserResponse {
     private String email;
     private String name;
     private String phone;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateDate;
     private Set<String> roleName = new HashSet<>();
     private String branchName;

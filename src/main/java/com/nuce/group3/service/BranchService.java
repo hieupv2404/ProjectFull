@@ -10,11 +10,11 @@ import java.util.List;
 public interface BranchService {
     List<BranchResponse> getAll();
 
-    List<BranchResponse> findBranchByFilter(String name, String code);
+    List<BranchResponse> findBranchByFilter(String name, String code, Integer page, Integer size);
 
     void save(BranchRequest branchRequest) throws LogicException;
 
-    BranchResponse edit(Integer branchId, BranchRequest branchRequest) throws ResourceNotFoundException;
+    BranchResponse edit(Integer branchId, BranchRequest branchRequest) throws ResourceNotFoundException, LogicException;
 
     void delete(Integer branchId) throws ResourceNotFoundException;
 

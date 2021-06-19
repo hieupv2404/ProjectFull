@@ -8,6 +8,7 @@ import com.nuce.group3.data.repo.BranchRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,9 +43,11 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<BranchResponse> findBranchByFilter(String name, String code) {
+    public List<BranchResponse> findBranchByFilter(String name, String code, Integer page, Integer size) {
         List<BranchResponse> branchResponses = new ArrayList<>();
-        branchRepo.findBranchByFilter(name, code).forEach(branch -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        branchRepo.findBranchByFilter(name, code, PageRequest.of(page, size)).forEach(branch -> {
             BranchResponse branchResponse = BranchResponse.builder()
                     .name(branch.getName())
                     .code(branch.getCode())
@@ -76,11 +79,13 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public BranchResponse edit(Integer branchId, BranchRequest branchRequest) throws ResourceNotFoundException {
+    public BranchResponse edit(Integer branchId, BranchRequest branchRequest) throws ResourceNotFoundException, LogicException {
         Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(branchId, 1);
         if (!branchOptional.isPresent())
             throw new ResourceNotFoundException("Branch with id " + branchId + " not found");
-
+        Optional<Branch> branchFindByCodeOptional = branchRepo.findBranchByCodeAndActiveFlag(branchRequest.getCode(), 1);
+        if (branchFindByCodeOptional.isPresent())
+            throw new LogicException("Branch existed!", HttpStatus.BAD_REQUEST);
         branchOptional.get().setName(branchRequest.getName());
         branchOptional.get().setCode(branchRequest.getCode());
         branchOptional.get().setPhone(branchRequest.getPhone());

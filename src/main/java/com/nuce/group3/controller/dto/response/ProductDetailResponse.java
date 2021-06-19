@@ -1,5 +1,6 @@
 package com.nuce.group3.controller.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.nuce.group3.enums.EnumStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,8 @@ public class ProductDetailResponse {
     private String shelfName;
     private BigDecimal priceIn;
     private BigDecimal priceOut;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateDate;
 }
