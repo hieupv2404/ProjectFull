@@ -24,12 +24,12 @@ public class ShelfController {
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<ShelfResponse>> findShelf(@RequestParam(name = "name", required = false) String name,
-                                                                 @RequestParam(name = "qtyFrom", required = false) int qtyFrom,
-                                                                 @RequestParam(name = "qtyTo", required = false) int qtyTo,
-                                                                 @RequestParam(name = "qtyRestFrom", required = false) int qtyRestFrom,
-                                                                 @RequestParam(name = "qtyRestTo", required = false) int qtyRestTo,
-                                                                 @RequestParam(name = "branchName", required = false) String branchName,
-                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+                                                         @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
+                                                         @RequestParam(name = "qtyTo", required = false) Integer qtyTo,
+                                                         @RequestParam(name = "qtyRestFrom", required = false) Integer qtyRestFrom,
+                                                         @RequestParam(name = "qtyRestTo", required = false) Integer qtyRestTo,
+                                                         @RequestParam(name = "branchName", required = false) String branchName,
+                                                         @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(shelfService.findShelfByFilter(name, qtyFrom, qtyTo, qtyRestFrom, qtyRestTo,branchName, page, size), HttpStatus.OK);
     }
 

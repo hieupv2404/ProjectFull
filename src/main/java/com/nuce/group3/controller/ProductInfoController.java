@@ -3,7 +3,6 @@ package com.nuce.group3.controller;
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.controller.dto.response.ProductInfoResponseTest;
-import com.nuce.group3.data.model.ProductInfo;
 import com.nuce.group3.data.repo.ProductInfoRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
@@ -32,14 +31,15 @@ public class ProductInfoController {
     private ProductInfoRepo productInfoRepo;
 
     @GetMapping
-    @HasRole({"ADMIN","ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<ProductInfoResponse>> findProductInfo(@RequestParam(name = "name", required = false) String name,
                                                                      @RequestParam(name = "categoryName", required = false) String categoryName,
-                                                                     @RequestParam(name = "qtyFrom", required = false) int qtyFrom,
-                                                                     @RequestParam(name = "qtyTo", required = false) int qtyTo,
+                                                                     @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
+                                                                     @RequestParam(name = "qtyTo", required = false) Integer qtyTo,
                                                                      @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
-                                                                     @RequestParam(name = "priceTo", required = false) BigDecimal priceTo) {
-        return new ResponseEntity<>(productInfoService.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo), HttpStatus.OK);
+                                                                     @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
+                                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        return new ResponseEntity<>(productInfoService.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo, page, size), HttpStatus.OK);
 
     }
 

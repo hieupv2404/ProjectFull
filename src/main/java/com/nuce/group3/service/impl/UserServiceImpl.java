@@ -13,6 +13,7 @@ import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.UserService;
 import com.nuce.group3.utils.HashingPassword;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +62,28 @@ public class UserServiceImpl implements UserService {
             }
             userResponses.add(userResponse);
         }
+        return userResponses;
+    }
+
+    @Override
+    public List<UserResponse> findUserByFilter(String name, String phone, String branch, String userName, Integer page, Integer size) {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        List<UserResponse> userResponses = new ArrayList<>();
+        userRepo.findUserByFilter(name, phone, branch, userName, PageRequest.of(page, size)).forEach(users -> {
+            UserResponse userResponse = new UserResponse();
+            userResponse.setUserName(users.getUserName());
+            userResponse.setEmail(users.getEmail());
+            userResponse.setName(users.getName());
+            userResponse.setPhone(users.getPhone());
+            userResponse.setCreateDate(users.getCreateDate());
+            userResponse.setUpdateDate(users.getUpdateDate());
+            userResponse.setBranchName(users.getBranch().getName());
+            users.getRoles().forEach(role -> {
+                userResponse.getRoleName().add(role.getRoleName());
+            });
+            userResponses.add(userResponse);
+        });
         return userResponses;
     }
 
@@ -250,7 +273,7 @@ public class UserServiceImpl implements UserService {
         if (!usersOptional.isPresent()) {
             throw new ResourceNotFoundException("User with ID " + userId + " not found!");
         }
-        usersOptional.get().setActiveFlag(1);
+        usersOptional.get().setActiveFlag(0);
         userRepo.save(usersOptional.get());
     }
 }

@@ -67,11 +67,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public List<ProductDetailResponse> findProductDetailByFilter(String name, String supplierName, String imei, Integer page, Integer size) {
+    public List<ProductDetailResponse> findProductDetailByFilter(String name, String imei, Integer page, Integer size) {
         List<ProductDetailResponse> productDetailResponses = new ArrayList<>();
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        productDetailRepo.findProductDetailByFilter(name, supplierName, imei, PageRequest.of(page, size)).forEach(productDetail -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        productDetailRepo.findProductDetailByFilter(name, imei, PageRequest.of(page, size)).forEach(productDetail -> {
             ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
                     .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())

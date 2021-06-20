@@ -52,7 +52,7 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public List<ShelfResponse> findShelfByFilter(String name, int qtyFrom, int qtyTo, int qtyRestFrom, int qtyRestTo, String branchName, Integer page, Integer size) {
+    public List<ShelfResponse> findShelfByFilter(String name, Integer qtyFrom, Integer qtyTo, Integer qtyRestFrom, Integer qtyRestTo, String branchName, Integer page, Integer size) {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<ShelfResponse> shelfResponses = new ArrayList<>();

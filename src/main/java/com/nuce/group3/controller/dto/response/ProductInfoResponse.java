@@ -29,7 +29,7 @@ public class ProductInfoResponse {
 
     public String getImgPath() {
         if (imgUrl == null) return null;
-        return "/product-info-img/" + imgUrl;
+        return "/product-info-img" + imgUrl;
     }
 
 }

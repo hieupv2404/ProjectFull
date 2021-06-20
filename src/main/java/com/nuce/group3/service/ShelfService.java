@@ -10,7 +10,7 @@ import java.util.List;
 public interface ShelfService {
     List<ShelfResponse> getAll(Integer page, Integer size);
 
-    List<ShelfResponse> findShelfByFilter(String name, int qtyFrom, int qtyTo,  int qtyRestFrom,  int qtyRestTo, String branchName, Integer page, Integer size);
+    List<ShelfResponse> findShelfByFilter(String name, Integer qtyFrom, Integer qtyTo, Integer qtyRestFrom, Integer qtyRestTo, String branchName, Integer page, Integer size);
 
     void save(ShelfRequest shelfRequest, int branchId) throws LogicException, ResourceNotFoundException;
 

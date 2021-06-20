@@ -17,10 +17,9 @@ public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer>
     List<ProductDetail> findProductDetailByActiveFlag(int activeFlag, Pageable pageable);
 
     @Query(value = "select p.*" +
-            " from product_detail p where p.active_flag=1 and (:name is null or p.product_id  in (select pi.id from product_info pi where pi.name like %:name%))" +
-            " and (:supplierName is null or p.supplier_id  in (select s.id from supplier s where s.name like %:supplierName%)) " +
+            " from product_detail p where p.active_flag=1 and (:name is null or p.product_id  in (select pi.id from product_info pi where pi.active_flag=1 and pi.name like %:name%))" +
             " and (:imei is null or p.imei like %:imei%)", nativeQuery = true)
-    List<ProductDetail> findProductDetailByFilter(@Param(value = "name") String name, @Param(value = "supplierName") String supplierName, @Param(value = "imei") String imei, Pageable pageable);
+    List<ProductDetail> findProductDetailByFilter(@Param(value = "name") String name, @Param(value = "imei") String imei, Pageable pageable);
 
     Optional<ProductDetail> findProductDetailByIdAndActiveFlag(int id, int activeFlag);
 

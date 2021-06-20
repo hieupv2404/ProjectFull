@@ -1,7 +1,6 @@
 package com.nuce.group3.data.repo;
 
 import com.nuce.group3.data.model.Shelf;
-import com.nuce.group3.data.model.Shelf;
 import com.nuce.group3.utils.Constant;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +23,11 @@ public interface ShelfRepo  extends JpaRepository<Shelf, Integer> {
     @Query(value = "select s.*" +
             " from shelf s where s.active_flag=1 and (:name is null or s.name like %:name%)" +
             " and (:qtyFrom is null or s.qty >= :qtyFrom) and (:qtyTo is null or s.qty <= :qtyTo)" +
-            " and (:qtyRestFrom is null or s.qty_rest >= :qtyRestFrom) and (:qtyRestTo is null or s.qty_rest <= :qtyRestTo)" +
-            " and (:branchName is null or s.branch_id in (select b.id from brand b where b.name like %:branchName%))", nativeQuery = true)
+            " and (:qtyRestFrom is null or s.total-s.qty >= :qtyRestFrom) and (:qtyRestTo is null or s.total-s.qty <= :qtyRestTo)" +
+            " and (:branchName is null or s.branch_id in (select b.id from branch b where b.active_flag=1 and b.name like %:branchName%))", nativeQuery = true)
     List<Shelf> findShelfByFilter(@Param(value = "name") String name,
-                                  @Param(value = "qtyFrom") int qtyFrom, @Param(value = "qtyTo") int qtyTo,
-                                  @Param(value = "qtyRestFrom") int qtyRestFrom, @Param(value = "qtyRestTo") int qtyRestTo,
-                                  @Param(value = "branchName") String branchName,Pageable pageable);
+                                  @Param(value = "qtyFrom") Integer qtyFrom, @Param(value = "qtyTo") Integer qtyTo,
+                                  @Param(value = "qtyRestFrom") Integer qtyRestFrom, @Param(value = "qtyRestTo") Integer qtyRestTo,
+                                  @Param(value = "branchName") String branchName, Pageable pageable);
     
 }

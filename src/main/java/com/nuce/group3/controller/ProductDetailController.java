@@ -24,10 +24,9 @@ public class ProductDetailController {
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<ProductDetailResponse>> findProductDetail(@RequestParam(name = "name", required = false) String name,
-                                                                         @RequestParam(name = "supplierName", required = false) String supplierName,
                                                                          @RequestParam(name = "imei", required = false) String imei,
                                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(productDetailService.findProductDetailByFilter(name, supplierName, imei, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(productDetailService.findProductDetailByFilter(name, imei, page, size), HttpStatus.OK);
 
     }
 

@@ -11,6 +11,7 @@ import com.nuce.group3.data.repo.VatDetailRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,9 +80,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, int qtyFrom, int qtyTo, BigDecimal priceFrom, BigDecimal priceTo) {
+    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, Integer qtyFrom, Integer qtyTo, BigDecimal priceFrom, BigDecimal priceTo, Integer page, Integer size) {
         List<ProductInfoResponse> productInfoResponses = new ArrayList<>();
-        productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo).forEach(productInfo -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo, PageRequest.of(page, size)).forEach(productInfo -> {
             ProductInfoResponse productInfoResponse = ProductInfoResponse.builder()
                     .name(productInfo.getName())
                     .description(productInfo.getDescription())

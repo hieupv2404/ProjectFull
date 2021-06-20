@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Data
@@ -14,10 +15,10 @@ public class ShelfRequest {
             message = Constant.UNAVAILABLE_NAME)
     private String name;
     private String description;
-    @NotBlank(message = "Required total quantity")
+    @NotNull(message = "Required total quantity")
     @Min(value = 0, message = "Must be Greater or Equal 0")
     private int total;
-    @NotBlank(message = "Required branch")
+    @NotNull(message = "Required branch")
     private int branchId;
 
 }

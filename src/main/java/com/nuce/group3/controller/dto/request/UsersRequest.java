@@ -16,6 +16,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class UsersRequest {
     @NotBlank(message = "Required Username")
+    @Pattern(regexp = "^[a-zA-Z0-9]+$",
+            message = Constant.UNAVAILABLE_NAME)
     private String userName;
 
     @NotNull(message = "Required Password")
@@ -33,6 +35,7 @@ public class UsersRequest {
     private String phone;
 
     private Set<Integer> roles = new HashSet<>();
+    @NotNull(message = "Required Branch")
     private int branchId;
 
 }

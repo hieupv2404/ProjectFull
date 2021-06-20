@@ -10,7 +10,7 @@ import java.util.List;
 public interface ProductDetailService {
     List<ProductDetailResponse> getAll(Integer page, Integer size);
 
-    List<ProductDetailResponse> findProductDetailByFilter(String name, String supplierName, String imei, Integer page, Integer size);
+    List<ProductDetailResponse> findProductDetailByFilter(String name, String imei, Integer page, Integer size);
 
     ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException;
 

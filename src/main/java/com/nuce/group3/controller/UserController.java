@@ -24,11 +24,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<List<UserResponse>> getUsersByFilter(@RequestParam(name = "name", required = false) String name,
+                                                               @RequestParam(name = "phone", required = false) String phone,
+                                                               @RequestParam(name = "branch", required = false) String branch,
+                                                               @RequestParam(name = "userName", required = false) String userName,
+                                                               @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        return new ResponseEntity<>(userService.findUserByFilter(name, phone, branch, userName, page, size), HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<UserResponse>> getAll() {
         return new ResponseEntity<>(userService.getUserRole(), HttpStatus.OK);
-//        return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.OK);
     }
 
     @GetMapping("/testQuery")

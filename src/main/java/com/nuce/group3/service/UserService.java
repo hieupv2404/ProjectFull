@@ -16,6 +16,8 @@ public interface UserService {
 
     List<UserResponse> getUserRole();
 
+    List<UserResponse> findUserByFilter(String name, String phone, String address, String userName, Integer page, Integer size);
+
     List<UserResponse> findUserByName(String query);
 
     Optional<Users> findByUsername(String username) throws ResourceNotFoundException;
