@@ -3,6 +3,7 @@ package com.nuce.group3.service.impl;
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.BranchRequest;
 import com.nuce.group3.controller.dto.response.BranchResponse;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Branch;
 import com.nuce.group3.data.repo.BranchRepo;
 import com.nuce.group3.exception.LogicException;
@@ -43,7 +44,7 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public List<BranchResponse> findBranchByFilter(String name, String code, Integer page, Integer size) {
+    public GenericResponse findBranchByFilter(String name, String code, Integer page, Integer size) {
         List<BranchResponse> branchResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
@@ -58,7 +59,7 @@ public class BranchServiceImpl implements BranchService {
                     .build();
             branchResponses.add(branchResponse);
         });
-        return branchResponses;
+        return new GenericResponse(branchResponses.size(), branchResponses);
     }
 
     @Override

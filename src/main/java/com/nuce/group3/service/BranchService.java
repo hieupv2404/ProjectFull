@@ -3,6 +3,7 @@ package com.nuce.group3.service;
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.BranchRequest;
 import com.nuce.group3.controller.dto.response.BranchResponse;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.exception.LogicException;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface BranchService {
     List<BranchResponse> getAll();
 
-    List<BranchResponse> findBranchByFilter(String name, String code, Integer page, Integer size);
+    GenericResponse findBranchByFilter(String name, String code, Integer page, Integer size);
 
     void save(BranchRequest branchRequest) throws LogicException;
 

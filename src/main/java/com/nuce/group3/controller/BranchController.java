@@ -2,6 +2,7 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.BranchRequest;
 import com.nuce.group3.controller.dto.response.BranchResponse;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.BranchService;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/branches", headers = "Accept=application/json")
@@ -22,9 +22,9 @@ public class BranchController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<BranchResponse>> findBranchByFilter(@RequestParam(name = "name", required = false) String name,
-                                                                   @RequestParam(name = "code", required = false) String code,
-                                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findBranchByFilter(@RequestParam(name = "name", required = false) String name,
+                                                              @RequestParam(name = "code", required = false) String code,
+                                                              @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(branchService.findBranchByFilter(name, code, page, size), HttpStatus.OK);
     }
 

@@ -6,9 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Data
-public class ProductInfoRequest {
+public class ProductInfoRequest implements Serializable {
     @NotBlank(message = Constant.REQUIRE_NAME)
     private String name;
     private String description;

@@ -44,7 +44,8 @@ public class ProductInfoController {
 
     }
 
-    @PostMapping
+    @PostMapping(consumes = {"application/json",
+            "multipart/form-data"}, produces = "application/json")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest) throws IOException, ResourceNotFoundException, LogicException {
         MultipartFile multipartFile = productInfoRequest.getImgUrl();
