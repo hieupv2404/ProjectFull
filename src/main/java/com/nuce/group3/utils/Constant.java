@@ -9,7 +9,7 @@ public class Constant {
     public static final String CACHE_PRODUCT_INFO_BY_ID = "findProductInfoById";
     public static final String CACHE_PRODUCT_STATUS_LIST_BY_ID = "findProductStatusListById";
     public static final String CACHE_FIND_SHELF_BY_ID = "findShelfById";
-    public static final String UPLOAD_PATH = "E:\\image\\";
+    public static final String UPLOAD_PATH = "C:\\image\\";
 
 
 
