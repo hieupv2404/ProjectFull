@@ -13,6 +13,8 @@ public class CategoryRequest {
             message = Constant.UNAVAILABLE_NAME)
     private String name;
     @NotBlank(message = Constant.REQUIRE_CODE)
+    @Pattern(regexp = "^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêếìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹý0-9 ]+$",
+            message = Constant.UNAVAILABLE_NAME)
     private String code;
     private String description;
 }

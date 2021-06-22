@@ -52,7 +52,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         productInfo.setUpdateDate(new Date());
         productInfo.setActiveFlag(1);
         productInfo.setDescription(productInfoRequest.getDescription());
-        productInfo.setImgUrl(productInfoRequest.getImgUrl());
+        productInfo.setImgUrl(productInfoRequest.getImgUrl().getOriginalFilename());
         productInfo.setQty(0);
         productInfo.setPriceIn(new BigDecimal(1));
         productInfo.setPriceOut(new BigDecimal(1));
@@ -66,7 +66,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
             ProductInfoResponse productInfoResponse = ProductInfoResponse.builder()
                     .name(productInfo.getName())
                     .description(productInfo.getDescription())
-                    .imgUrl(productInfo.getImgUrl())
+                    .imgName(productInfo.getImgUrl())
                     .createDate(productInfo.getCreateDate())
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
@@ -88,7 +88,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
             ProductInfoResponse productInfoResponse = ProductInfoResponse.builder()
                     .name(productInfo.getName())
                     .description(productInfo.getDescription())
-                    .imgUrl(productInfo.getImgUrl())
+                    .imgName(productInfo.getImgUrl())
                     .createDate(productInfo.getCreateDate())
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
@@ -115,7 +115,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                 .description(productInfoOptional.get().getDescription())
                 .qty(productInfoOptional.get().getQty())
                 .categoryName(productInfoOptional.get().getCategory().getName())
-                .imgUrl(productInfoOptional.get().getImgUrl())
+                .imgName(productInfoOptional.get().getImgUrl())
                 .createDate(productInfoOptional.get().getCreateDate())
                 .updateDate(productInfoOptional.get().getUpdateDate())
                 .priceIn(productInfoOptional.get().getPriceIn().equals(1) ? new BigDecimal(0) : productInfoOptional.get().getPriceIn())
@@ -137,13 +137,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         productInfo.setCategory(categoryOptional.get());
         productInfo.setDescription(productInfoRequest.getDescription());
-        productInfo.setImgUrl(productInfoRequest.getImgUrl());
+        productInfo.setImgUrl(productInfoRequest.getImgUrl().getOriginalFilename());
         productInfo.setUpdateDate(new Date());
         try {
             productInfoRepo.save(productInfo);
             return ProductInfoResponse.builder()
                     .categoryName(productInfo.getCategory().getName())
-                    .imgUrl(productInfo.getImgUrl())
+                    .imgName(productInfo.getImgUrl())
                     .updateDate(productInfo.getUpdateDate())
                     .description(productInfo.getDescription())
                     .priceIn(productInfo.getPriceIn().equals(1) ? new BigDecimal(0) : productInfo.getPriceIn())

@@ -7,15 +7,16 @@ import com.nuce.group3.data.repo.ProductInfoRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.ProductInfoService;
-import com.nuce.group3.utils.FileUploadUtil;
+import com.nuce.group3.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,14 +45,15 @@ public class ProductInfoController {
     }
 
     @PostMapping
-    @HasRole({"ADMIN","ADMIN_PTTK"})
-    public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest
-            , @RequestParam("image") MultipartFile multipartFile) throws IOException, ResourceNotFoundException, LogicException {
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        productInfoRequest.setImgUrl(fileName);
-        String uploadDir = "product-info-img/";
-
-        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest) throws IOException, ResourceNotFoundException, LogicException {
+        MultipartFile multipartFile = productInfoRequest.getImgUrl();
+        String fileName = multipartFile.getOriginalFilename();
+        try {
+            FileCopyUtils.copy(productInfoRequest.getImgUrl().getBytes(), new File(Constant.UPLOAD_PATH + fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         productInfoService.save(productInfoRequest);
 
         return new ResponseEntity<>("Created", HttpStatus.OK);
