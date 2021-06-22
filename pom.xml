@@ -11,7 +11,7 @@
     <groupId>com.nuce</groupId>
     <artifactId>group3</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>group3</name>
     <description>Phone Inventory Management by Group 3</description>
     <properties>
