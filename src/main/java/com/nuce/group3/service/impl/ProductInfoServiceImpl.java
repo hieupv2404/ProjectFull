@@ -86,6 +86,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         if (size == null) size = 5;
         productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo, PageRequest.of(page, size)).forEach(productInfo -> {
             ProductInfoResponse productInfoResponse = ProductInfoResponse.builder()
+                    .id(productInfo.getId())
                     .name(productInfo.getName())
                     .description(productInfo.getDescription())
                     .imgName(productInfo.getImgUrl())

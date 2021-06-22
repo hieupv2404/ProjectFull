@@ -16,6 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductInfoResponse {
+    private int id;
     private String name;
     private String description;
     private String imgName;

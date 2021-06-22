@@ -37,6 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (size == null) size = 5;
         categoryRepo.findCategoryByFilter(name, code, PageRequest.of(page, size)).forEach(category -> {
             CategoryResponse categoryResponse = CategoryResponse.builder()
+                    .id(category.getId())
                     .name(category.getName())
                     .description(category.getDescription())
                     .code(category.getCode())
