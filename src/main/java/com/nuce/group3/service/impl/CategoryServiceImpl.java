@@ -3,6 +3,7 @@ package com.nuce.group3.service.impl;
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.CategoryRequest;
 import com.nuce.group3.controller.dto.response.CategoryResponse;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Category;
 import com.nuce.group3.data.repo.CategoryRepo;
 import com.nuce.group3.exception.LogicException;
@@ -31,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponse> findCategoryByFilter(String name, String code, Integer page, Integer size) {
+    public GenericResponse findCategoryByFilter(String name, String code, Integer page, Integer size) {
         List<CategoryResponse> categoryResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
@@ -46,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
                     .build();
             categoryResponses.add(categoryResponse);
         });
-        return categoryResponses;
+        return new GenericResponse(categoryResponses.size(), categoryResponses);
     }
 
     @Override

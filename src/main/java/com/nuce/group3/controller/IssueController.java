@@ -1,6 +1,7 @@
 package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.IssueDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.IssueDetailResponse;
 import com.nuce.group3.controller.dto.response.IssueResponse;
 import com.nuce.group3.exception.LogicException;
@@ -29,11 +30,11 @@ public class IssueController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<IssueResponse>> findIssue(@RequestParam(name = "code", required = false) String code,
-                                                         @RequestParam(name = "customerName", required = false) String customerName,
-                                                         @RequestParam(name = "userName", required = false) String userName,
-                                                         @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size,
-                                                         HttpServletRequest request) {
+    public ResponseEntity<GenericResponse> findIssue(@RequestParam(name = "code", required = false) String code,
+                                                     @RequestParam(name = "customerName", required = false) String customerName,
+                                                     @RequestParam(name = "userName", required = false) String userName,
+                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size,
+                                                     HttpServletRequest request) {
         return new ResponseEntity<>(issueService.findIssueByFilter(code, customerName, userName, (Integer) request.getSession().getAttribute("BranchId"), page, size), HttpStatus.OK);
 
     }

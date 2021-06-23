@@ -2,7 +2,7 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ProductStatusDetailRequest;
 import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
-import com.nuce.group3.controller.dto.response.ProductStatusDetailResponse;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
 import com.nuce.group3.data.repo.ProductStatusDetailRepo;
 import com.nuce.group3.data.repo.ProductStatusListRepo;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/product-status-lists", headers = "Accept=application/json")
@@ -39,12 +38,12 @@ public class ProductStatusListController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<ProductStatusListResponse>> findProductStatusList(@RequestParam(name = "code", required = false) String code,
-                                                                                 @RequestParam(name = "vatCode", required = false) String vatCode,
-                                                                                 @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
-                                                                                 @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
-                                                                                 @RequestParam(name = "type", required = false) int type,
-                                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findProductStatusList(@RequestParam(name = "code", required = false) String code,
+                                                                 @RequestParam(name = "vatCode", required = false) String vatCode,
+                                                                 @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
+                                                                 @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
+                                                                 @RequestParam(name = "type", required = false) int type,
+                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, page, size), HttpStatus.OK);
 
     }
@@ -85,12 +84,12 @@ public class ProductStatusListController {
 
     @GetMapping("/{productStatusListCode}/product-status-details")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<ProductStatusDetailResponse>> findProductStatusDetailByCode(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
-                                                                                           @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
-                                                                                           @PathVariable(name = "productStatusListCode", required = false) String productStatusListCode,
-                                                                                           @RequestParam(name = "productInfo", required = false) String productInfo,
-                                                                                           @RequestParam(name = "type", required = false) int type,
-                                                                                           @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findProductStatusDetailByCode(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
+                                                                         @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
+                                                                         @PathVariable(name = "productStatusListCode", required = false) String productStatusListCode,
+                                                                         @RequestParam(name = "productInfo", required = false) String productInfo,
+                                                                         @RequestParam(name = "type", required = false) int type,
+                                                                         @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, page, size), HttpStatus.OK);
 
     }

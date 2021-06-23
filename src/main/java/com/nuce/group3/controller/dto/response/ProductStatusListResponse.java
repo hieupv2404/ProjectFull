@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class ProductStatusListResponse {
+    private int id;
     private String code;
     private String vatCode;
     private String userName;

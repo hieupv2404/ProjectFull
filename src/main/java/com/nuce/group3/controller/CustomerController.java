@@ -1,6 +1,7 @@
 package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.CustomerRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Customer;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/customers", headers = "Accept=application/json")
@@ -27,12 +27,11 @@ public class CustomerController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<Customer>> findCustomer(@RequestParam(name = "name", required = false) String name,
-                                                       @RequestParam(name = "phone", required = false) String phone,
-                                                       @RequestParam(name = "address", required = false) String address,
-                                                       @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findCustomer(@RequestParam(name = "name", required = false) String name,
+                                                        @RequestParam(name = "phone", required = false) String phone,
+                                                        @RequestParam(name = "address", required = false) String address,
+                                                        @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(customerService.findCustomerByFilter(name, phone, address, page, size), HttpStatus.OK);
-
     }
 
     @PostMapping

@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ShelfRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ShelfResponse;
 import com.nuce.group3.data.model.Branch;
 import com.nuce.group3.data.model.Shelf;
@@ -52,7 +53,7 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public List<ShelfResponse> findShelfByFilter(String name, Integer qtyFrom, Integer qtyTo, Integer qtyRestFrom, Integer qtyRestTo, String branchName, Integer page, Integer size) {
+    public GenericResponse findShelfByFilter(String name, Integer qtyFrom, Integer qtyTo, Integer qtyRestFrom, Integer qtyRestTo, String branchName, Integer page, Integer size) {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<ShelfResponse> shelfResponses = new ArrayList<>();
@@ -70,7 +71,7 @@ public class ShelfServiceImpl implements ShelfService {
                     .build();
             shelfResponses.add(shelfResponse);
         });
-        return shelfResponses;
+        return new GenericResponse(shelfResponses.size(), shelfResponses);
     }
 
     @Override

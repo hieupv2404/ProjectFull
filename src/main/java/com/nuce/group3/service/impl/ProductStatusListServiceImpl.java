@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
 import com.nuce.group3.data.model.ProductStatusList;
 import com.nuce.group3.data.model.Users;
@@ -62,12 +63,13 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     }
 
     @Override
-    public List<ProductStatusListResponse> findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer page, Integer size) {
+    public GenericResponse findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer page, Integer size) {
         List<ProductStatusListResponse> productStatusListResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
         productStatusListRepo.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, PageRequest.of(page, size)).forEach(productStatusList -> {
             ProductStatusListResponse productStatusListResponse = ProductStatusListResponse.builder()
+                    .id(productStatusList.getId())
                     .code(productStatusList.getCode())
                     .vatCode(productStatusList.getVat().getCode())
                     .userName(productStatusList.getUser().getName())
@@ -77,7 +79,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
                     .build();
             productStatusListResponses.add(productStatusListResponse);
         });
-        return productStatusListResponses;
+        return new GenericResponse(productStatusListResponses.size(), productStatusListResponses);
     }
 
     @Override

@@ -17,11 +17,11 @@ public interface IssueDetailRepo extends JpaRepository<IssueDetail, Integer> {
     List<IssueDetail> findIssueDetailByActiveFlag(int activeFlag, Pageable pageable);
 
     @Query(value = "select i.*" +
-            " from issue_detail i where v.active_flag=1 and (:priceTotalFrom is null or i.price_one*i.qty >= :priceTotalFrom)" +
+            " from issue_detail i where i.active_flag=1 and (:priceTotalFrom is null or i.price_one*i.qty >= :priceTotalFrom)" +
             " and (:priceTotalTo is null or i.price_one*i.qty <= :priceTotalTo)" +
             " and (:imei is null or i.imei= :imei)" +
-            " and (:issueCode is null or i.issue_id in (select s.id from issue s where s.code like %:issueCode%))" +
-            " and (:productInfo is null or v.product_id in (select p.id from product_info p where p.name like %:productInfo%)) ", nativeQuery = true)
+            " and (:issueCode is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.code like %:issueCode%))" +
+            " and (:productInfo is null or i.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%)) ", nativeQuery = true)
     List<IssueDetail> findIssueDetailByFilter(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "issueCode") String issueCode, @Param(value = "productInfo") String productInfo, Pageable pageable);
 
     Optional<IssueDetail> findIssueDetailByIdAndActiveFlag(int i, int activeFlag);

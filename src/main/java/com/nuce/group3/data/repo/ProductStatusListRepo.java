@@ -18,7 +18,7 @@ public interface ProductStatusListRepo extends JpaRepository<ProductStatusList, 
 
     @Query(value = "select p.*" +
             " from product_status_list p where p.active_flag=1 and (:code is null or p.code like %:code%)" +
-            " and (:vatCode is null or p.vat_id  in (select v.id from vat v where v.code like %:vatCode%)) " +
+            " and (:vatCode is null or p.vat_id  in (select v.id from vat v where v.active_flag =1 and v.code like %:vatCode%)) " +
             " and (:priceFrom is null or p.price >= :priceFrom) and (:priceTo is null or p.price <= :priceTo)" +
             " and (:type is null or p.type = :type)", nativeQuery = true)
     List<ProductStatusList> findProductStatusListByFilter(@Param(value = "code") String code, @Param(value = "vatCode") String vatCode,

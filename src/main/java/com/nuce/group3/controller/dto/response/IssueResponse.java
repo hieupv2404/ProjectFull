@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class IssueResponse {
+    private int id;
     private String userName;
     private String customerName;
     private String code;

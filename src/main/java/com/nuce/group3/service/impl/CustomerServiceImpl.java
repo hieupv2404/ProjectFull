@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.CustomerRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Customer;
 import com.nuce.group3.data.repo.CustomerRepo;
 import com.nuce.group3.exception.LogicException;
@@ -30,10 +31,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> findCustomerByFilter(String name, String phone, String address, Integer page, Integer size) {
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        return customerRepo.findCustomerByFilter(name,phone,address, PageRequest.of(page,size));
+    public GenericResponse findCustomerByFilter(String name, String phone, String address, Integer page, Integer size) {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        List<Customer> customerList = customerRepo.findCustomerByFilter(name, phone, address, PageRequest.of(page, size));
+        return new GenericResponse(customerList.size(), customerList);
     }
 
     @Override

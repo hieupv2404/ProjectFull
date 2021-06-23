@@ -2,6 +2,7 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.UserForgetPassword;
 import com.nuce.group3.controller.dto.request.UsersRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.UserResponse;
 import com.nuce.group3.data.model.Users;
 import com.nuce.group3.exception.LogicException;
@@ -26,11 +27,11 @@ public class UserController {
 
     @GetMapping("")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<UserResponse>> getUsersByFilter(@RequestParam(name = "name", required = false) String name,
-                                                               @RequestParam(name = "phone", required = false) String phone,
-                                                               @RequestParam(name = "branch", required = false) String branch,
-                                                               @RequestParam(name = "userName", required = false) String userName,
-                                                               @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> getUsersByFilter(@RequestParam(name = "name", required = false) String name,
+                                                            @RequestParam(name = "phone", required = false) String phone,
+                                                            @RequestParam(name = "branch", required = false) String branch,
+                                                            @RequestParam(name = "userName", required = false) String userName,
+                                                            @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(userService.findUserByFilter(name, phone, branch, userName, page, size), HttpStatus.OK);
     }
 

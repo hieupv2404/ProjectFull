@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.VatDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.VatDetailResponse;
 import com.nuce.group3.data.model.ProductInfo;
 import com.nuce.group3.data.model.ProductStatusDetail;
@@ -63,12 +64,13 @@ public class VatDetailServiceImpl implements VatDetailService {
     }
 
     @Override
-    public List<VatDetailResponse> findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size) {
+    public GenericResponse findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size) {
         List<VatDetailResponse> vatDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
         vatDetailRepo.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, PageRequest.of(page, size)).forEach(vatDetail -> {
             VatDetailResponse vatDetailResponse = VatDetailResponse.builder()
+                    .id(vatDetail.getId())
                     .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
                     .priceOne(vatDetail.getPriceOne())
                     .productInfo(vatDetail.getProductInfo().getName())
@@ -77,7 +79,7 @@ public class VatDetailServiceImpl implements VatDetailService {
                     .build();
             vatDetailResponses.add(vatDetailResponse);
         });
-        return vatDetailResponses;
+        return new GenericResponse(vatDetailResponses.size(), vatDetailResponses);
     }
 
     @Override

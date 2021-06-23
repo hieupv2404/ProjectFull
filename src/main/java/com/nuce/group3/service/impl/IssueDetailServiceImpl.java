@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.IssueDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.IssueDetailResponse;
 import com.nuce.group3.data.model.*;
 import com.nuce.group3.data.repo.*;
@@ -56,7 +57,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
     }
 
     @Override
-    public List<IssueDetailResponse> findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo, Integer page, Integer size) {
+    public GenericResponse findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo, Integer page, Integer size) {
         List<IssueDetailResponse> issueDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
@@ -69,7 +70,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
                     .build();
             issueDetailResponses.add(issueDetailResponse);
         });
-        return issueDetailResponses;
+        return new GenericResponse(issueDetailResponses.size(), issueDetailResponses);
     }
 
     @Override

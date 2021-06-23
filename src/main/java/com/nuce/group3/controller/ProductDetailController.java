@@ -1,6 +1,7 @@
 package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ProductDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductDetailResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping(value="/api/products-detail", headers = "Accept=application/json")
@@ -23,11 +23,10 @@ public class ProductDetailController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<ProductDetailResponse>> findProductDetail(@RequestParam(name = "name", required = false) String name,
-                                                                         @RequestParam(name = "imei", required = false) String imei,
-                                                                         @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findProductDetail(@RequestParam(name = "name", required = false) String name,
+                                                             @RequestParam(name = "imei", required = false) String imei,
+                                                             @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(productDetailService.findProductDetailByFilter(name, imei, page, size), HttpStatus.OK);
-
     }
 
     @PostMapping

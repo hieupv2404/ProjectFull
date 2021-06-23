@@ -14,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class VatResponse {
+    private int id;
     private String userName;
     private String supplierName;
     private String code;

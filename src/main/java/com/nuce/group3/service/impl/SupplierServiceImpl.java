@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.SupplierRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Supplier;
 import com.nuce.group3.data.repo.SupplierRepo;
 import com.nuce.group3.exception.LogicException;
@@ -30,10 +31,11 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public List<Supplier> findSupplierByFilter(String name, String phone, String address, Integer page, Integer size) {
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        return supplierRepo.findSupplierByFilter(name,phone,address, PageRequest.of(page,size));
+    public GenericResponse findSupplierByFilter(String name, String phone, String address, Integer page, Integer size) {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        List<Supplier> supplierList = supplierRepo.findSupplierByFilter(name, phone, address, PageRequest.of(page, size));
+        return new GenericResponse(supplierList.size(), supplierList);
     }
 
     @Override

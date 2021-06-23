@@ -2,6 +2,7 @@ package com.nuce.group3.service;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductDetailResponse;
 import com.nuce.group3.exception.LogicException;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public interface ProductDetailService {
     List<ProductDetailResponse> getAll(Integer page, Integer size);
 
-    List<ProductDetailResponse> findProductDetailByFilter(String name, String imei, Integer page, Integer size);
+    GenericResponse findProductDetailByFilter(String name, String imei, Integer page, Integer size);
 
     ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException;
 

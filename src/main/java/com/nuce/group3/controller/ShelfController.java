@@ -1,6 +1,7 @@
 package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ShelfRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ShelfResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/shelves", headers = "Accept=application/json")
@@ -23,14 +23,14 @@ public class ShelfController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<ShelfResponse>> findShelf(@RequestParam(name = "name", required = false) String name,
-                                                         @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
-                                                         @RequestParam(name = "qtyTo", required = false) Integer qtyTo,
-                                                         @RequestParam(name = "qtyRestFrom", required = false) Integer qtyRestFrom,
-                                                         @RequestParam(name = "qtyRestTo", required = false) Integer qtyRestTo,
-                                                         @RequestParam(name = "branchName", required = false) String branchName,
-                                                         @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(shelfService.findShelfByFilter(name, qtyFrom, qtyTo, qtyRestFrom, qtyRestTo,branchName, page, size), HttpStatus.OK);
+    public ResponseEntity<GenericResponse> findShelf(@RequestParam(name = "name", required = false) String name,
+                                                     @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
+                                                     @RequestParam(name = "qtyTo", required = false) Integer qtyTo,
+                                                     @RequestParam(name = "qtyRestFrom", required = false) Integer qtyRestFrom,
+                                                     @RequestParam(name = "qtyRestTo", required = false) Integer qtyRestTo,
+                                                     @RequestParam(name = "branchName", required = false) String branchName,
+                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        return new ResponseEntity<>(shelfService.findShelfByFilter(name, qtyFrom, qtyTo, qtyRestFrom, qtyRestTo, branchName, page, size), HttpStatus.OK);
     }
 
     @PostMapping

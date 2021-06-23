@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.UsersRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.UserResponse;
 import com.nuce.group3.data.model.Branch;
 import com.nuce.group3.data.model.Role;
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponse> findUserByFilter(String name, String phone, String branch, String userName, Integer page, Integer size) {
+    public GenericResponse findUserByFilter(String name, String phone, String branch, String userName, Integer page, Integer size) {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<UserResponse> userResponses = new ArrayList<>();
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserService {
             });
             userResponses.add(userResponse);
         });
-        return userResponses;
+        return new GenericResponse(userResponses.size(), userResponses);
     }
 
     @Override
@@ -124,12 +125,10 @@ public class UserServiceImpl implements UserService {
         int targetStringLength = 10;
         Random random = new Random();
 
-        String generatedString = random.ints(leftLimit, rightLimit + 1)
+        return random.ints(leftLimit, rightLimit + 1)
                 .limit(targetStringLength)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
-
-        return generatedString;
     }
 
     @Override

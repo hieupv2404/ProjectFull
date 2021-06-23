@@ -17,6 +17,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class ProductDetailResponse {
+    private int id;
     private String productName;
     private String supplierName;
     private String categoryName;

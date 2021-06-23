@@ -1,6 +1,7 @@
 package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.SupplierRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Supplier;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/suppliers", headers = "Accept=application/json")
@@ -22,10 +22,10 @@ public class SupplierController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<Supplier>> findSupplier(@RequestParam(name = "name", required = false) String name,
-                                                            @RequestParam(name = "phone", required = false) String phone,
-                                                            @RequestParam(name = "address", required = false) String address,
-                                                            @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findSupplier(@RequestParam(name = "name", required = false) String name,
+                                                        @RequestParam(name = "phone", required = false) String phone,
+                                                        @RequestParam(name = "address", required = false) String address,
+                                                        @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(supplierService.findSupplierByFilter(name, phone, address, page, size), HttpStatus.OK);
 
     }

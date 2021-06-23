@@ -2,6 +2,7 @@ package com.nuce.group3.service;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.UsersRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.UserResponse;
 import com.nuce.group3.data.model.Users;
 import com.nuce.group3.exception.LogicException;
@@ -16,7 +17,7 @@ public interface UserService {
 
     List<UserResponse> getUserRole();
 
-    List<UserResponse> findUserByFilter(String name, String phone, String address, String userName, Integer page, Integer size);
+    GenericResponse findUserByFilter(String name, String phone, String address, String userName, Integer page, Integer size);
 
     List<UserResponse> findUserByName(String query);
 

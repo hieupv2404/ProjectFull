@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.data.model.Category;
 import com.nuce.group3.data.model.ProductInfo;
@@ -80,7 +81,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public List<ProductInfoResponse> findProductInfoByFilter(String name, String categoryName, Integer qtyFrom, Integer qtyTo, BigDecimal priceFrom, BigDecimal priceTo, Integer page, Integer size) {
+    public GenericResponse findProductInfoByFilter(String name, String categoryName, Integer qtyFrom, Integer qtyTo, BigDecimal priceFrom, BigDecimal priceTo, Integer page, Integer size) {
         List<ProductInfoResponse> productInfoResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
@@ -99,7 +100,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
-        return productInfoResponses;
+        return new GenericResponse(productInfoResponses.size(), productInfoResponses);
     }
 
     @Override

@@ -22,4 +22,5 @@ public interface BranchService {
     BranchResponse findById(Integer branchId) throws ResourceNotFoundException;
 
     BranchResponse findByCode(String code) throws ResourceNotFoundException;
+
 }

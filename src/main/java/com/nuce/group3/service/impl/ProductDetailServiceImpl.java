@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductDetailResponse;
 import com.nuce.group3.data.model.ProductDetail;
 import com.nuce.group3.data.model.ProductInfo;
@@ -67,12 +68,13 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public List<ProductDetailResponse> findProductDetailByFilter(String name, String imei, Integer page, Integer size) {
+    public GenericResponse findProductDetailByFilter(String name, String imei, Integer page, Integer size) {
         List<ProductDetailResponse> productDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
         productDetailRepo.findProductDetailByFilter(name, imei, PageRequest.of(page, size)).forEach(productDetail -> {
             ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
+                    .id(productDetail.getId())
                     .productName(productDetail.getProductInfo().getName())
                     .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
                     .categoryName(productDetail.getProductInfo().getCategory().getName())
@@ -86,7 +88,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .build();
             productDetailResponses.add(productDetailResponse);
         });
-        return productDetailResponses;
+        return new GenericResponse(productDetailResponses.size(), productDetailResponses);
     }
 
     @Override

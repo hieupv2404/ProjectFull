@@ -2,6 +2,7 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.VatDetailRequest;
 import com.nuce.group3.controller.dto.request.VatRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.VatDetailResponse;
 import com.nuce.group3.controller.dto.response.VatResponse;
 import com.nuce.group3.exception.LogicException;
@@ -30,12 +31,12 @@ public class VatController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<VatResponse>> findVat(@RequestParam(name = "code", required = false) String code,
-                                                     @RequestParam(name = "tax", required = false) String tax,
-                                                     @RequestParam(name = "supplierName", required = false) String supplierName,
-                                                     @RequestParam(name = "userName", required = false) String userName,
-                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size,
-                                                     HttpServletRequest request) {
+    public ResponseEntity<GenericResponse> findVat(@RequestParam(name = "code", required = false) String code,
+                                                   @RequestParam(name = "tax", required = false) String tax,
+                                                   @RequestParam(name = "supplierName", required = false) String supplierName,
+                                                   @RequestParam(name = "userName", required = false) String userName,
+                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size,
+                                                   HttpServletRequest request) {
         return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, (Integer) request.getSession().getAttribute("BranchId"), page, size), HttpStatus.OK);
 
     }

@@ -2,6 +2,7 @@ package com.nuce.group3.service;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.VatDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.VatDetailResponse;
 import com.nuce.group3.exception.LogicException;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface VatDetailService {
     List<VatDetailResponse> getAll(Integer page, Integer size);
 
-    List<VatDetailResponse> findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size);
+    GenericResponse findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size);
 
     void save(VatDetailRequest vatDetailRequest) throws LogicException, ResourceNotFoundException;
 

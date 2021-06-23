@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.VatRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.VatResponse;
 import com.nuce.group3.data.model.Branch;
 import com.nuce.group3.data.model.Supplier;
@@ -74,12 +75,13 @@ public class VatServiceImpl implements VatService {
     }
 
     @Override
-    public List<VatResponse> findVatByFilter(String code, String tax, String supplierName, String userName, int branchId, Integer page, Integer size) {
+    public GenericResponse findVatByFilter(String code, String tax, String supplierName, String userName, int branchId, Integer page, Integer size) {
         List<VatResponse> vatResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
         vatRepo.findVatByFilter(code, tax, supplierName, userName, branchId, PageRequest.of(page, size)).forEach(vat -> {
             VatResponse vatResponse = VatResponse.builder()
+                    .id(vat.getId())
                     .code(vat.getCode())
                     .tax(vat.getTax())
                     .percent(vat.getPercent())
@@ -92,7 +94,7 @@ public class VatServiceImpl implements VatService {
                     .build();
             vatResponses.add(vatResponse);
         });
-        return vatResponses;
+        return new GenericResponse(vatResponses.size(), vatResponses);
     }
 
     @Override

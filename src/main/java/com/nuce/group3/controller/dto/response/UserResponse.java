@@ -11,6 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 public class UserResponse {
+    private int id;
     private String userName;
     private String email;
     private String name;

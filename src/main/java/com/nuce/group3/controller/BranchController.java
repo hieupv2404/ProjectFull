@@ -35,6 +35,13 @@ public class BranchController {
         return new ResponseEntity<>("Created!", HttpStatus.OK);
     }
 
+    @GetMapping("/{branchId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<BranchResponse> findBranchById(@PathVariable Integer branchId) throws ResourceNotFoundException {
+        return new ResponseEntity<>(branchService.findById(branchId), HttpStatus.OK);
+    }
+
+
     @PutMapping("/edit/{branchId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<BranchResponse> updateBranch(@RequestBody @Valid BranchRequest branchRequest,

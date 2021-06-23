@@ -2,6 +2,7 @@ package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductStatusDetailRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductStatusDetailResponse;
 import com.nuce.group3.data.model.ProductInfo;
 import com.nuce.group3.data.model.ProductStatusDetail;
@@ -68,7 +69,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
     }
 
     @Override
-    public List<ProductStatusDetailResponse> findProductStatusDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, int type, Integer page, Integer size) {
+    public GenericResponse findProductStatusDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, int type, Integer page, Integer size) {
         List<ProductStatusDetailResponse> productStatusDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
@@ -83,7 +84,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
                     .build();
             productStatusDetailResponses.add(productStatusDetailResponse);
         });
-        return productStatusDetailResponses;
+        return new GenericResponse(productStatusDetailResponses.size(), productStatusDetailResponses);
     }
 
     @Override

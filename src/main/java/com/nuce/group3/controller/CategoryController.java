@@ -2,6 +2,8 @@ package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.CategoryRequest;
 import com.nuce.group3.controller.dto.response.CategoryResponse;
+import com.nuce.group3.controller.dto.response.GenericResponse;
+import com.nuce.group3.data.model.Category;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.CategoryService;
@@ -11,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value="/api/categories",  headers = "Accept=application/json")
@@ -22,10 +23,16 @@ public class CategoryController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<CategoryResponse>> findCategoryByFilter(@RequestParam(name = "name", required = false) String name,
-                                                                       @RequestParam(name = "code", required = false) String code,
-                                                                       @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findCategoryByFilter(@RequestParam(name = "name", required = false) String name,
+                                                                @RequestParam(name = "code", required = false) String code,
+                                                                @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(categoryService.findCategoryByFilter(name, code, page, size), HttpStatus.OK);
+    }
+
+    @GetMapping("/{categoryId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<Category> findCategoryById(@PathVariable Integer categoryId) throws ResourceNotFoundException {
+        return new ResponseEntity<>(categoryService.findById(categoryId), HttpStatus.OK);
     }
 
     @PostMapping

@@ -50,6 +50,7 @@ public class BranchServiceImpl implements BranchService {
         if (size == null) size = 5;
         branchRepo.findBranchByFilter(name, code, PageRequest.of(page, size)).forEach(branch -> {
             BranchResponse branchResponse = BranchResponse.builder()
+                    .id(branch.getId())
                     .name(branch.getName())
                     .code(branch.getCode())
                     .address(branch.getAddress())
@@ -121,6 +122,7 @@ public class BranchServiceImpl implements BranchService {
         }
         Branch branch = branchOptional.get();
         return BranchResponse.builder()
+                .id(branch.getId())
                 .name(branch.getName())
                 .code(branch.getCode())
                 .address(branch.getAddress())
@@ -138,6 +140,7 @@ public class BranchServiceImpl implements BranchService {
         }
         Branch branch = branchOptional.get();
         return BranchResponse.builder()
+                .id(branch.getId())
                 .name(branch.getName())
                 .code(branch.getCode())
                 .address(branch.getAddress())

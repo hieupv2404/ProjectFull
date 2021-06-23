@@ -1,8 +1,8 @@
 package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
+import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
-import com.nuce.group3.controller.dto.response.ProductInfoResponseTest;
 import com.nuce.group3.data.repo.ProductInfoRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
@@ -19,7 +19,6 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/products-info", headers = "Accept=application/json")
@@ -33,13 +32,13 @@ public class ProductInfoController {
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<List<ProductInfoResponse>> findProductInfo(@RequestParam(name = "name", required = false) String name,
-                                                                     @RequestParam(name = "categoryName", required = false) String categoryName,
-                                                                     @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
-                                                                     @RequestParam(name = "qtyTo", required = false) Integer qtyTo,
-                                                                     @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
-                                                                     @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
-                                                                     @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+    public ResponseEntity<GenericResponse> findProductInfo(@RequestParam(name = "name", required = false) String name,
+                                                           @RequestParam(name = "categoryName", required = false) String categoryName,
+                                                           @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
+                                                           @RequestParam(name = "qtyTo", required = false) Integer qtyTo,
+                                                           @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
+                                                           @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
+                                                           @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(productInfoService.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo, page, size), HttpStatus.OK);
 
     }
@@ -60,15 +59,30 @@ public class ProductInfoController {
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 
-    @GetMapping("/{productId}")
-    @HasRole({"ADMIN","ADMIN_PTTK"})
-    public  ResponseEntity<ProductInfoResponse> findById (@PathVariable Integer productId) throws ResourceNotFoundException {
-        return new ResponseEntity<>(productInfoService.findProductInfoById(productId), HttpStatus.OK);
+    @PutMapping(value = "/edit/{productId}", consumes = {"application/json",
+            "multipart/form-data"}, produces = "application/json")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @Valid @RequestBody ProductInfoRequest productInfoRequest) throws IOException, ResourceNotFoundException, LogicException {
+        MultipartFile multipartFile = productInfoRequest.getImgUrl();
+        String fileName = multipartFile.getOriginalFilename();
+        try {
+            FileCopyUtils.copy(productInfoRequest.getImgUrl().getBytes(), new File(Constant.UPLOAD_PATH + fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(productInfoService.edit(productId, productInfoRequest), HttpStatus.OK);
     }
 
-    @GetMapping("/test")
-    @HasRole({"ADMIN","ADMIN_PTTK"})
-    public  ResponseEntity<List<ProductInfoResponseTest>> test () throws ResourceNotFoundException {
-        return new ResponseEntity<>(productInfoRepo.test(), HttpStatus.OK);
+    @PutMapping("/delete/{productId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<String> editProductInfo(@PathVariable Integer productId) throws ResourceNotFoundException {
+        productInfoService.delete(productId);
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/{productId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<ProductInfoResponse> findById(@PathVariable Integer productId) throws ResourceNotFoundException {
+        return new ResponseEntity<>(productInfoService.findProductInfoById(productId), HttpStatus.OK);
     }
 }

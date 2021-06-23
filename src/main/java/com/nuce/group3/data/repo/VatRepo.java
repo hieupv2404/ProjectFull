@@ -19,8 +19,8 @@ public interface VatRepo extends JpaRepository<Vat, Integer> {
     @Query(value = "select v.*" +
             " from vat v where v.active_flag=1 and (:code is null or v.code like %:code%)" +
             " and (:tax is null or v.tax like %:tax%) " +
-            " and (:supplierName is null or v.supplier_id in (select s.id from supplier s where s.name like %:supplierName%))" +
-            " and (:userName is null or v.user_id in (select u.id from users u where u.name like %:userName%)) " +
+            " and (:supplierName is null or v.supplier_id in (select s.id from supplier s where s.active_flag =1 and s.name like %:supplierName%))" +
+            " and (:userName is null or v.user_id in (select u.id from users u where u.active_flag =1 and u.name like %:userName%)) " +
             " and (:branchId is null or v.branchId=:branchId) ", nativeQuery = true)
     List<Vat> findVatByFilter(@Param(value = "code") String code, @Param(value = "tax") String tax, @Param(value = "supplierName") String supplierName, @Param(value = "userName") String userName, @Param(value = "branchId") int branchId, Pageable pageable);
 
