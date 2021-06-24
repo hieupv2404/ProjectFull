@@ -53,7 +53,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         productInfo.setUpdateDate(new Date());
         productInfo.setActiveFlag(1);
         productInfo.setDescription(productInfoRequest.getDescription());
-        productInfo.setImgUrl(productInfoRequest.getImgUrl().getOriginalFilename());
+        productInfo.setImgUrl(productInfoRequest.getImgUrl());
         productInfo.setQty(0);
         productInfo.setPriceIn(new BigDecimal(1));
         productInfo.setPriceOut(new BigDecimal(1));
@@ -139,7 +139,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         productInfo.setCategory(categoryOptional.get());
         productInfo.setDescription(productInfoRequest.getDescription());
-        productInfo.setImgUrl(productInfoRequest.getImgUrl().getOriginalFilename());
+        productInfo.setImgUrl(productInfoRequest.getImgUrl());
         productInfo.setUpdateDate(new Date());
         try {
             productInfoRepo.save(productInfo);

@@ -31,7 +31,7 @@ public class ProductInfoResponse {
 
     public String getImgPath() {
         if (imgName == null) return null;
-        return Constant.UPLOAD_PATH + imgName;
+        return Constant.DISPLAY_PATH + imgName;
     }
 
 }

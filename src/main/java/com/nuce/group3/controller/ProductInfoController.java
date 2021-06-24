@@ -46,11 +46,11 @@ public class ProductInfoController {
     @PostMapping(consumes = {"application/json",
             "multipart/form-data"}, produces = "application/json")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest) throws IOException, ResourceNotFoundException, LogicException {
-        MultipartFile multipartFile = productInfoRequest.getImgUrl();
+    public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest, @RequestParam("image") MultipartFile multipartFile) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = multipartFile.getOriginalFilename();
         try {
-            FileCopyUtils.copy(productInfoRequest.getImgUrl().getBytes(), new File(Constant.UPLOAD_PATH + fileName));
+            FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
+            productInfoRequest.setImgUrl(fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,11 +62,11 @@ public class ProductInfoController {
     @PutMapping(value = "/edit/{productId}", consumes = {"application/json",
             "multipart/form-data"}, produces = "application/json")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @Valid @RequestBody ProductInfoRequest productInfoRequest) throws IOException, ResourceNotFoundException, LogicException {
-        MultipartFile multipartFile = productInfoRequest.getImgUrl();
+    public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @Valid @RequestBody ProductInfoRequest productInfoRequest, @RequestParam("image") MultipartFile multipartFile) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = multipartFile.getOriginalFilename();
         try {
-            FileCopyUtils.copy(productInfoRequest.getImgUrl().getBytes(), new File(Constant.UPLOAD_PATH + fileName));
+            FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
+            productInfoRequest.setImgUrl(fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
