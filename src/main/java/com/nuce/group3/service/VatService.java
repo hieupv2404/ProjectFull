@@ -15,7 +15,7 @@ public interface VatService {
 
     VatResponse findVatById(Integer vatId) throws ResourceNotFoundException;
 
-    void save(VatRequest vatRequest, String userName, int branchId) throws LogicException, ResourceNotFoundException;
+    void save(VatRequest vatRequest, Integer supplierId, String userName, int branchId) throws LogicException, ResourceNotFoundException;
 
     VatResponse edit(Integer vatId, VatRequest vatRequest, String userName) throws ResourceNotFoundException, LogicException;
 

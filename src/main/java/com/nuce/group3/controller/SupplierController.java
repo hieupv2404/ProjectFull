@@ -1,16 +1,19 @@
 package com.nuce.group3.controller;
 
 import com.nuce.group3.controller.dto.request.SupplierRequest;
+import com.nuce.group3.controller.dto.request.VatRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Supplier;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.SupplierService;
+import com.nuce.group3.service.VatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -19,6 +22,9 @@ import javax.validation.Valid;
 public class SupplierController {
     @Autowired
     private SupplierService supplierService;
+
+    @Autowired
+    private VatService vatService;
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
@@ -54,5 +60,12 @@ public class SupplierController {
     public ResponseEntity<String> deleteSupplier(@PathVariable Integer supplierId) throws ResourceNotFoundException, LogicException {
         supplierService.delete(supplierId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
+    }
+
+    @PostMapping("/{supplierId}/add-vat")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<String> createVat(@Valid @RequestBody VatRequest vatRequest, @PathVariable(required = true) Integer supplierId, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
+        vatService.save(vatRequest, supplierId, String.valueOf(request.getSession().getAttribute("Username")), (Integer) request.getSession().getAttribute("BranchId"));
+        return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 }

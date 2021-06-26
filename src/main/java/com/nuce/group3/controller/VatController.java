@@ -1,11 +1,13 @@
 package com.nuce.group3.controller;
 
+import com.nuce.group3.controller.dto.request.ProductStatusListRequest;
 import com.nuce.group3.controller.dto.request.VatDetailRequest;
 import com.nuce.group3.controller.dto.request.VatRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.VatResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
+import com.nuce.group3.service.ProductStatusListService;
 import com.nuce.group3.service.VatDetailService;
 import com.nuce.group3.service.VatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class VatController {
     @Autowired
     private VatDetailService vatDetailService;
 
+    @Autowired
+    private ProductStatusListService productStatusListService;
+
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<GenericResponse> findVat(@RequestParam(name = "code", required = false) String code,
@@ -39,12 +44,6 @@ public class VatController {
 
     }
 
-    @PostMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createVat(@Valid @RequestBody VatRequest vatRequest, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
-        vatService.save(vatRequest, String.valueOf(request.getSession().getAttribute("Username")), (Integer) request.getSession().getAttribute("BranchId"));
-        return new ResponseEntity<>("Created", HttpStatus.OK);
-    }
 
     @GetMapping("/{vatId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
@@ -81,6 +80,14 @@ public class VatController {
                                                          @RequestParam(name = "productInfo", required = false) String productInfo,
                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, page, size), HttpStatus.OK);
-
     }
+
+    @PostMapping("/{vatId}/add-products-list")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<String> createProductStatusList(@Valid @RequestBody ProductStatusListRequest productStatusListRequest, @PathVariable Integer vatId, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
+        productStatusListService.save(vatId, String.valueOf(request.getSession().getAttribute("Username")));
+        return new ResponseEntity<>("Created", HttpStatus.OK);
+    }
+
+
 }

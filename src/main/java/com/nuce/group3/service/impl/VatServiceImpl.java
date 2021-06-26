@@ -121,15 +121,15 @@ public class VatServiceImpl implements VatService {
     }
 
     @Override
-    public void save(VatRequest vatRequest, String userName, int branchId) throws LogicException, ResourceNotFoundException {
+    public void save(VatRequest vatRequest, Integer supplierId, String userName, int branchId) throws LogicException, ResourceNotFoundException {
         Optional<Vat> vatOptional = vatRepo.findVatByCodeAndActiveFlag(vatRequest.getCode(), 1);
         if (vatOptional.isPresent()) {
             throw new LogicException("Vat Existed", HttpStatus.BAD_REQUEST);
         }
 
-        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(vatRequest.getSupplierId(), 1);
+        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId, 1);
         if (!supplierOptional.isPresent()) {
-            throw new ResourceNotFoundException("Supplier with id " + vatRequest.getSupplierId() + " not found");
+            throw new ResourceNotFoundException("Supplier with id " + supplierId + " not found");
         }
 
         Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(branchId, 1);
@@ -165,10 +165,6 @@ public class VatServiceImpl implements VatService {
             throw new ResourceNotFoundException("Vat with " + vatId + " not found!");
         }
         Vat vat = vatOptional.get();
-        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(vatRequest.getSupplierId(), 1);
-        if (!supplierOptional.isPresent()) {
-            throw new ResourceNotFoundException("Supplier with id " + vatRequest.getSupplierId() + " not found");
-        }
 
         Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
         if (!usersOptional.isPresent()) {
@@ -185,7 +181,6 @@ public class VatServiceImpl implements VatService {
         } else vat.setTax(vatRequest.getTax());
         vat.setCode(vatRequest.getCode());
         vat.setPercent(vatRequest.getPercent());
-        vat.setSupplier(supplierOptional.get());
         vat.setUser(usersOptional.get());
         vat.setUpdateDate(new Date());
         try {

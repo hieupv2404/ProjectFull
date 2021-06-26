@@ -60,7 +60,7 @@ public class CustomerController {
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
-    @PostMapping("/add-issue/{customerId}")
+    @PostMapping("/{customerId}/add-issue")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> createIssue(@PathVariable Integer customerId, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
         issueService.save(customerId, String.valueOf(request.getSession().getAttribute("Username")));

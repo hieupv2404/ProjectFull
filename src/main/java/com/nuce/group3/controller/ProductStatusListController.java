@@ -48,13 +48,6 @@ public class ProductStatusListController {
 
     }
 
-    @PostMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createProductStatusList(@Valid @RequestBody ProductStatusListRequest productStatusListRequest, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
-        productStatusListService.save(productStatusListRequest, String.valueOf(request.getSession().getAttribute("Username")));
-        return new ResponseEntity<>("Created", HttpStatus.OK);
-    }
-
     @GetMapping("/{productStatusListId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<ProductStatusListResponse> findById(@PathVariable Integer productStatusListId) throws ResourceNotFoundException {

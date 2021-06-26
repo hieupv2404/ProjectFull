@@ -103,14 +103,14 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     }
 
     @Override
-    public void save(ProductStatusListRequest productStatusListRequest, String userName) throws LogicException, ResourceNotFoundException {
-        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByVatAndType(productStatusListRequest.getVatId(), 1);
+    public void save(Integer vatId, String userName) throws LogicException, ResourceNotFoundException {
+        Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByVatAndType(vatId, 1);
         if (productStatusListOptional.isPresent()) {
             throw new LogicException("ProductStatusList Existed", HttpStatus.BAD_REQUEST);
         }
-        Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(productStatusListRequest.getVatId(), 1);
-        if (!productStatusListOptional.isPresent()) {
-            throw new ResourceNotFoundException("Vat with id " + productStatusListRequest.getVatId() + " not found");
+        Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(vatId, 1);
+        if (!vatOptional.isPresent()) {
+            throw new ResourceNotFoundException("Vat with id " + vatId + " not found");
         }
 
         Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);

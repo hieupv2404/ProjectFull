@@ -11,6 +11,5 @@ public class VatRequest {
     @NotBlank(message = Constant.REQUIRE_CODE)
     private String code;
     private String tax;
-    private int supplierId;
     private BigDecimal percent;
 }
