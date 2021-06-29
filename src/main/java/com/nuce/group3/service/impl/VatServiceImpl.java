@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,7 +87,7 @@ public class VatServiceImpl implements VatService {
                     .tax(vat.getTax())
                     .percent(vat.getPercent())
                     .price(vat.getPrice())
-                    .total(vat.getPrice().multiply(vat.getPercent()))
+                    .total(vat.getPrice().add(vat.getPrice().multiply(vat.getPercent())))
                     .createDate(vat.getCreateDate())
                     .userName(vat.getUser().getName())
                     .supplierName(vat.getSupplier().getName())
@@ -148,6 +149,7 @@ public class VatServiceImpl implements VatService {
         vat.setSupplier(supplierOptional.get());
         vat.setUser(usersOptional.get());
         vat.setBranch(branchOptional.get());
+        vat.setPrice(new BigDecimal(0));
         if(vatRequest.getTax() == null || vatRequest.getTax().equals("")){
             vat.setTax("123456");
         } else vat.setTax(vatRequest.getTax());

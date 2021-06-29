@@ -24,7 +24,7 @@ public interface IssueRepo extends JpaRepository<Issue, Integer> {
 
     Optional<Issue> findIssueByIdAndActiveFlag(int id, int activeFlag);
 
-    @Query(value = "SELECT COUNT(i) FROM issue i WHERE i.active_flag=1", nativeQuery = true)
+    @Query(value = "SELECT COUNT(i.id) FROM issue i WHERE i.active_flag=1", nativeQuery = true)
     long countIssue();
 
 }
