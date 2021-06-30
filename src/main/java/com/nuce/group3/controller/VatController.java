@@ -37,9 +37,9 @@ public class VatController {
                                                    @RequestParam(name = "tax", required = false) String tax,
                                                    @RequestParam(name = "supplierName", required = false) String supplierName,
                                                    @RequestParam(name = "userName", required = false) String userName,
-                                                   @RequestParam(name = "branchId", required = false) int branchId,
+                                                   @RequestParam(name = "branchName", required = false) String branchName,
                                                    @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchId, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchName, page, size), HttpStatus.OK);
 
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 public interface VatService {
     List<VatResponse> getAll(Integer page, Integer size);
 
-    GenericResponse findVatByFilter(String code, String tax, String supplierName, String userName, int branchId, Integer page, Integer size);
+    GenericResponse findVatByFilter(String code, String tax, String supplierName, String userName, String branchName, Integer page, Integer size);
 
     VatResponse findVatById(Integer vatId) throws ResourceNotFoundException;
 
