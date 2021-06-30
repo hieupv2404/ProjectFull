@@ -121,7 +121,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
         Calendar calendar = Calendar.getInstance();
         long maxId = productStatusListRepo.countProductStatusListByTypeAndActiveFlag(Constant.PRODUCT_DONE) + 1;
         ProductStatusList productStatusListDone = new ProductStatusList();
-        productStatusListDone.setCode("DONE" + calendar.get(Calendar.DAY_OF_MONTH) + calendar.get(Calendar.MONTH) + calendar.get(Calendar.YEAR) + maxId);
+        productStatusListDone.setCode("DONE" + calendar.get(Calendar.DAY_OF_MONTH) + calendar.get(Calendar.MONTH + 1) + calendar.get(Calendar.YEAR) + maxId);
         productStatusListDone.setPrice(new BigDecimal(0));
         productStatusListDone.setUser(usersOptional.get());
         productStatusListDone.setVat(vatOptional.get());

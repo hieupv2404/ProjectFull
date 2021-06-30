@@ -84,6 +84,8 @@ public class LoginController {
                 userResponseLogin.setEmail(user.getEmail());
                 userResponseLogin.setRoleName(roleName);
                 userResponseLogin.setMenuSet(menuResponseLogins);
+                userResponseLogin.setBranchName(user.getBranch().getName());
+                userResponseLogin.setBranchId(user.getBranch().getId());
                 return new ResponseEntity<>(userResponseLogin, HttpStatus.OK);
             }
             return new ResponseEntity<>(new LogicException("Tài khoản hoặc mật khẩu không đúng", HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);

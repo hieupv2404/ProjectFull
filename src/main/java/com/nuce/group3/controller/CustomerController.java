@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -62,8 +61,8 @@ public class CustomerController {
 
     @PostMapping("/{customerId}/add-issue")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createIssue(@PathVariable Integer customerId, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
-        issueService.save(customerId, String.valueOf(request.getSession().getAttribute("Username")));
+    public ResponseEntity<String> createIssue(@PathVariable Integer customerId, @RequestParam(name = "userName") String userName) throws ResourceNotFoundException, LogicException {
+        issueService.save(customerId, userName);
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 }

@@ -2,8 +2,6 @@ package com.nuce.group3.controller.dto.response;
 
 import lombok.Data;
 
-import javax.persistence.Transient;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,4 +13,6 @@ public class UserResponseLogin {
     private Set<String> roleName = new HashSet<>();
     private Set<MenuResponseLogin> menuSet = new HashSet<>();
     private String token;
+    private String branchName;
+    private int branchId;
 }
