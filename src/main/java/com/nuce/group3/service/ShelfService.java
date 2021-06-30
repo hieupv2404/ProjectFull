@@ -13,7 +13,7 @@ public interface ShelfService {
 
     GenericResponse findShelfByFilter(String name, Integer qtyFrom, Integer qtyTo, Integer qtyRestFrom, Integer qtyRestTo, String branchName, Integer page, Integer size);
 
-    void save(ShelfRequest shelfRequest, int branchId) throws LogicException, ResourceNotFoundException;
+    void save(ShelfRequest shelfRequest) throws LogicException, ResourceNotFoundException;
 
     ShelfResponse edit(Integer shelfId, ShelfRequest shelfRequest) throws ResourceNotFoundException, LogicException;
 

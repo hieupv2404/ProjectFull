@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -64,8 +63,8 @@ public class SupplierController {
 
     @PostMapping("/{supplierId}/add-vat")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createVat(@Valid @RequestBody VatRequest vatRequest, @PathVariable(required = true) Integer supplierId, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
-        vatService.save(vatRequest, supplierId, String.valueOf(request.getSession().getAttribute("Username")), (Integer) request.getSession().getAttribute("BranchId"));
+    public ResponseEntity<String> createVat(@Valid @RequestBody VatRequest vatRequest, @PathVariable(required = true) Integer supplierId) throws ResourceNotFoundException, LogicException {
+        vatService.save(vatRequest, supplierId);
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 }

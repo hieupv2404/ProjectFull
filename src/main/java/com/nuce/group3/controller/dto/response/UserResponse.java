@@ -22,5 +22,6 @@ public class UserResponse {
     private Date updateDate;
     private Set<String> roleName = new HashSet<>();
     private String branchName;
+    private int branchId;
 //    private Integer roleId;
 }

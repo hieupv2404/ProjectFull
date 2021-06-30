@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 
@@ -38,9 +37,9 @@ public class VatController {
                                                    @RequestParam(name = "tax", required = false) String tax,
                                                    @RequestParam(name = "supplierName", required = false) String supplierName,
                                                    @RequestParam(name = "userName", required = false) String userName,
-                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size,
-                                                   HttpServletRequest request) {
-        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, (Integer) request.getSession().getAttribute("BranchId"), page, size), HttpStatus.OK);
+                                                   @RequestParam(name = "branchId", required = false) int branchId,
+                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchId, page, size), HttpStatus.OK);
 
     }
 
@@ -53,8 +52,8 @@ public class VatController {
 
     @PutMapping("/edit/{vatId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<VatResponse> editVat(@PathVariable Integer vatId, @Valid @RequestBody VatRequest vatRequest, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
-        return new ResponseEntity<>(vatService.edit(vatId, vatRequest, String.valueOf(request.getSession().getAttribute("Username"))), HttpStatus.OK);
+    public ResponseEntity<VatResponse> editVat(@PathVariable Integer vatId, @Valid @RequestBody VatRequest vatRequest) throws ResourceNotFoundException, LogicException {
+        return new ResponseEntity<>(vatService.edit(vatId, vatRequest), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{vatId}")
@@ -84,8 +83,8 @@ public class VatController {
 
     @PostMapping("/{vatId}/add-products-list")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createProductStatusList(@Valid @RequestBody ProductStatusListRequest productStatusListRequest, @PathVariable Integer vatId, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
-        productStatusListService.save(vatId, String.valueOf(request.getSession().getAttribute("Username")));
+    public ResponseEntity<String> createProductStatusList(@Valid @RequestBody ProductStatusListRequest productStatusListRequest, @PathVariable Integer vatId) throws ResourceNotFoundException, LogicException {
+        productStatusListService.save(vatId, productStatusListRequest);
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 

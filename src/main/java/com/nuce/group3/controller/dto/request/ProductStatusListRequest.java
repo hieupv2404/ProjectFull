@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductStatusListRequest {
-    @NotNull(message = "Required Vat")
-    private int vatId;
+    @NotBlank(message = "Required Username")
+    private String userName;
 }

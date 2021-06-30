@@ -75,13 +75,13 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public void save(ShelfRequest shelfRequest, int branchId) throws LogicException, ResourceNotFoundException {
+    public void save(ShelfRequest shelfRequest) throws LogicException, ResourceNotFoundException {
         Optional<Shelf> shelfOptional = shelfRepo.findShelfByNameAndActiveFlag(shelfRequest.getName(), 1);
         if (shelfOptional.isPresent()) {
             throw new LogicException("Shelf with name: " + shelfRequest.getName() + " existed!", HttpStatus.BAD_REQUEST);
         }
 
-        Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(branchId, 1);
+        Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(shelfRequest.getBranchId(), 1);
         if (!branchOptional.isPresent()) {
             throw new ResourceNotFoundException("Branch with ID: " + shelfRequest.getBranchId() + " not found!");
         }

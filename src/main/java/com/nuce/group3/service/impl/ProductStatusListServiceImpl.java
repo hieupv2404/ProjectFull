@@ -103,7 +103,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     }
 
     @Override
-    public void save(Integer vatId, String userName) throws LogicException, ResourceNotFoundException {
+    public void save(Integer vatId, ProductStatusListRequest productStatusListRequest) throws LogicException, ResourceNotFoundException {
         Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByVatAndType(vatId, 1);
         if (productStatusListOptional.isPresent()) {
             throw new LogicException("ProductStatusList Existed", HttpStatus.BAD_REQUEST);
@@ -113,9 +113,9 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
             throw new ResourceNotFoundException("Vat with id " + vatId + " not found");
         }
 
-        Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
+        Optional<Users> usersOptional = userRepo.findUsersByUserName(productStatusListRequest.getUserName());
         if (!usersOptional.isPresent()) {
-            throw new ResourceNotFoundException("User with user name: " + userName + " not found");
+            throw new ResourceNotFoundException("User with user name: " + productStatusListRequest.getUserName() + " not found");
         }
 
         Calendar calendar = Calendar.getInstance();
@@ -152,22 +152,12 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
             throw new ResourceNotFoundException("ProductStatusList with " + productStatusListId + " not found!");
         }
         ProductStatusList productStatusList = productStatusListOptional.get();
-        Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(productStatusListRequest.getVatId(), 1);
-        if (!productStatusListOptional.isPresent()) {
-            throw new ResourceNotFoundException("Vat with id " + productStatusListRequest.getVatId() + " not found");
-        }
 
         Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
         if (!usersOptional.isPresent()) {
             throw new ResourceNotFoundException("User with user name: " + userName + " not found");
         }
 
-        Optional<ProductStatusList> productStatusListByVatOptional = productStatusListRepo.findProductStatusListByVatAndType(productStatusListRequest.getVatId(), 1);
-        if (productStatusListByVatOptional.isPresent()) {
-            throw new LogicException("ProductStatusList Existed", HttpStatus.BAD_REQUEST);
-        }
-
-        productStatusList.setVat(vatOptional.get());
         productStatusList.setUser(usersOptional.get());
         productStatusList.setUpdateDate(new Date());
         try {

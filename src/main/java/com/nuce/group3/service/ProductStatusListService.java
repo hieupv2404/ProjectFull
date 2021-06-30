@@ -16,7 +16,7 @@ public interface ProductStatusListService {
 
     ProductStatusListResponse findProductStatusListById(Integer productStatusListId) throws ResourceNotFoundException;
 
-    void save(Integer vatId, String userName) throws LogicException, ResourceNotFoundException;
+    void save(Integer vatId, ProductStatusListRequest productStatusListRequest) throws LogicException, ResourceNotFoundException;
 
     ProductStatusListResponse edit(Integer productStatusListId, ProductStatusListRequest productStatusListRequest, String userName) throws ResourceNotFoundException, LogicException;
 

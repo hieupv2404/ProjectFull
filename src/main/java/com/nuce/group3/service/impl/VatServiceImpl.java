@@ -122,7 +122,7 @@ public class VatServiceImpl implements VatService {
     }
 
     @Override
-    public void save(VatRequest vatRequest, Integer supplierId, String userName, int branchId) throws LogicException, ResourceNotFoundException {
+    public void save(VatRequest vatRequest, Integer supplierId) throws LogicException, ResourceNotFoundException {
         Optional<Vat> vatOptional = vatRepo.findVatByCodeAndActiveFlag(vatRequest.getCode(), 1);
         if (vatOptional.isPresent()) {
             throw new LogicException("Vat Existed", HttpStatus.BAD_REQUEST);
@@ -133,14 +133,14 @@ public class VatServiceImpl implements VatService {
             throw new ResourceNotFoundException("Supplier with id " + supplierId + " not found");
         }
 
-        Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(branchId, 1);
+        Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(vatRequest.getBranchId(), 1);
         if (!branchOptional.isPresent()) {
-            throw new ResourceNotFoundException("Branch with id " + branchId + " not found");
+            throw new ResourceNotFoundException("Branch with id " + vatRequest.getBranchId() + " not found");
         }
 
-        Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
+        Optional<Users> usersOptional = userRepo.findUsersByUserName(vatRequest.getUserName());
         if (!usersOptional.isPresent()) {
-            throw new ResourceNotFoundException("User with user name: " + userName + " not found");
+            throw new ResourceNotFoundException("User with user name: " + vatRequest.getUserName() + " not found");
         }
 
         Vat vat = new Vat();
@@ -161,16 +161,16 @@ public class VatServiceImpl implements VatService {
     }
 
     @Override
-    public VatResponse edit(Integer vatId, VatRequest vatRequest, String userName) throws ResourceNotFoundException, LogicException {
+    public VatResponse edit(Integer vatId, VatRequest vatRequest) throws ResourceNotFoundException, LogicException {
         Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(vatId, 1);
         if (!vatOptional.isPresent()) {
             throw new ResourceNotFoundException("Vat with " + vatId + " not found!");
         }
         Vat vat = vatOptional.get();
 
-        Optional<Users> usersOptional = userRepo.findUsersByUserName(userName);
+        Optional<Users> usersOptional = userRepo.findUsersByUserName(vatRequest.getUserName());
         if (!usersOptional.isPresent()) {
-            throw new ResourceNotFoundException("User with user name: " +  userName+ " not found");
+            throw new ResourceNotFoundException("User with user name: " + vatRequest.getUserName() + " not found");
         }
 
         Optional<Vat> vatByCode = vatRepo.findVatByCodeAndActiveFlag(vatRequest.getCode(), 1);
