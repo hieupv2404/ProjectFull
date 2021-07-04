@@ -27,14 +27,14 @@ public interface ProductStatusListRepo extends JpaRepository<ProductStatusList, 
     //    @Cacheable(cacheNames = Constant.CACHE_PRODUCT_STATUS_LIST_BY_ID)
     Optional<ProductStatusList> findProductStatusListByIdAndActiveFlag(int id, int activeFlag);
 
-    @Query(value = "select p" +
+    @Query(value = "select p.*" +
             " from product_status_list p where p.active_flag=1 and p.vat_id = ?1 and p.type = ?2", nativeQuery = true)
     Optional<ProductStatusList> findProductStatusListByVatAndType(int vatId, int type);
 
-    @Query(value = "SELECT COUNT(p) FROM product_status_list p WHERE p.type=:type and p.active_flag=1", nativeQuery = true)
+    @Query(value = "SELECT COUNT(p.id) FROM product_status_list p WHERE p.type=:type and p.active_flag=1", nativeQuery = true)
     long countProductStatusListByTypeAndActiveFlag(int type);
 
-    @Query(value = "select p" +
+    @Query(value = "select p.*" +
             " from product_status_list p where p.active_flag=1 and p.vat_id = ?1", nativeQuery = true)
     List<ProductStatusList> findProductStatusListByVat(int vatId);
 

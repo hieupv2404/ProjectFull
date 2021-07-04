@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class ProductStatusDetailRequest {
     @NotNull(message = "Required Product Status List")
-    private int productStatusListId;
+    private int productStatusListId = 0;
     @NotNull(message = "Required Product")
     private int productId;
     @NotNull(message = "Required Quantity")

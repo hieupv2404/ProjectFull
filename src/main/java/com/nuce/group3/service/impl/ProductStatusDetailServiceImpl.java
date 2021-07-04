@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -130,23 +131,45 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
 
         BigDecimal priceOneFromVatDetail = vatDetailOptional.get().getPriceOne();
 
-        ProductStatusDetail productStatusDetail = new ProductStatusDetail();
-        productStatusDetail.setProductStatusList(productStatusListOptional.get());
-        productStatusDetail.setProductInfo(productInfoOptional.get());
-        productStatusDetail.setQty(productStatusDetailRequest.getQty());
-        productStatusDetail.setPriceOne(priceOneFromVatDetail);
-        productStatusDetail.setActiveFlag(1);
-        productStatusDetailRepo.save(productStatusDetail);
+        ProductStatusDetail productStatusDetailDone = new ProductStatusDetail();
+        productStatusDetailDone.setProductStatusList(productStatusListOptional.get());
+        productStatusDetailDone.setProductInfo(productInfoOptional.get());
+        productStatusDetailDone.setQty(productStatusDetailRequest.getQty());
+        if ((vatDetailOptional.get().getQty() - productStatusDetailRequest.getQty()) < 0) {
+            throw new LogicException("Qty for import are unvaliable!", HttpStatus.BAD_REQUEST);
+        }
+        ;
+        productStatusDetailDone.setQtyRest(vatDetailOptional.get().getQty() - productStatusDetailRequest.getQty());
+        productStatusDetailDone.setPriceOne(priceOneFromVatDetail);
+        productStatusDetailDone.setActiveFlag(1);
+        productStatusDetailRepo.save(productStatusDetailDone);
+
+        String codeForBackList = productStatusListOptional.get().getCode().replace("DONE", "BACK");
+        Optional<ProductStatusList> productStatusListBackOptional = productStatusListRepo.findProductStatusListByCodeAndActiveFlag(codeForBackList, 1);
+        if (!productStatusListBackOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product Status List with Code " + codeForBackList + " not found");
+        }
+
+        ProductStatusDetail productStatusDetailBack = new ProductStatusDetail();
+        productStatusDetailBack.setProductStatusList(productStatusListBackOptional.get());
+        productStatusDetailBack.setProductInfo(productInfoOptional.get());
+
+
+        productStatusDetailBack.setQty(productStatusDetailDone.getQtyRest());
+        productStatusDetailBack.setQtyRest(productStatusDetailDone.getQty());
+        productStatusDetailBack.setPriceOne(priceOneFromVatDetail);
+        productStatusDetailBack.setActiveFlag(1);
+        productStatusDetailRepo.save(productStatusDetailBack);
 
         BigDecimal currentPrice = productInfoOptional.get().getPriceIn().multiply(BigDecimal.valueOf(productInfoOptional.get().getQty()));
-        BigDecimal newPrice = productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()));
-        int totalQty = productInfoOptional.get().getQty() + productStatusDetail.getQty();
-        productInfoOptional.get().setPriceIn((currentPrice.add(newPrice)).divide(BigDecimal.valueOf(totalQty)));
+        BigDecimal newPrice = productStatusDetailDone.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetailDone.getQty()));
+        int totalQty = productInfoOptional.get().getQty() + productStatusDetailDone.getQty();
+        productInfoOptional.get().setPriceIn((currentPrice.add(newPrice)).divide(BigDecimal.valueOf(totalQty), 2, RoundingMode.HALF_UP));
         productInfoOptional.get().setPriceOut(productInfoOptional.get().getPriceIn().add(productInfoOptional.get().getPriceIn().multiply(new BigDecimal(0.2))));
         productInfoOptional.get().setQty(totalQty);
         productInfoRepo.save(productInfoOptional.get());
 
-        productStatusListOptional.get().setPrice(productStatusListOptional.get().getPrice().add(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))));
+        productStatusListOptional.get().setPrice(productStatusListOptional.get().getPrice().add(productStatusDetailDone.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetailDone.getQty()))));
         productStatusListRepo.save(productStatusListOptional.get());
     }
 

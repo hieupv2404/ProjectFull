@@ -89,7 +89,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
         }
         Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productStatusListId, 1);
         if (!productStatusListOptional.isPresent()) {
-            throw new ResourceNotFoundException("ProductStatusList with " + productStatusListId + " not found!");
+            throw new ResourceNotFoundException("Product Status List with " + productStatusListId + " not found!");
         }
         ProductStatusList productStatusList = productStatusListOptional.get();
         return ProductStatusListResponse.builder()
@@ -106,7 +106,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     public void save(Integer vatId, ProductStatusListRequest productStatusListRequest) throws LogicException, ResourceNotFoundException {
         Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByVatAndType(vatId, 1);
         if (productStatusListOptional.isPresent()) {
-            throw new LogicException("ProductStatusList Existed", HttpStatus.BAD_REQUEST);
+            throw new LogicException("Product Status List Existed", HttpStatus.BAD_REQUEST);
         }
         Optional<Vat> vatOptional = vatRepo.findVatByIdAndActiveFlag(vatId, 1);
         if (!vatOptional.isPresent()) {
@@ -134,14 +134,14 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
         String newCodeFromDone = productStatusListDone.getCode().replace("DONE", "BACK");
 
         ProductStatusList productStatusListBack = new ProductStatusList();
-        productStatusListDone.setCode(newCodeFromDone);
-        productStatusListDone.setPrice(new BigDecimal(0));
-        productStatusListDone.setUser(usersOptional.get());
-        productStatusListDone.setVat(vatOptional.get());
-        productStatusListDone.setType(Constant.PRODUCT_BACK);
-        productStatusListDone.setActiveFlag(1);
-        productStatusListDone.setCreateDate(new Date());
-        productStatusListDone.setUpdateDate(new Date());
+        productStatusListBack.setCode(newCodeFromDone);
+        productStatusListBack.setPrice(new BigDecimal(0));
+        productStatusListBack.setUser(usersOptional.get());
+        productStatusListBack.setVat(vatOptional.get());
+        productStatusListBack.setType(Constant.PRODUCT_BACK);
+        productStatusListBack.setActiveFlag(1);
+        productStatusListBack.setCreateDate(new Date());
+        productStatusListBack.setUpdateDate(new Date());
         productStatusListRepo.save(productStatusListBack);
     }
 
@@ -179,7 +179,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     public void delete(Integer productStatusListId) throws ResourceNotFoundException {
         Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productStatusListId, 1);
         if (!productStatusListOptional.isPresent()) {
-            throw new ResourceNotFoundException("ProductStatusList with " + productStatusListId + " not found!");
+            throw new ResourceNotFoundException("Product Status List with " + productStatusListId + " not found!");
         }
         productStatusListOptional.get().setActiveFlag(0);
         productStatusListRepo.save(productStatusListOptional.get());
