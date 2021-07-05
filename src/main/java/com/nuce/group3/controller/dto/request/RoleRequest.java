@@ -10,6 +10,6 @@ import javax.validation.constraints.NotBlank;
 public class RoleRequest {
     @NotBlank(message = Constant.REQUIRE_NAME)
     @Column(name = "role_name", unique = true)
-    private String roleName;
+    private String name;
     private String description;
 }

@@ -25,7 +25,7 @@ public class IssueDetailController {
                                                            @RequestParam(name = "issueCode", required = false) String issueCode,
                                                            @RequestParam(name = "productInfo", required = false) String productInfo,
                                                            @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(issueDetailService.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, issueCode, productInfo, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(issueDetailService.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, issueCode, productInfo, page - 1, size), HttpStatus.OK);
 
     }
 

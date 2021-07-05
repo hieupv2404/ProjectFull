@@ -26,7 +26,7 @@ public class CategoryController {
     public ResponseEntity<GenericResponse> findCategoryByFilter(@RequestParam(name = "name", required = false) String name,
                                                                 @RequestParam(name = "code", required = false) String code,
                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(categoryService.findCategoryByFilter(name, code, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.findCategoryByFilter(name, code, page - 1, size), HttpStatus.OK);
     }
 
     @GetMapping("/{categoryId}")

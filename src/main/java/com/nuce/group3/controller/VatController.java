@@ -39,7 +39,7 @@ public class VatController {
                                                    @RequestParam(name = "userName", required = false) String userName,
                                                    @RequestParam(name = "branchName", required = false) String branchName,
                                                    @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchName, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchName, page - 1, size), HttpStatus.OK);
 
     }
 
@@ -78,7 +78,7 @@ public class VatController {
                                                          @PathVariable(name = "vatCode", required = false) String vatCode,
                                                          @RequestParam(name = "productInfo", required = false) String productInfo,
                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, page - 1, size), HttpStatus.OK);
     }
 
     @PostMapping("/{vatId}/add-products-list")

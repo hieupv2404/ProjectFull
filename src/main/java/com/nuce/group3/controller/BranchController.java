@@ -25,7 +25,7 @@ public class BranchController {
     public ResponseEntity<GenericResponse> findBranchByFilter(@RequestParam(name = "name", required = false) String name,
                                                               @RequestParam(name = "code", required = false) String code,
                                                               @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(branchService.findBranchByFilter(name, code, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(branchService.findBranchByFilter(name, code, page - 1, size), HttpStatus.OK);
     }
 
     @PostMapping

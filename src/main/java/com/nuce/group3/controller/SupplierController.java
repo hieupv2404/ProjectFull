@@ -31,7 +31,7 @@ public class SupplierController {
                                                         @RequestParam(name = "phone", required = false) String phone,
                                                         @RequestParam(name = "address", required = false) String address,
                                                         @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(supplierService.findSupplierByFilter(name, phone, address, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(supplierService.findSupplierByFilter(name, phone, address, page - 1, size), HttpStatus.OK);
 
     }
 

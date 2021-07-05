@@ -171,6 +171,9 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
 
         productStatusListOptional.get().setPrice(productStatusListOptional.get().getPrice().add(productStatusDetailDone.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetailDone.getQty()))));
         productStatusListRepo.save(productStatusListOptional.get());
+
+        productStatusListBackOptional.get().setPrice(productStatusListBackOptional.get().getPrice().add(productStatusDetailBack.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetailBack.getQty()))));
+        productStatusListRepo.save(productStatusListBackOptional.get());
     }
 
     @Override
@@ -208,7 +211,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         ProductInfo productInfo = productInfoOptional.get();
         int oldQty = productInfo.getQty();
         productInfo.setQty(productInfo.getQty() - productStatusDetail.getQty() + productStatusDetailRequest.getQty());
-        productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty())));
+        productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty()), 2, RoundingMode.HALF_UP));
 
 
         productStatusDetail.setProductStatusList(productStatusListOptional.get());
@@ -225,7 +228,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             productStatusListOptional.get().setPrice(productStatusListOptional.get().getPrice().subtract(oldPrice).add(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))));
             productStatusListRepo.save(productStatusListOptional.get());
 
-            productInfo.setPriceIn((currentPrice.add(newPrice)).divide(BigDecimal.valueOf(productInfo.getQty() + productStatusDetail.getQty())));
+            productInfo.setPriceIn((currentPrice.add(newPrice)).divide(BigDecimal.valueOf(productInfo.getQty() + productStatusDetail.getQty()), 2, RoundingMode.HALF_UP));
             productInfo.setPriceOut(productInfo.getPriceOut().add(productInfo.getPriceOut().multiply(new BigDecimal(0.2))));
             productInfoRepo.save(productInfo);
 
@@ -268,7 +271,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             ProductInfo productInfo = productInfoOptional.get();
             int oldQty = productInfo.getQty();
             productInfo.setQty(oldQty - productStatusDetail.getQty());
-            productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty())));
+            productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty()), 2, RoundingMode.HALF_UP));
             productInfo.setPriceOut(productInfo.getPriceIn().add(productInfo.getPriceIn().multiply(BigDecimal.valueOf(0.2))));
             productInfoRepo.save(productInfo);
 

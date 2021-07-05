@@ -28,7 +28,7 @@ public class VatDetailController {
                                                          @RequestParam(name = "vatCode", required = false) String vatCode,
                                                          @RequestParam(name = "productInfo", required = false) String productInfo,
                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, page, size), HttpStatus.OK);
+        return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, page - 1, size), HttpStatus.OK);
 
     }
 
