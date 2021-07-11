@@ -26,10 +26,10 @@ public interface IssueDetailRepo extends JpaRepository<IssueDetail, Integer> {
 
     Optional<IssueDetail> findIssueDetailByIdAndActiveFlag(int i, int activeFlag);
 
-    @Query(value = "select i.* from issue_detail i where i.issue_i=?1 and i.product_i=?2 and i.imei=?3 and i.active_flag=1", nativeQuery = true)
+    @Query(value = "select i.* from issue_detail i where i.issue_id=?1 and i.product_id=?2 and i.imei=?3 and i.active_flag=1", nativeQuery = true)
     Optional<IssueDetail> findIssueDetailByIssueAndProductAndImei(int issueId, int productId, String imei);
 
-    @Query(value = "select i.* from issue_detail i where i.issue_i=?1 and i.active_flag=1", nativeQuery = true)
+    @Query(value = "select i.* from issue_detail i where i.issue_id=?1 and i.active_flag=1", nativeQuery = true)
     List<IssueDetail> findIssueDetailByIssue(int issueId);
 
     Optional<IssueDetail> findIssueDetailByImeiAndActiveFlag(String imei, int activeFlag);

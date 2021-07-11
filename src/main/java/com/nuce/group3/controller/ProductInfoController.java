@@ -15,7 +15,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -46,11 +45,25 @@ public class ProductInfoController {
     @PostMapping(consumes = {"application/json",
             "multipart/form-data"}, produces = "application/json")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> createProductInfo(@Valid @RequestBody ProductInfoRequest productInfoRequest, @RequestParam("image") MultipartFile multipartFile) throws IOException, ResourceNotFoundException, LogicException {
+    public ResponseEntity<String> createProductInfo(@RequestParam("image") MultipartFile multipartFile, @RequestParam("name") String name, @RequestParam("description") String description, @RequestParam("categoryId") Integer categoryId) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = multipartFile.getOriginalFilename();
+        ProductInfoRequest productInfoRequest = new ProductInfoRequest();
         try {
+            File directory = new File(String.valueOf(Constant.UPLOAD_PATH));
+            File file = new File(fileName);
+            if (!directory.exists()) {
+
+                directory.mkdir();
+                if (!file.exists()) {
+                    file.getParentFile().mkdir();
+                    file.createNewFile();
+                }
+            }
             FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
             productInfoRequest.setImgUrl(fileName);
+            productInfoRequest.setName(name);
+            productInfoRequest.setDescription(description);
+            productInfoRequest.setCategoryId(categoryId);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,11 +75,16 @@ public class ProductInfoController {
     @PutMapping(value = "/edit/{productId}", consumes = {"application/json",
             "multipart/form-data"}, produces = "application/json")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @Valid @RequestBody ProductInfoRequest productInfoRequest, @RequestParam("image") MultipartFile multipartFile) throws IOException, ResourceNotFoundException, LogicException {
+    public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @RequestParam("image") MultipartFile multipartFile, @RequestParam("name") String name, @RequestParam("description") String description, @RequestParam("categoryId") Integer categoryId) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = multipartFile.getOriginalFilename();
+        ProductInfoRequest productInfoRequest = new ProductInfoRequest();
+
         try {
             FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
             productInfoRequest.setImgUrl(fileName);
+            productInfoRequest.setName(name);
+            productInfoRequest.setDescription(description);
+            productInfoRequest.setCategoryId(categoryId);
         } catch (IOException e) {
             e.printStackTrace();
         }

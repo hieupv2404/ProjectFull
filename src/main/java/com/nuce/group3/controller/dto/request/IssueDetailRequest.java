@@ -14,6 +14,6 @@ public class IssueDetailRequest {
     private int issueId;
     @NotNull(message = "Required Product")
     private int productId;
-    @NotNull(message = "Required Quantity")
+    @NotNull(message = "Required Imei")
     private String imei;
 }
