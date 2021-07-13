@@ -5,14 +5,19 @@ import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.VatDetailResponse;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
+import com.nuce.group3.service.VatDetailExportService;
 import com.nuce.group3.service.VatDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/vat-details", headers = "Accept=application/json")
@@ -20,6 +25,9 @@ import java.math.BigDecimal;
 public class VatDetailController {
     @Autowired
     private VatDetailService vatDetailService;
+
+    @Autowired
+    private VatDetailExportService vatDetailExportService;
 
     @GetMapping
     @HasRole({"ADMIN", "ADMIN_PTTK"})
@@ -49,6 +57,29 @@ public class VatDetailController {
     public ResponseEntity<String> deleteVatDetail(@PathVariable Integer vatDetailId) throws ResourceNotFoundException {
         vatDetailService.delete(vatDetailId, false);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
+    }
+
+    @GetMapping("/get-file-report")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ByteArrayResource getFileReportTest(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
+                                               @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
+                                               @RequestParam(name = "vatCode", required = false) String vatCode,
+                                               @RequestParam(name = "productInfo", required = false) String productInfo) throws IOException {
+        List<VatDetailResponse> vatDetailResponses = vatDetailService.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo);
+        return vatDetailExportService.exportReport(vatDetailResponses);
+    }
+
+    @PostMapping("/export-excel")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<byte[]> exportToExcel(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
+                                                @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
+                                                @RequestParam(name = "vatCode", required = false) String vatCode,
+                                                @RequestParam(name = "productInfo", required = false) String productInfo) throws IOException {
+        List<VatDetailResponse> vatDetailResponses = vatDetailService.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo);
+        ByteArrayResource resource = vatDetailExportService.exportReport(vatDetailResponses);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(resource.getByteArray());
     }
 
 }

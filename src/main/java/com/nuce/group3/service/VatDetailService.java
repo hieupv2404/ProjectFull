@@ -22,4 +22,5 @@ public interface VatDetailService {
 
     VatDetailResponse findVatDetailById(Integer vatDetailId) throws ResourceNotFoundException;
 
+    List<VatDetailResponse> findVatDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo);
 }

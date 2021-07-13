@@ -31,5 +31,7 @@ public interface UserService {
 
     void delete(Integer userId) throws ResourceNotFoundException;
 
+    UserResponse assignRole(Integer userId, List<Integer> roleIds) throws ResourceNotFoundException;
+
 
 }

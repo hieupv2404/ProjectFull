@@ -39,7 +39,6 @@ public class ProductInfoController {
                                                            @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
                                                            @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(productInfoService.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo, page - 1, size), HttpStatus.OK);
-
     }
 
     @PostMapping(consumes = {"application/json",

@@ -83,6 +83,23 @@ public class VatDetailServiceImpl implements VatDetailService {
     }
 
     @Override
+    public List<VatDetailResponse> findVatDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo) {
+        List<VatDetailResponse> vatDetailResponses = new ArrayList<>();
+        vatDetailRepo.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo).forEach(vatDetail -> {
+            VatDetailResponse vatDetailResponse = VatDetailResponse.builder()
+                    .id(vatDetail.getId())
+                    .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
+                    .priceOne(vatDetail.getPriceOne())
+                    .productInfo(vatDetail.getProductInfo().getName())
+                    .qty(vatDetail.getQty())
+                    .vatCode(vatDetail.getVat().getCode())
+                    .build();
+            vatDetailResponses.add(vatDetailResponse);
+        });
+        return vatDetailResponses;
+    }
+
+    @Override
     public VatDetailResponse findVatDetailById(Integer vatDetailId) throws ResourceNotFoundException {
         if (vatDetailId == null) {
             throw new ResourceNotFoundException("Id not found!");

@@ -278,4 +278,41 @@ public class UserServiceImpl implements UserService {
         usersOptional.get().setActiveFlag(0);
         userRepo.save(usersOptional.get());
     }
+
+    @Override
+    public UserResponse assignRole(Integer userId, List<Integer> roleIds) throws ResourceNotFoundException {
+        Optional<Users> usersOptional = userRepo.findUsersByIdAndActiveFlag(userId, 1);
+        if (!usersOptional.isPresent()) {
+            throw new ResourceNotFoundException("User with ID " + userId + " not found!");
+        }
+        Set<Role> roleSet = new HashSet<>();
+        roleIds.forEach(roleId -> {
+            Optional<Role> roleOptional = roleRepo.findRoleByIdAndActiveFlag(roleId, 1);
+            if (!roleOptional.isPresent()) {
+                try {
+                    throw new ResourceNotFoundException("Role with ID " + roleId + " not found!");
+                } catch (ResourceNotFoundException resourceNotFoundException) {
+                    resourceNotFoundException.printStackTrace();
+                }
+            }
+            roleSet.add(roleOptional.get());
+        });
+        usersOptional.get().setRoles(roleSet);
+        userRepo.save(usersOptional.get());
+        Users users = usersOptional.get();
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setUserName(users.getUserName());
+        userResponse.setEmail(users.getEmail());
+        userResponse.setName(users.getName());
+        userResponse.setPhone(users.getPhone());
+        userResponse.setCreateDate(users.getCreateDate());
+        userResponse.setUpdateDate(users.getUpdateDate());
+        userResponse.setBranchName(users.getBranch().getName());
+        userResponse.setBranchId(users.getBranch().getId());
+        users.getRoles().forEach(role -> {
+            userResponse.getRoleName().add(role.getRoleName());
+        });
+        return userResponse;
+    }
 }
