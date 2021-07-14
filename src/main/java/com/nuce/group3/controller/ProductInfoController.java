@@ -1,5 +1,7 @@
 package com.nuce.group3.controller;
 
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.Permission;
 import com.nuce.group3.controller.dto.request.ProductInfoRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
@@ -8,6 +10,9 @@ import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.interceptor.HasRole;
 import com.nuce.group3.service.ProductInfoService;
 import com.nuce.group3.utils.Constant;
+import com.nuce.group3.utils.googledrive.CreateGoogleFile;
+import com.nuce.group3.utils.googledrive.GoogleDriveUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +27,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping(value = "/api/products-info", headers = "Accept=application/json")
 @CrossOrigin(origins = "*", maxAge = 3600, allowedHeaders = "*")
+@Slf4j
 public class ProductInfoController {
     @Autowired
     private ProductInfoService productInfoService;
@@ -58,16 +64,41 @@ public class ProductInfoController {
                     file.createNewFile();
                 }
             }
+
             FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
-            productInfoRequest.setImgUrl(fileName);
+
+            File uploadFile = new File(Constant.UPLOAD_PATH + fileName);
+
+            // Create Google File:
+
+            com.google.api.services.drive.model.File googleFile = CreateGoogleFile.createGoogleFile(null, "image/*", fileName, uploadFile);
+
+            log.info("Created Google file!");
+            log.info("WebContentLink: " + googleFile.getWebContentLink());
+            log.info("WebViewLink: " + googleFile.getWebViewLink());
+            log.info("ID CODE: " + googleFile.getId());
+            log.info("Done!");
+
+            String permissionType = "anyone";
+            // All values: organizer - owner - writer - commenter - reader
+            String permissionRole = "writer";
+            Permission newPermission = new Permission();
+            newPermission.setType(permissionType);
+            newPermission.setRole(permissionRole);
+
+            Drive driveService = GoogleDriveUtils.getDriveService();
+            driveService.permissions().create(googleFile.getId(), newPermission).execute();
+
+            productInfoRequest.setImgName(fileName);
             productInfoRequest.setName(name);
             productInfoRequest.setDescription(description);
             productInfoRequest.setCategoryId(categoryId);
+            productInfoRequest.setImgUrl("https://drive.google.com/uc?id=" + googleFile.getId());
+            productInfoService.save(productInfoRequest);
         } catch (IOException e) {
             e.printStackTrace();
+            return new ResponseEntity<>("Error!", HttpStatus.BAD_REQUEST);
         }
-        productInfoService.save(productInfoRequest);
-
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 
@@ -80,7 +111,7 @@ public class ProductInfoController {
 
         try {
             FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
-            productInfoRequest.setImgUrl(fileName);
+            productInfoRequest.setImgName(fileName);
             productInfoRequest.setName(name);
             productInfoRequest.setDescription(description);
             productInfoRequest.setCategoryId(categoryId);

@@ -12,6 +12,7 @@ public class ProductInfoRequest implements Serializable {
     @NotBlank(message = Constant.REQUIRE_NAME)
     private String name;
     private String description;
+    private String imgName;
     private String imgUrl;
     @NotNull(message = "Required Category")
     private Integer categoryId;

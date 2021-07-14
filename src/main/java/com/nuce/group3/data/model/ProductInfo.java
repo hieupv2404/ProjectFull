@@ -28,6 +28,9 @@ public class ProductInfo extends BaseEntity implements Serializable {
     @NotBlank(message = Constant.REQUIRE_NAME)
     private String name;
     private String description;
+    @Column(name = "img_name")
+    private String imgName;
+
     @Column(name = "img_url")
     private String imgUrl;
 

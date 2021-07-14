@@ -1,7 +1,6 @@
 package com.nuce.group3.controller.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.nuce.group3.utils.Constant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +19,7 @@ public class ProductInfoResponse {
     private String name;
     private String description;
     private String imgName;
+    private String imgUrl;
     private String categoryName;
     private int qty;
     private BigDecimal priceIn;
@@ -29,9 +29,5 @@ public class ProductInfoResponse {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateDate;
 
-    public String getImgPath() {
-        if (imgName == null) return null;
-        return Constant.DISPLAY_PATH + imgName;
-    }
 
 }
