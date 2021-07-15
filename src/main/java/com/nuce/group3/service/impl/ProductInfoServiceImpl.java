@@ -74,8 +74,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .categoryName(productInfo.getCategory().getName())
                     .qty(productInfo.getQty())
                     .imgUrl(productInfo.getImgUrl())
-                    .priceIn(productInfo.getPriceIn().equals(1) ? new BigDecimal(0) : productInfo.getPriceIn())
-                    .priceOut(productInfo.getPriceOut().equals(1) ? new BigDecimal(0) : productInfo.getPriceOut())
+                    .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceOut())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -98,8 +98,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
                     .qty(productInfo.getQty())
-                    .priceIn(productInfo.getPriceIn().equals(1) ? new BigDecimal(0) : productInfo.getPriceIn())
-                    .priceOut(productInfo.getPriceOut().equals(1) ? new BigDecimal(0) : productInfo.getPriceOut())
+                    .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceOut())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -124,8 +124,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                 .imgUrl(productInfoOptional.get().getImgUrl())
                 .createDate(productInfoOptional.get().getCreateDate())
                 .updateDate(productInfoOptional.get().getUpdateDate())
-                .priceIn(productInfoOptional.get().getPriceIn().equals(1) ? new BigDecimal(0) : productInfoOptional.get().getPriceIn())
-                .priceOut(productInfoOptional.get().getPriceOut().equals(1) ? new BigDecimal(0) : productInfoOptional.get().getPriceOut())
+                .priceIn(productInfoOptional.get().getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfoOptional.get().getPriceIn())
+                .priceOut(productInfoOptional.get().getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfoOptional.get().getPriceOut())
                 .build();
     }
 
@@ -154,8 +154,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .imgUrl(productInfo.getImgUrl())
                     .updateDate(productInfo.getUpdateDate())
                     .description(productInfo.getDescription())
-                    .priceIn(productInfo.getPriceIn().equals(1) ? new BigDecimal(0) : productInfo.getPriceIn())
-                    .priceOut(productInfo.getPriceOut().equals(1) ? new BigDecimal(0) : productInfo.getPriceOut())
+                    .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceOut())
                     .qty(productInfo.getQty())
                     .build();
         } catch (Exception e) {

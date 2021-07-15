@@ -20,4 +20,7 @@ public interface IssueDetailService {
 
     IssueDetailResponse findIssueDetailById(Integer issueDetailId) throws ResourceNotFoundException;
 
+    List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo);
+
+
 }

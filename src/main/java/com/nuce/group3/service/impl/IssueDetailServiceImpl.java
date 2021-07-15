@@ -74,6 +74,21 @@ public class IssueDetailServiceImpl implements IssueDetailService {
     }
 
     @Override
+    public List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo) {
+        List<IssueDetailResponse> issueDetailResponses = new ArrayList<>();
+        issueDetailRepo.findIssueDetailForExport(priceTotalFrom, priceTotalTo, issueCode, productInfo).forEach(issueDetail -> {
+            IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
+                    .productName(issueDetail.getProductInfo().getName())
+                    .imei(issueDetail.getImei())
+                    .price(issueDetail.getPriceOne())
+                    .issueCode(issueDetail.getIssue().getCode())
+                    .build();
+            issueDetailResponses.add(issueDetailResponse);
+        });
+        return issueDetailResponses;
+    }
+
+    @Override
     public IssueDetailResponse findIssueDetailById(Integer issueDetailId) throws ResourceNotFoundException {
         if (issueDetailId == null) {
             throw new ResourceNotFoundException("Id not found!");

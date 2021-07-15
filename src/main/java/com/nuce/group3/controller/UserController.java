@@ -69,4 +69,9 @@ public class UserController {
         userService.delete(userId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
+
+    @PutMapping("/assign-role/{userId}")
+    public ResponseEntity<UserResponse> assignRole(@PathVariable("userId") int userId, @RequestParam(name = "roleIds") List<Integer> roleIds) throws ResourceNotFoundException, LogicException {
+        return new ResponseEntity<>(userService.assignRole(userId, roleIds), HttpStatus.OK);
+    }
 }

@@ -69,6 +69,22 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         return productStatusDetailResponses;
     }
 
+    public List<ProductStatusDetailResponse> findProductStatusDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, Integer type) {
+        List<ProductStatusDetailResponse> productStatusDetailResponses = new ArrayList<>();
+        productStatusDetailRepo.findProductStatusDetailForExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type).forEach(productStatusDetail -> {
+            ProductStatusDetailResponse productStatusDetailResponse = ProductStatusDetailResponse.builder()
+                    .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
+                    .priceOne(productStatusDetail.getPriceOne())
+                    .qty(productStatusDetail.getQty())
+                    .qtyRest(productStatusDetail.getQtyRest())
+                    .productInfo(productStatusDetail.getProductInfo().getName())
+                    .productStatusListCode(productStatusDetail.getProductStatusList().getCode())
+                    .build();
+            productStatusDetailResponses.add(productStatusDetailResponse);
+        });
+        return productStatusDetailResponses;
+    }
+
     @Override
     public GenericResponse findProductStatusDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, int type, Integer page, Integer size) {
         List<ProductStatusDetailResponse> productStatusDetailResponses = new ArrayList<>();

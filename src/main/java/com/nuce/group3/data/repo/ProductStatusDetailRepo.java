@@ -27,6 +27,15 @@ public interface ProductStatusDetailRepo extends JpaRepository<ProductStatusDeta
             " and (:type is null or pd.product_status_list_id in (select pl.id from product_status_list pl where pl.active_flag =1 and pl.type = :type)) ", nativeQuery = true)
     List<ProductStatusDetail> findProductStatusDetailByFilter(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "productStatusListCode") String productStatusListCode, @Param(value = "productInfo") String productInfo, @Param(value = "type") int type, Pageable pageable);
 
+    @Query(value = "select pd.*" +
+            " from product_status_detail pd where pd.active_flag=1 and (:priceTotalFrom is null or pd.price_one*pd.qty >= :priceTotalFrom)" +
+            " and (:priceTotalTo is null or pd.price_one*pd.qty <= :priceTotalTo)" +
+            " and (:productStatusListCode is null or pd.product_status_list_id in (select pl.id from product_status_list pl where pl.active_flag =1 and pl.code like %:productStatusListCode%))" +
+            " and (:productInfo is null or pd.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%))" +
+            " and (:type is null or pd.product_status_list_id in (select pl.id from product_status_list pl where pl.active_flag =1 and pl.type = :type)) ", nativeQuery = true)
+    List<ProductStatusDetail> findProductStatusDetailForExport(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "productStatusListCode") String productStatusListCode, @Param(value = "productInfo") String productInfo, @Param(value = "type") int type);
+
+
     Optional<ProductStatusDetail> findProductStatusDetailByIdAndActiveFlag(int id, int activeFlag);
 
     @Query(value = "select pd.* from product_status_detail pd where pd.active_flag=1" +
