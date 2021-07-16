@@ -224,4 +224,30 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         shelfRepo.save(shelfOptional.get());
     }
 
+    @Override
+    public void changeStatusToValid(Integer productDetailId, String enumStatus) throws ResourceNotFoundException, LogicException {
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productDetailId, 1);
+        if (!productDetailOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product detail with " + productDetailId + " not found!");
+        }
+        if (productDetailOptional.get().getStatus() == EnumStatus.VALID) {
+            throw new LogicException("Status Product detail not available", HttpStatus.BAD_REQUEST);
+        }
+        productDetailOptional.get().setStatus(EnumStatus.INVALID);
+        productDetailRepo.save(productDetailOptional.get());
+
+    }
+
+    @Override
+    public void changeStatusToInValid(Integer productDetailId, String enumStatus) throws ResourceNotFoundException, LogicException {
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productDetailId, 1);
+        if (!productDetailOptional.isPresent()) {
+            throw new ResourceNotFoundException("Product detail with " + productDetailId + " not found!");
+        }
+        if (productDetailOptional.get().getStatus() == EnumStatus.INVALID) {
+            throw new LogicException("Status Product detail not available", HttpStatus.BAD_REQUEST);
+        }
+        productDetailOptional.get().setStatus(EnumStatus.VALID);
+        productDetailRepo.save(productDetailOptional.get());
+    }
 }

@@ -30,10 +30,11 @@ public class IssueDetailController {
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<GenericResponse> findIssueDetail(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                            @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
+                                                           @RequestParam(name = "imei", required = false) String imei,
                                                            @RequestParam(name = "issueCode", required = false) String issueCode,
                                                            @RequestParam(name = "productInfo", required = false) String productInfo,
                                                            @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(issueDetailService.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, issueCode, productInfo, page - 1, size), HttpStatus.OK);
+        return new ResponseEntity<>(issueDetailService.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, page - 1, size), HttpStatus.OK);
 
     }
 
@@ -54,9 +55,10 @@ public class IssueDetailController {
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ByteArrayResource getFileReportTest(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
+                                               @RequestParam(name = "imei", required = false) String imei,
                                                @RequestParam(name = "issueCode", required = false) String issueCode,
                                                @RequestParam(name = "productInfo", required = false) String productInfo) throws IOException {
-        List<IssueDetailResponse> issueDetailResponses = issueDetailService.findIssueDetailForExport(priceTotalFrom, priceTotalTo, issueCode, productInfo);
+        List<IssueDetailResponse> issueDetailResponses = issueDetailService.findIssueDetailForExport(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo);
         return issueDetailExportService.exportReport(issueDetailResponses);
     }
 
@@ -64,9 +66,10 @@ public class IssueDetailController {
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<byte[]> exportToExcel(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                 @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
+                                                @RequestParam(name = "imei", required = false) String imei,
                                                 @RequestParam(name = "issueCode", required = false) String issueCode,
                                                 @RequestParam(name = "productInfo", required = false) String productInfo) throws IOException {
-        List<IssueDetailResponse> issueDetailResponses = issueDetailService.findIssueDetailForExport(priceTotalFrom, priceTotalTo, issueCode, productInfo);
+        List<IssueDetailResponse> issueDetailResponses = issueDetailService.findIssueDetailForExport(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo);
         ByteArrayResource resource = issueDetailExportService.exportReport(issueDetailResponses);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))

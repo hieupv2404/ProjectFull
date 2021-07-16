@@ -21,4 +21,8 @@ public interface ProductDetailService {
 
     void delete(Integer productId) throws ResourceNotFoundException, LogicException;
 
+    void changeStatusToValid(Integer productDetailId, String enumStatus) throws ResourceNotFoundException, LogicException;
+
+    void changeStatusToInValid(Integer productDetailId, String enumStatus) throws ResourceNotFoundException, LogicException;
+
 }

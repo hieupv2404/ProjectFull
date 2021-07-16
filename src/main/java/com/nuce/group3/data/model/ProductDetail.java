@@ -22,7 +22,7 @@ public class ProductDetail extends BaseEntity implements Serializable {
 
 
     @NotBlank(message = "Required Imei")
-    @Pattern(regexp = "[^A-Za-z0-9]+", message = "Wrong Format Imei")
+    @Pattern(regexp = "^[A-Za-z0-9]+$", message = "Wrong Format Imei")
     private String imei;
 
     @ManyToOne

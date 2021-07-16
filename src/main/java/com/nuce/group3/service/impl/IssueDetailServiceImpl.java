@@ -57,11 +57,11 @@ public class IssueDetailServiceImpl implements IssueDetailService {
     }
 
     @Override
-    public GenericResponse findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo, Integer page, Integer size) {
+    public GenericResponse findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo, Integer page, Integer size) {
         List<IssueDetailResponse> issueDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        issueDetailRepo.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, issueCode, productInfo, PageRequest.of(page, size)).forEach(issueDetail -> {
+        issueDetailRepo.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, PageRequest.of(page, size)).forEach(issueDetail -> {
             IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
                     .productName(issueDetail.getProductInfo().getName())
                     .imei(issueDetail.getImei())
@@ -74,9 +74,9 @@ public class IssueDetailServiceImpl implements IssueDetailService {
     }
 
     @Override
-    public List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo) {
+    public List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo) {
         List<IssueDetailResponse> issueDetailResponses = new ArrayList<>();
-        issueDetailRepo.findIssueDetailForExport(priceTotalFrom, priceTotalTo, issueCode, productInfo).forEach(issueDetail -> {
+        issueDetailRepo.findIssueDetailForExport(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo).forEach(issueDetail -> {
             IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
                     .productName(issueDetail.getProductInfo().getName())
                     .imei(issueDetail.getImei())
@@ -122,7 +122,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
             throw new ResourceNotFoundException("Product Info with id: " + issueDetailRequest.getProductId() + " not found");
         }
 
-        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(issueDetailRequest.getImei(), EnumStatus.VALID.name(), 1);
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(issueDetailRequest.getImei(), EnumStatus.VALID, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Detail with imei: " + issueDetailRequest.getImei() + " not found");
         }
@@ -167,7 +167,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
             issue.setPrice(issue.getPrice().subtract(issueDetailOptional.get().getPriceOne()));
             issueRepo.save(issue);
         }
-        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(issueDetailOptional.get().getImei(), EnumStatus.INVALID.name(), 1);
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(issueDetailOptional.get().getImei(), EnumStatus.INVALID, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Detail  with imei: " + issueDetailOptional.get().getImei() + "not found");
         }

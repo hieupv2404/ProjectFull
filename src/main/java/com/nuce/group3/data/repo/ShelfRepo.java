@@ -24,10 +24,10 @@ public interface ShelfRepo  extends JpaRepository<Shelf, Integer> {
             " from shelf s where s.active_flag=1 and (:name is null or s.name like %:name%)" +
             " and (:qtyFrom is null or s.qty >= :qtyFrom) and (:qtyTo is null or s.qty <= :qtyTo)" +
             " and (:qtyRestFrom is null or s.total-s.qty >= :qtyRestFrom) and (:qtyRestTo is null or s.total-s.qty <= :qtyRestTo)" +
-            " and (:branchName is null or s.branch_id in (select b.id from branch b where b.active_flag=1 and b.name like %:branchName%))", nativeQuery = true)
+            " and (:branchId is null or s.branch_id = :branchId)", nativeQuery = true)
     List<Shelf> findShelfByFilter(@Param(value = "name") String name,
                                   @Param(value = "qtyFrom") Integer qtyFrom, @Param(value = "qtyTo") Integer qtyTo,
                                   @Param(value = "qtyRestFrom") Integer qtyRestFrom, @Param(value = "qtyRestTo") Integer qtyRestTo,
-                                  @Param(value = "branchName") String branchName, Pageable pageable);
+                                  @Param(value = "branchId") Integer branchId, Pageable pageable);
     
 }

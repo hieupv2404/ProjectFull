@@ -12,7 +12,7 @@ import java.util.List;
 public interface IssueDetailService {
     List<IssueDetailResponse> getAll(Integer page, Integer size);
 
-    GenericResponse findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo, Integer page, Integer size);
+    GenericResponse findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo, Integer page, Integer size);
 
     void save(IssueDetailRequest issueDetailRequest) throws LogicException, ResourceNotFoundException;
 
@@ -20,7 +20,7 @@ public interface IssueDetailService {
 
     IssueDetailResponse findIssueDetailById(Integer issueDetailId) throws ResourceNotFoundException;
 
-    List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String issueCode, String productInfo);
+    List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo);
 
 
 }

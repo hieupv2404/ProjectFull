@@ -53,11 +53,11 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public GenericResponse findShelfByFilter(String name, Integer qtyFrom, Integer qtyTo, Integer qtyRestFrom, Integer qtyRestTo, String branchName, Integer page, Integer size) {
+    public GenericResponse findShelfByFilter(String name, Integer qtyFrom, Integer qtyTo, Integer qtyRestFrom, Integer qtyRestTo, Integer branchId, Integer page, Integer size) {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<ShelfResponse> shelfResponses = new ArrayList<>();
-        shelfRepo.findShelfByFilter(name, qtyFrom, qtyTo, qtyRestFrom, qtyRestTo, branchName, PageRequest.of(page, size)).forEach(shelf -> {
+        shelfRepo.findShelfByFilter(name, qtyFrom, qtyTo, qtyRestFrom, qtyRestTo, branchId, PageRequest.of(page, size)).forEach(shelf -> {
             ShelfResponse shelfResponse = ShelfResponse.builder()
                     .id(shelf.getId())
                     .name(shelf.getName())

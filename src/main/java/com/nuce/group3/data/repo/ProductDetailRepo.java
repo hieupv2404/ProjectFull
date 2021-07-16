@@ -1,6 +1,7 @@
 package com.nuce.group3.data.repo;
 
 import com.nuce.group3.data.model.ProductDetail;
+import com.nuce.group3.enums.EnumStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +28,6 @@ public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer>
             " from product_detail p where p.active_flag=1 and (:productStatusListId is null or p.product_status_list_id = :productStatusListId)", nativeQuery = true)
     List<ProductDetail> findProductDetailsByProductStatusList(int productStatusListId);
 
-    Optional<ProductDetail> findProductDetailByImeiAndStatusAndActiveFlag(String imei, String stauts, int activeFlag);
+    Optional<ProductDetail> findProductDetailByImeiAndStatusAndActiveFlag(String imei, EnumStatus status, int activeFlag);
 
 }
