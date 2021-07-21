@@ -143,6 +143,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetail.setImei(productDetailRequest.getImei());
         productDetail.setStatus(EnumStatus.VALID);
         productDetailRepo.save(productDetail);
+
+        shelfOptional.get().setQty(shelfOptional.get().getQty() + 1);
+        shelfRepo.save(shelfOptional.get());
     }
 
     @Override
@@ -176,6 +179,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetail.setUpdateDate(new Date());
         try {
             productDetailRepo.save(productDetail);
+
+            shelfOptional.get().setQty(shelfOptional.get().getQty() + 1);
+            shelfRepo.save(shelfOptional.get());
             return ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
                     .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
@@ -199,7 +205,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
         }
-        if (productDetailOptional.get().getStatus().equals(EnumStatus.INVALID.name())) {
+        if (productDetailOptional.get().getStatus().equals(EnumStatus.INVALID)) {
             throw new LogicException("The product has been purchased", HttpStatus.BAD_REQUEST);
         }
 
@@ -231,10 +237,13 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             throw new ResourceNotFoundException("Product detail with " + productDetailId + " not found!");
         }
         if (productDetailOptional.get().getStatus() == EnumStatus.VALID) {
-            throw new LogicException("Status Product detail not available", HttpStatus.BAD_REQUEST);
+            throw new LogicException("Status Product detail is not available", HttpStatus.BAD_REQUEST);
         }
-        productDetailOptional.get().setStatus(EnumStatus.INVALID);
+        productDetailOptional.get().setStatus(EnumStatus.VALID);
         productDetailRepo.save(productDetailOptional.get());
+
+        productDetailOptional.get().getShelf().setQty(productDetailOptional.get().getShelf().getQty() + 1);
+        shelfRepo.save(productDetailOptional.get().getShelf());
 
     }
 
@@ -245,9 +254,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             throw new ResourceNotFoundException("Product detail with " + productDetailId + " not found!");
         }
         if (productDetailOptional.get().getStatus() == EnumStatus.INVALID) {
-            throw new LogicException("Status Product detail not available", HttpStatus.BAD_REQUEST);
+            throw new LogicException("Status Product detail is not available", HttpStatus.BAD_REQUEST);
         }
-        productDetailOptional.get().setStatus(EnumStatus.VALID);
+        productDetailOptional.get().setStatus(EnumStatus.INVALID);
         productDetailRepo.save(productDetailOptional.get());
+
+        productDetailOptional.get().getShelf().setQty(productDetailOptional.get().getShelf().getQty() - 1);
+        shelfRepo.save(productDetailOptional.get().getShelf());
     }
 }
