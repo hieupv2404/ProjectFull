@@ -8,6 +8,7 @@ import com.nuce.group3.exception.LogicException;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface ProductStatusDetailService {
     List<ProductStatusDetailResponse> getAll(int type, Integer page, Integer size);
@@ -23,6 +24,8 @@ public interface ProductStatusDetailService {
     ProductStatusDetailResponse findProductStatusDetailById(Integer productStatusDetailId) throws ResourceNotFoundException;
 
     List<ProductStatusDetailResponse> findProductStatusDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, Integer type);
+
+    Map<String, Long> getCountRecord();
 
 
 }

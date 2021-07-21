@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/product-status-lists", headers = "Accept=application/json")
@@ -85,5 +86,11 @@ public class ProductStatusListController {
                                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
         return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, page - 1, size), HttpStatus.OK);
 
+    }
+
+    @GetMapping("/get-count-records")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<Map<String, Long>> getCountRecords() {
+        return new ResponseEntity<>(productStatusDetailService.getCountRecord(), HttpStatus.OK);
     }
 }

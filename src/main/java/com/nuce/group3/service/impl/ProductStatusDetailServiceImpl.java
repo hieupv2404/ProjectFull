@@ -21,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -301,5 +299,16 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         }
 
 
+    }
+
+    @Override
+    public Map<String, Long> getCountRecord() {
+        Map<String, Long> mapCount = new HashMap<>();
+        mapCount.put("LIST-DONE", productStatusListRepo.countProductStatusListByTypeAndActiveFlag(Constant.PRODUCT_DONE));
+        mapCount.put("LIST-BACK", productStatusListRepo.countProductStatusListByTypeAndActiveFlag(Constant.PRODUCT_BACK));
+        mapCount.put("DETAIL-DONE", productStatusDetailRepo.countProductStatusDetailByTypeAndActiveFlag(Constant.PRODUCT_DONE));
+        mapCount.put("DETAIL-BACK", productStatusDetailRepo.countProductStatusDetailByTypeAndActiveFlag(Constant.PRODUCT_BACK));
+
+        return mapCount;
     }
 }
