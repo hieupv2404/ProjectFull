@@ -5,16 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDetailRequest {
-    @NotBlank(message = "Required Product Name")
+    @NotNull(message = "Required Product")
     private Integer productId;
-    @NotBlank(message = "Required Product Status Code")
+    @NotNull(message = "Required Product Status List")
     private Integer productStatusListId;
     @NotBlank(message = "Required Imei")
     private String imei;
+    @NotNull(message = "Required Shelf")
     private Integer shelfId;
 }
