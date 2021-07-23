@@ -304,10 +304,10 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
     @Override
     public Map<String, Long> getCountRecord() {
         Map<String, Long> mapCount = new HashMap<>();
-        mapCount.put("LIST-DONE", productStatusListRepo.countProductStatusListByTypeAndActiveFlag(Constant.PRODUCT_DONE));
-        mapCount.put("LIST-BACK", productStatusListRepo.countProductStatusListByTypeAndActiveFlag(Constant.PRODUCT_BACK));
-        mapCount.put("DETAIL-DONE", productStatusDetailRepo.countProductStatusDetailByTypeAndActiveFlag(Constant.PRODUCT_DONE));
-        mapCount.put("DETAIL-BACK", productStatusDetailRepo.countProductStatusDetailByTypeAndActiveFlag(Constant.PRODUCT_BACK));
+        mapCount.put("LIST_DONE", productStatusListRepo.countProductStatusListByTypeAndActiveFlag(Constant.PRODUCT_DONE));
+        mapCount.put("LIST_BACK", productStatusListRepo.countProductStatusListByTypeAndActiveFlag(Constant.PRODUCT_BACK));
+        mapCount.put("DETAIL_DONE", productStatusDetailRepo.countProductStatusDetailByTypeAndActiveFlag(Constant.PRODUCT_DONE));
+        mapCount.put("DETAIL_BACK", productStatusDetailRepo.countProductStatusDetailByTypeAndActiveFlag(Constant.PRODUCT_BACK));
 
         return mapCount;
     }
