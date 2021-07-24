@@ -7,6 +7,7 @@ import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.data.model.Category;
 import com.nuce.group3.data.model.ProductInfo;
 import com.nuce.group3.data.repo.CategoryRepo;
+import com.nuce.group3.data.repo.ProductDetailRepo;
 import com.nuce.group3.data.repo.ProductInfoRepo;
 import com.nuce.group3.data.repo.VatDetailRepo;
 import com.nuce.group3.exception.LogicException;
@@ -34,6 +35,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Autowired
     private VatDetailRepo vatDetailRepo;
+
+    @Autowired
+    private ProductDetailRepo productDetailRepo;
 
     @Override
     public void save(ProductInfoRequest productInfoRequest) throws LogicException, ResourceNotFoundException {
