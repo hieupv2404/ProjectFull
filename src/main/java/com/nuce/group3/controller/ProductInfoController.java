@@ -157,7 +157,7 @@ public class ProductInfoController {
 
     @PutMapping("/delete/{productId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<String> editProductInfo(@PathVariable Integer productId) throws ResourceNotFoundException {
+    public ResponseEntity<String> deleteProductInfo(@PathVariable Integer productId) throws ResourceNotFoundException, LogicException {
         productInfoService.delete(productId);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }

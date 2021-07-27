@@ -105,6 +105,11 @@ public class ShelfServiceImpl implements ShelfService {
             throw new ResourceNotFoundException("Shelf with ID: " + shelfId + " not found!");
         }
 
+        Optional<Shelf> shelfOptionalByName = shelfRepo.findShelfByNameAndActiveFlag(shelfRequest.getName(), 1);
+        if (!shelfRequest.getName().equals(shelfOptional.get().getName()) && shelfOptionalByName.isPresent()) {
+            throw new LogicException("Shelf with name: " + shelfRequest.getName() + " is existed!", HttpStatus.BAD_REQUEST);
+        }
+
         Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(shelfRequest.getBranchId(), 1);
         if (!branchOptional.isPresent()) {
             throw new ResourceNotFoundException("Branch with ID: " + shelfRequest.getBranchId() + " not found!");

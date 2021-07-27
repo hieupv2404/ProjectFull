@@ -72,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (!categoryOptional.isPresent())
             throw new ResourceNotFoundException("Category with id " + categoryId + " not found");
         Optional<Category> categoryFindByCodeOptional = categoryRepo.findCategoryByActiveFlagAndCode(1, categoryRequest.getCode());
-        if (categoryFindByCodeOptional.isPresent())
+        if (!categoryRequest.getCode().equals(categoryOptional.get().getCode()) && categoryFindByCodeOptional.isPresent())
             throw new LogicException("Category with code existed!", HttpStatus.BAD_REQUEST);
         categoryOptional.get().setName(categoryRequest.getName());
         categoryOptional.get().setCode(categoryRequest.getCode());

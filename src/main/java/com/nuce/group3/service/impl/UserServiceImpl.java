@@ -225,6 +225,12 @@ public class UserServiceImpl implements UserService {
         if (!usersOptional.isPresent()) {
             throw new ResourceNotFoundException("User with ID: " + userId + " not found!");
         }
+
+        Optional<Users> usersOptionalByUsername = userRepo.findUsersByUserName(usersRequest.getUserName());
+        if (!usersOptional.get().getUserName().equals(usersRequest.getUserName()) && usersOptionalByUsername.isPresent()) {
+            throw new ResourceNotFoundException("User with ID: " + userId + " is existed!");
+        }
+
         Users users = usersOptional.get();
 
         Set<Role> roles = new HashSet<>();
@@ -286,17 +292,13 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User with ID " + userId + " not found!");
         }
         Set<Role> roleSet = new HashSet<>();
-        roleIds.forEach(roleId -> {
+        for (Integer roleId : roleIds) {
             Optional<Role> roleOptional = roleRepo.findRoleByIdAndActiveFlag(roleId, 1);
             if (!roleOptional.isPresent()) {
-                try {
-                    throw new ResourceNotFoundException("Role with ID " + roleId + " not found!");
-                } catch (ResourceNotFoundException resourceNotFoundException) {
-                    resourceNotFoundException.printStackTrace();
-                }
+                throw new ResourceNotFoundException("Role with ID " + roleId + " not found!");
             }
             roleSet.add(roleOptional.get());
-        });
+        }
         usersOptional.get().setRoles(roleSet);
         userRepo.save(usersOptional.get());
         Users users = usersOptional.get();

@@ -291,7 +291,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
 
             productDetailRepo.findProductDetailsByProductStatusList(productStatusDetail.getProductStatusList().getId()).forEach(productDetail -> {
                 try {
-                    productDetailService.delete(productDetail.getId());
+                    productDetailService.delete(productDetail.getId(), true);
                 } catch (ResourceNotFoundException | LogicException e) {
                     e.printStackTrace();
                 }

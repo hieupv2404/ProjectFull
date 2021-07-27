@@ -20,5 +20,5 @@ public interface ProductInfoService {
 
     ProductInfoResponse edit(Integer productId, ProductInfoRequest productInfoRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer productId) throws ResourceNotFoundException;
+    void delete(Integer productId) throws ResourceNotFoundException, LogicException;
 }

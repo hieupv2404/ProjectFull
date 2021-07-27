@@ -5,12 +5,15 @@ import com.nuce.group3.controller.dto.request.ProductInfoRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductInfoResponse;
 import com.nuce.group3.data.model.Category;
+import com.nuce.group3.data.model.ProductDetail;
 import com.nuce.group3.data.model.ProductInfo;
 import com.nuce.group3.data.repo.CategoryRepo;
 import com.nuce.group3.data.repo.ProductDetailRepo;
 import com.nuce.group3.data.repo.ProductInfoRepo;
 import com.nuce.group3.data.repo.VatDetailRepo;
+import com.nuce.group3.enums.EnumStatus;
 import com.nuce.group3.exception.LogicException;
+import com.nuce.group3.service.ProductDetailService;
 import com.nuce.group3.service.ProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +42,9 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Autowired
     private ProductDetailRepo productDetailRepo;
 
+    @Autowired
+    private ProductDetailService productDetailService;
+
     @Override
     public void save(ProductInfoRequest productInfoRequest) throws LogicException, ResourceNotFoundException {
         Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByNameAndActiveFlag(productInfoRequest.getName(), 1);
@@ -47,7 +53,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         Optional<Category> categoryOptional = categoryRepo.findById(productInfoRequest.getCategoryId());
         if (!categoryOptional.isPresent()) {
-            throw new ResourceNotFoundException("Categroy with id " + productInfoRequest.getCategoryId() + " not found");
+            throw new ResourceNotFoundException("Category with id " + productInfoRequest.getCategoryId() + " not found");
         }
         ProductInfo productInfo = new ProductInfo();
         productInfo.setCategory(categoryOptional.get());
@@ -135,9 +141,13 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     public ProductInfoResponse edit(Integer productId, ProductInfoRequest productInfoRequest) throws ResourceNotFoundException, LogicException {
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productId,1);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productId, 1);
         if (!productInfoOptional.isPresent()) {
             throw new ResourceNotFoundException("Product info with " + productId + " not found!");
+        }
+        Optional<ProductInfo> productInfoOptionalByName = productInfoRepo.findProductInfoByNameAndActiveFlag(productInfoRequest.getName(), 1);
+        if (!productInfoRequest.getName().equals(productInfoOptional.get().getName()) && productInfoOptionalByName.isPresent()) {
+            throw new ResourceNotFoundException("Product info with " + productInfoRequest.getName() + " is existed!");
         }
         ProductInfo productInfo = productInfoOptional.get();
         productInfo.setName(productInfoRequest.getName());
@@ -168,12 +178,21 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
-    public void delete(Integer productId) throws ResourceNotFoundException {
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productId,1);
+    public void delete(Integer productId) throws ResourceNotFoundException, LogicException {
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productId, 1);
         if (!productInfoOptional.isPresent()) {
             throw new ResourceNotFoundException("Product info with " + productId + " not found!");
         }
         productInfoOptional.get().setActiveFlag(0);
+
+        List<ProductDetail> productDetailList = productDetailRepo.findProductDetailByProductInfoAndStatus(productId, EnumStatus.INVALID.toString());
+        if (!productDetailList.isEmpty()) {
+            throw new LogicException("The product has been purchased!", HttpStatus.BAD_REQUEST);
+        } else {
+            for (ProductDetail productDetail : productDetailList) {
+                productDetailService.delete(productDetail.getId(), true);
+            }
+        }
         productInfoRepo.save(productInfoOptional.get());
     }
 }

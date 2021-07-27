@@ -30,4 +30,9 @@ public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer>
 
     Optional<ProductDetail> findProductDetailByImeiAndStatusAndActiveFlag(String imei, EnumStatus status, int activeFlag);
 
+    @Query(value = "select p.*" +
+            " from product_detail p where p.active_flag=1 and (:productInfoId is null or p.product_id = :productInfoId) " +
+            " and p.status= :status", nativeQuery = true)
+    List<ProductDetail> findProductDetailByProductInfoAndStatus(Integer productInfoId, String status);
+
 }

@@ -57,11 +57,16 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public Supplier edit(Integer supplierId, SupplierRequest supplierRequest) throws ResourceNotFoundException, LogicException {
-        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId,1);
-        if(!supplierOptional.isPresent())
-        {
-            throw new ResourceNotFoundException("Supplier with ID: " + supplierId +" not found!");
+        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId, 1);
+        if (!supplierOptional.isPresent()) {
+            throw new ResourceNotFoundException("Supplier with ID: " + supplierId + " not found!");
         }
+
+        Optional<Supplier> supplierOptionalByName = supplierRepo.findSupplierByNameAndActiveFlag(supplierRequest.getName(), 1);
+        if (!supplierRequest.getName().equals(supplierOptional.get().getName()) && supplierOptionalByName.isPresent()) {
+            throw new LogicException("Supplier with name: " + supplierRequest.getName() + " existed!", HttpStatus.BAD_REQUEST);
+        }
+
         Supplier supplier = supplierOptional.get();
         supplier.setName(supplierRequest.getName());
         supplier.setPhone(supplierRequest.getPhone());

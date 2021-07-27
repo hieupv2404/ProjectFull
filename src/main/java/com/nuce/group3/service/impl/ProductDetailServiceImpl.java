@@ -47,9 +47,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     @Override
     public List<ProductDetailResponse> getAll(Integer page, Integer size) {
         List<ProductDetailResponse> productDetailResponses = new ArrayList<>();
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        productDetailRepo.findProductDetailByActiveFlag(1, PageRequest.of(page,size)).forEach(productDetail -> {
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        productDetailRepo.findProductDetailByActiveFlag(1, PageRequest.of(page, size)).forEach(productDetail -> {
             ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                     .productName(productDetail.getProductInfo().getName())
                     .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
@@ -96,7 +96,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (productId == null) {
             throw new ResourceNotFoundException("Id not found!");
         }
-        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productId,1);
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productId, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
         }
@@ -121,11 +121,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (productDetailOptional.isPresent()) {
             throw new LogicException("Product Detail Existed", HttpStatus.BAD_REQUEST);
         }
-        Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailRequest.getShelfId(),1);
+        Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailRequest.getShelfId(), 1);
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Shelf with id " + productDetailRequest.getShelfId() + " not found");
         }
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productDetailRequest.getProductId(),1);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productDetailRequest.getProductId(), 1);
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Info with id " + productDetailRequest.getShelfId() + " not found");
         }
@@ -159,16 +159,16 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!productStatusListOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Status List with id " + productDetailRequest.getProductStatusListId() + " not found");
         }
-        Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailRequest.getShelfId(),1);
+        Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailRequest.getShelfId(), 1);
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Shelf with id " + productDetailRequest.getShelfId() + " not found");
         }
-        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productDetailRequest.getProductId(),1);
+        Optional<ProductInfo> productInfoOptional = productInfoRepo.findProductInfoByIdAndActiveFlag(productDetailRequest.getProductId(), 1);
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Info with id " + productDetailRequest.getShelfId() + " not found");
         }
         Optional<ProductDetail> productDetailByImei = productDetailRepo.findProductDetailByImeiAndActiveFlag(productDetailRequest.getImei(), 1);
-        if (productDetailByImei.isPresent()) {
+        if (!productDetailRequest.getImei().equals(productDetailOptional.get().getImei()) && productDetailByImei.isPresent()) {
             throw new ResourceNotFoundException("Product detail with imei" + productDetailRequest.getImei() + " existed!");
         }
 
@@ -200,7 +200,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public void delete(Integer productId) throws ResourceNotFoundException, LogicException {
+    public void delete(Integer productId, boolean isDeletedParent) throws ResourceNotFoundException, LogicException {
         Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productId, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
@@ -217,8 +217,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             throw new ResourceNotFoundException("Product info with ID: " + productDetailOptional.get().getProductInfo().getId() + " not found");
         }
 
-        productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
-        productInfoRepo.save(productInfoOptional.get());
+        if (!isDeletedParent) {
+            productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
+            productInfoRepo.save(productInfoOptional.get());
+        }
 
 
         Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailOptional.get().getShelf().getId(), 1);

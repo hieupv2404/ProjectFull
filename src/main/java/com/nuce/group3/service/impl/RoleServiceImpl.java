@@ -62,8 +62,8 @@ public class RoleServiceImpl implements RoleService {
             throw new ResourceNotFoundException("Role with ID: " + RoleId + " not found!");
         }
         Optional<Role> roleOptionalByName = roleRepo.findRoleByRoleNameAndActiveFlag(roleRequest.getName(), 1);
-        if (roleOptionalByName.isPresent()) {
-            throw new LogicException("Role with name: " + roleRequest.getName() + " existed!", HttpStatus.BAD_REQUEST);
+        if (!roleRequest.getName().equals(roleOptional.get().getRoleName()) && roleOptionalByName.isPresent()) {
+            throw new LogicException("Role with name: " + roleRequest.getName() + " is existed!", HttpStatus.BAD_REQUEST);
         }
         Role role = roleOptional.get();
         role.setRoleName(roleRequest.getName());

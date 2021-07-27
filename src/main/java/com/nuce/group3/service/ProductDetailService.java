@@ -19,7 +19,7 @@ public interface ProductDetailService {
 
     ProductDetailResponse edit(Integer productId, ProductDetailRequest productDetailRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer productId) throws ResourceNotFoundException, LogicException;
+    void delete(Integer productId, boolean isDeletedParent) throws ResourceNotFoundException, LogicException;
 
     void changeStatusToValid(Integer productDetailId, String enumStatus) throws ResourceNotFoundException, LogicException;
 

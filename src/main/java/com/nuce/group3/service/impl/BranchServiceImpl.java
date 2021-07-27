@@ -86,7 +86,7 @@ public class BranchServiceImpl implements BranchService {
         if (!branchOptional.isPresent())
             throw new ResourceNotFoundException("Branch with id " + branchId + " not found");
         Optional<Branch> branchFindByCodeOptional = branchRepo.findBranchByCodeAndActiveFlag(branchRequest.getCode(), 1);
-        if (branchFindByCodeOptional.isPresent())
+        if (!branchRequest.getCode().equals(branchOptional.get().getCode()) && branchFindByCodeOptional.isPresent())
             throw new LogicException("Branch existed!", HttpStatus.BAD_REQUEST);
         branchOptional.get().setName(branchRequest.getName());
         branchOptional.get().setCode(branchRequest.getCode());
