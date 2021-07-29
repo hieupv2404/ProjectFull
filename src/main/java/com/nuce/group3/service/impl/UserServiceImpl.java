@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         List<UserResponse> userResponses = new ArrayList<>();
         for (Users users1 : users) {
             UserResponse userResponse = new UserResponse();
+            userResponse.setId(users1.getId());
             userResponse.setUserName(users1.getUserName());
             userResponse.setEmail(users1.getEmail());
             userResponse.setName(users1.getName());
@@ -74,6 +75,7 @@ public class UserServiceImpl implements UserService {
         List<UserResponse> userResponses = new ArrayList<>();
         userRepo.findUserByFilter(name, phone, branch, userName, PageRequest.of(page, size)).forEach(users -> {
             UserResponse userResponse = new UserResponse();
+            userResponse.setId(users.getId());
             userResponse.setUserName(users.getUserName());
             userResponse.setEmail(users.getEmail());
             userResponse.setName(users.getName());
@@ -96,6 +98,7 @@ public class UserServiceImpl implements UserService {
         List<UserResponse> userResponses = new ArrayList<>();
         for (Users users1 : usersList) {
             UserResponse userResponse = new UserResponse();
+            userResponse.setId(users1.getId());
             userResponse.setUserName(users1.getUserName());
             userResponse.setEmail(users1.getEmail());
             userResponse.setName(users1.getName());
@@ -261,6 +264,7 @@ public class UserServiceImpl implements UserService {
         UserResponse userResponse = new UserResponse();
 
         userRepo.save(users);
+        userResponse.setId(users.getId());
         userResponse.setUserName(users.getUserName());
         userResponse.setEmail(users.getEmail());
         userResponse.setName(users.getName());
@@ -305,6 +309,7 @@ public class UserServiceImpl implements UserService {
         UserResponse userResponse = new UserResponse();
 
         userResponse.setUserName(users.getUserName());
+        userResponse.setId(users.getId());
         userResponse.setEmail(users.getEmail());
         userResponse.setName(users.getName());
         userResponse.setPhone(users.getPhone());
