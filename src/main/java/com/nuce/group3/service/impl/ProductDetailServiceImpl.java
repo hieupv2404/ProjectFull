@@ -4,10 +4,7 @@ import com.nuce.group3.controller.ResourceNotFoundException;
 import com.nuce.group3.controller.dto.request.ProductDetailRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.ProductDetailResponse;
-import com.nuce.group3.data.model.ProductDetail;
-import com.nuce.group3.data.model.ProductInfo;
-import com.nuce.group3.data.model.ProductStatusList;
-import com.nuce.group3.data.model.Shelf;
+import com.nuce.group3.data.model.*;
 import com.nuce.group3.data.repo.*;
 import com.nuce.group3.enums.EnumStatus;
 import com.nuce.group3.exception.LogicException;
@@ -43,6 +40,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Autowired
     private ProductStatusListRepo productStatusListRepo;
+
+    @Autowired
+    private ProductStatusDetailRepo productStatusDetailRepo;
 
     @Override
     public List<ProductDetailResponse> getAll(Integer page, Integer size) {
@@ -102,6 +102,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         }
         ProductDetail productDetail = productDetailOptional.get();
         return ProductDetailResponse.builder()
+                .id(productDetail.getId())
                 .productName(productDetail.getProductInfo().getName())
                 .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
                 .categoryName(productDetail.getProductInfo().getCategory().getName())
@@ -132,6 +133,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productDetailRequest.getProductStatusListId(), 1);
         if (!productStatusListOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Status List with id " + productDetailRequest.getProductStatusListId() + " not found");
+        }
+        Optional<ProductStatusDetail> productStatusDetailOptionalForProductExist = productStatusDetailRepo.findProductStatusDetailByProductStatusAndProduct(productStatusListOptional.get().getId(), productDetailRequest.getProductId());
+        if (!productStatusDetailOptionalForProductExist.isPresent()) {
+            throw new LogicException("Product Info doesn't exist in Product Status List", HttpStatus.BAD_REQUEST);
         }
         ProductDetail productDetail = new ProductDetail();
         productDetail.setShelf(shelfOptional.get());
@@ -172,6 +177,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             throw new ResourceNotFoundException("Product detail with imei" + productDetailRequest.getImei() + " existed!");
         }
 
+        productDetail.getShelf().setQty(productDetail.getShelf().getQty() - 1);
+        shelfRepo.save(productDetail.getShelf());
+
         productDetail.setProductInfo(productInfoOptional.get());
         productDetail.setShelf(shelfOptional.get());
         productDetail.setProductStatusList(productStatusListOptional.get());
@@ -183,6 +191,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             shelfOptional.get().setQty(shelfOptional.get().getQty() + 1);
             shelfRepo.save(shelfOptional.get());
             return ProductDetailResponse.builder()
+                    .id(productDetail.getId())
                     .productName(productDetail.getProductInfo().getName())
                     .supplierName(productDetail.getProductStatusList().getVat().getSupplier().getName())
                     .categoryName(productDetail.getProductInfo().getCategory().getName())

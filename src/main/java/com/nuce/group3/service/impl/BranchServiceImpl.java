@@ -31,6 +31,7 @@ public class BranchServiceImpl implements BranchService {
         List<BranchResponse> branchResponses = new ArrayList<>();
         branchRepo.findBranchByActiveFlag(1).forEach(branch -> {
             BranchResponse branchResponse = BranchResponse.builder()
+                    .id(branch.getId())
                     .name(branch.getName())
                     .code(branch.getCode())
                     .address(branch.getAddress())
@@ -95,6 +96,7 @@ public class BranchServiceImpl implements BranchService {
         branchOptional.get().setUpdateDate(new Date());
         Branch branch = branchRepo.save(branchOptional.get());
         return BranchResponse.builder()
+                .id(branch.getId())
                 .name(branch.getName())
                 .code(branch.getCode())
                 .address(branch.getAddress())

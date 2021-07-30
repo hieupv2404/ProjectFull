@@ -47,6 +47,7 @@ public class IssueServiceImpl implements IssueService {
         if (size == null) size = 5;
         issueRepo.findIssueByActiveFlag(1, PageRequest.of(page, size)).forEach(issue -> {
             IssueResponse issueResponse = IssueResponse.builder()
+                    .id(issue.getId())
                     .code(issue.getCode())
                     .price(issue.getPrice())
                     .createDate(issue.getCreateDate())
@@ -90,6 +91,7 @@ public class IssueServiceImpl implements IssueService {
         }
         Issue issue = issueOptional.get();
         return IssueResponse.builder()
+                .id(issue.getId())
                 .code(issue.getCode())
                 .price(issue.getPrice())
                 .createDate(issue.getCreateDate())

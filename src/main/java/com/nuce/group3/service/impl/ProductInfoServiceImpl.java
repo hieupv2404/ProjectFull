@@ -126,6 +126,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
             throw new ResourceNotFoundException("Product info with " + productId + " not found!");
         }
         return ProductInfoResponse.builder()
+                .id(productInfoOptional.get().getId())
                 .name(productInfoOptional.get().getName())
                 .description(productInfoOptional.get().getDescription())
                 .qty(productInfoOptional.get().getQty())
@@ -163,6 +164,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         try {
             productInfoRepo.save(productInfo);
             return ProductInfoResponse.builder()
+                    .id(productInfo.getId())
                     .categoryName(productInfo.getCategory().getName())
                     .imgName(productInfo.getImgName())
                     .imgUrl(productInfo.getImgUrl())

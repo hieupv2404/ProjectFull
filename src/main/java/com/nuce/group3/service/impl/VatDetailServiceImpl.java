@@ -110,6 +110,7 @@ public class VatDetailServiceImpl implements VatDetailService {
         }
         VatDetail vatDetail = vatDetailOptional.get();
         return VatDetailResponse.builder()
+                .id(vatDetail.getId())
                 .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
                 .priceOne(vatDetail.getPriceOne())
                 .productInfo(vatDetail.getProductInfo().getName())
@@ -179,6 +180,7 @@ public class VatDetailServiceImpl implements VatDetailService {
             vatOptional.get().setPrice(vatOptional.get().getPrice().subtract(oldPriceFromVatDetail).add(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty()))));
             vatRepo.save(vatOptional.get());
             return VatDetailResponse.builder()
+                    .id(vatDetail.getId())
                     .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
                     .priceOne(vatDetail.getPriceOne())
                     .productInfo(vatDetail.getProductInfo().getName())

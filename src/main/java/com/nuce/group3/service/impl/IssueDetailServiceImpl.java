@@ -46,6 +46,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
         if (size == null) size = 5;
         issueDetailRepo.findIssueDetailByActiveFlag(1, PageRequest.of(page, size)).forEach(issueDetail -> {
             IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
+                    .id(issueDetail.getId())
                     .productName(issueDetail.getProductInfo().getName())
                     .imei(issueDetail.getImei())
                     .price(issueDetail.getPriceOne())
@@ -63,6 +64,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
         if (size == null) size = 5;
         issueDetailRepo.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, PageRequest.of(page, size)).forEach(issueDetail -> {
             IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
+                    .id(issueDetail.getId())
                     .productName(issueDetail.getProductInfo().getName())
                     .imei(issueDetail.getImei())
                     .price(issueDetail.getPriceOne())
@@ -78,6 +80,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
         List<IssueDetailResponse> issueDetailResponses = new ArrayList<>();
         issueDetailRepo.findIssueDetailForExport(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo).forEach(issueDetail -> {
             IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
+                    .id(issueDetail.getId())
                     .productName(issueDetail.getProductInfo().getName())
                     .imei(issueDetail.getImei())
                     .price(issueDetail.getPriceOne())
@@ -99,6 +102,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
         }
         IssueDetail issueDetail = issueDetailOptional.get();
         return IssueDetailResponse.builder()
+                .id(issueDetail.getId())
                 .productName(issueDetail.getProductInfo().getName())
                 .imei(issueDetail.getImei())
                 .price(issueDetail.getPriceOne())

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class IssueDetailResponse {
+    private int id;
     private String issueCode;
     private String productName;
     private String imei;

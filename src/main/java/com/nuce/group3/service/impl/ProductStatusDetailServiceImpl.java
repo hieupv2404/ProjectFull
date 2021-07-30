@@ -71,6 +71,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         List<ProductStatusDetailResponse> productStatusDetailResponses = new ArrayList<>();
         productStatusDetailRepo.findProductStatusDetailForExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type).forEach(productStatusDetail -> {
             ProductStatusDetailResponse productStatusDetailResponse = ProductStatusDetailResponse.builder()
+                    .id(productStatusDetail.getId())
                     .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
                     .priceOne(productStatusDetail.getPriceOne())
                     .qty(productStatusDetail.getQty())
@@ -90,6 +91,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         if (size == null) size = 5;
         productStatusDetailRepo.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, PageRequest.of(page, size)).forEach(productStatusDetail -> {
             ProductStatusDetailResponse productStatusDetailResponse = ProductStatusDetailResponse.builder()
+                    .id(productStatusDetail.getId())
                     .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
                     .priceOne(productStatusDetail.getPriceOne())
                     .qty(productStatusDetail.getQty())
@@ -113,6 +115,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         }
         ProductStatusDetail productStatusDetail = productStatusDetailOptional.get();
         return ProductStatusDetailResponse.builder()
+                .id(productStatusDetail.getId())
                 .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
                 .priceOne(productStatusDetail.getPriceOne())
                 .qty(productStatusDetail.getQty())
@@ -247,6 +250,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             productInfoRepo.save(productInfo);
 
             return ProductStatusDetailResponse.builder()
+                    .id(productStatusDetail.getId())
                     .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
                     .priceOne(productStatusDetail.getPriceOne())
                     .qty(productStatusDetail.getQty())

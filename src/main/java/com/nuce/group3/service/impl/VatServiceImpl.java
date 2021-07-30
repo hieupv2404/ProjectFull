@@ -109,6 +109,7 @@ public class VatServiceImpl implements VatService {
         }
         Vat vat = vatOptional.get();
         return VatResponse.builder()
+                .id(vat.getId())
                 .code(vat.getCode())
                 .tax(vat.getTax())
                 .percent(vat.getPercent())
@@ -188,6 +189,7 @@ public class VatServiceImpl implements VatService {
         try {
             vatRepo.save(vat);
             return VatResponse.builder()
+                    .id(vat.getId())
                     .code(vat.getCode())
                     .tax(vat.getTax())
                     .percent(vat.getPercent())
