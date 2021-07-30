@@ -10,9 +10,11 @@ import com.nuce.group3.data.repo.AuthRepo;
 import com.nuce.group3.data.repo.MenuRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.UserService;
+import com.nuce.group3.utils.Constant;
 import com.nuce.group3.utils.HashingPassword;
 import com.nuce.group3.utils.TokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -102,5 +104,11 @@ public class LoginController {
         session.removeAttribute("Username");
         session.removeAttribute("BranchId");
         return ResponseEntity.ok("Logout ");
+    }
+
+    @GetMapping("/clear-cache")
+    @CacheEvict(value = {Constant.CACHE_FIND_SHELF_BY_ID, Constant.CACHE_PRODUCT_INFO_BY_ID}, allEntries = true)
+    public String clearCache() {
+        return "Clear cache success";
     }
 }

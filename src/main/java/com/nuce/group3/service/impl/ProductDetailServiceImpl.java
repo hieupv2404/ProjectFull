@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -228,6 +229,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
         if (!isDeletedParent) {
             productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
+            if (productInfoOptional.get().getQty() == 0) {
+                productInfoOptional.get().setPriceIn(new BigDecimal("0"));
+                productInfoOptional.get().setPriceOut(new BigDecimal("0"));
+            }
             productInfoRepo.save(productInfoOptional.get());
         }
 

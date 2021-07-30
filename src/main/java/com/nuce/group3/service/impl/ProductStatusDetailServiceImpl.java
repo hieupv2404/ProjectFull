@@ -289,8 +289,13 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             ProductInfo productInfo = productInfoOptional.get();
             int oldQty = productInfo.getQty();
             productInfo.setQty(oldQty - productStatusDetail.getQty());
-            productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty()), 2, RoundingMode.HALF_UP));
-            productInfo.setPriceOut(productInfo.getPriceIn().add(productInfo.getPriceIn().multiply(BigDecimal.valueOf(0.2))));
+            if (productInfo.getQty() == 0) {
+                productInfo.setPriceIn(new BigDecimal("0"));
+                productInfo.setPriceOut(new BigDecimal("0"));
+            } else {
+                productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty()), 2, RoundingMode.HALF_UP));
+                productInfo.setPriceOut(productInfo.getPriceIn().add(productInfo.getPriceIn().multiply(BigDecimal.valueOf(0.2))));
+            }
             productInfoRepo.save(productInfo);
 
             productDetailRepo.findProductDetailsByProductStatusList(productStatusDetail.getProductStatusList().getId()).forEach(productDetail -> {
