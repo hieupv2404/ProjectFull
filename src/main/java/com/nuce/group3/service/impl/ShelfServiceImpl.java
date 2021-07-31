@@ -7,6 +7,7 @@ import com.nuce.group3.controller.dto.response.ShelfResponse;
 import com.nuce.group3.data.model.Branch;
 import com.nuce.group3.data.model.Shelf;
 import com.nuce.group3.data.repo.BranchRepo;
+import com.nuce.group3.data.repo.ProductDetailRepo;
 import com.nuce.group3.data.repo.ShelfRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ShelfService;
@@ -29,6 +30,9 @@ public class ShelfServiceImpl implements ShelfService {
 
     @Autowired
     private BranchRepo branchRepo;
+
+    @Autowired
+    private ProductDetailRepo productDetailRepo;
 
     @Override
     public List<ShelfResponse> getAll(Integer page, Integer size) {
@@ -139,13 +143,17 @@ public class ShelfServiceImpl implements ShelfService {
     }
 
     @Override
-    public void delete(Integer shelfId) throws ResourceNotFoundException {
+    public void delete(Integer shelfId) throws ResourceNotFoundException, LogicException {
         Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(shelfId, 1);
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Shelf with ID: " + shelfId + " not found!");
         }
-        shelfOptional.get().setActiveFlag(0);
-        shelfRepo.save(shelfOptional.get());
+        if (!productDetailRepo.findProductDetailByShelf(shelfId).isEmpty()) {
+            throw new LogicException("Remain products on Shelf!", HttpStatus.BAD_REQUEST);
+        } else {
+            shelfOptional.get().setActiveFlag(0);
+            shelfRepo.save(shelfOptional.get());
+        }
     }
 
     @Override

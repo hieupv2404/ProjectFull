@@ -5,9 +5,13 @@ import com.nuce.group3.controller.dto.request.BranchRequest;
 import com.nuce.group3.controller.dto.response.BranchResponse;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Branch;
+import com.nuce.group3.data.model.Shelf;
 import com.nuce.group3.data.repo.BranchRepo;
+import com.nuce.group3.data.repo.ProductDetailRepo;
+import com.nuce.group3.data.repo.UserRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.BranchService;
+import com.nuce.group3.service.ShelfService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,15 @@ import java.util.Optional;
 public class BranchServiceImpl implements BranchService {
     @Autowired
     private BranchRepo branchRepo;
+
+    @Autowired
+    private ProductDetailRepo productDetailRepo;
+
+    @Autowired
+    private ShelfService shelfService;
+
+    @Autowired
+    private UserRepo userRepo;
 
 
     @Override
@@ -107,13 +120,24 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public void delete(Integer branchId) throws ResourceNotFoundException {
+    public void delete(Integer branchId) throws ResourceNotFoundException, LogicException {
         Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(branchId, 1);
         if (!branchOptional.isPresent()) {
             throw new ResourceNotFoundException("Branch with id " + branchId + " not found");
         }
         branchOptional.get().setActiveFlag(0);
-        branchRepo.save(branchOptional.get());
+
+        if (!productDetailRepo.findProductDetailByBranch(branchId).isEmpty()) {
+            throw new LogicException("Remain products at the Branch!", HttpStatus.BAD_REQUEST);
+        } else if (!userRepo.findUsersByBranch(branchId).isEmpty()) {
+            throw new LogicException("Remain users at the Branch!", HttpStatus.BAD_REQUEST);
+        } else {
+            branchRepo.save(branchOptional.get());
+            for (Shelf shelf : branchOptional.get().getShelves()) {
+                shelfService.delete(shelf.getId());
+            }
+        }
+
     }
 
     @Override

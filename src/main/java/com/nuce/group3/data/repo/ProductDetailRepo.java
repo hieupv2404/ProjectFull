@@ -36,4 +36,13 @@ public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer>
             " and p.status= :status", nativeQuery = true)
     List<ProductDetail> findProductDetailByProductInfoAndStatus(Integer productInfoId, String status);
 
+    @Query(value = "select p.*" +
+            " from product_detail p where p.active_flag=1 " +
+            " and (:branchId is null or p.shelf_id in (select s.id from shelf s where s.active_flag=1 and s.branch_id = :branchId))", nativeQuery = true)
+    List<ProductDetail> findProductDetailByBranch(Integer branchId);
+
+    @Query(value = "select p.*" +
+            " from product_detail p where p.active_flag=1 " +
+            " and (:shelf_id is null or p.shelf_id = :shelfId)", nativeQuery = true)
+    List<ProductDetail> findProductDetailByShelf(Integer shelfId);
 }

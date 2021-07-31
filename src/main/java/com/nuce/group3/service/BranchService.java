@@ -17,7 +17,7 @@ public interface BranchService {
 
     BranchResponse edit(Integer branchId, BranchRequest branchRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer branchId) throws ResourceNotFoundException;
+    void delete(Integer branchId) throws ResourceNotFoundException, LogicException;
 
     BranchResponse findById(Integer branchId) throws ResourceNotFoundException;
 

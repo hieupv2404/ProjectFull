@@ -17,7 +17,7 @@ public interface ShelfService {
 
     ShelfResponse edit(Integer shelfId, ShelfRequest shelfRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer shelfId) throws ResourceNotFoundException;
+    void delete(Integer shelfId) throws ResourceNotFoundException, LogicException;
 
     ShelfResponse findShelfById(Integer shelfId) throws ResourceNotFoundException;
 

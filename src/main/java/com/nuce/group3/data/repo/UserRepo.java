@@ -32,4 +32,7 @@ public interface UserRepo extends JpaRepository<Users, Integer> {
     Optional<Users> findUsersByEmailAndActiveFlag(String email, int activeFlag);
 
     Optional<Users> findUsersByIdAndActiveFlag(int id, int activeFlag);
+
+    @Query(value = "select * from users u where u.active_flag=1 and (:branchId is null or u.branch_id=:branchId)", nativeQuery = true)
+    List<Users> findUsersByBranch(Integer branchId);
 }
