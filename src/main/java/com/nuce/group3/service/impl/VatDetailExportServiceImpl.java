@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -102,8 +103,12 @@ public class VatDetailExportServiceImpl implements VatDetailExportService {
 
     public void writeDetailLines(List<VatDetailResponse> vatDetails) {
         int rowCount = 2;
+        int totalQty = 0;
+        BigDecimal totalPriceOne = new BigDecimal(BigInteger.ZERO);
+        BigDecimal totalPriceTotal = new BigDecimal(BigInteger.ZERO);
         CellStyle style = workbook.createCellStyle();
         style.setWrapText(true);
+        style.setAlignment(HorizontalAlignment.LEFT);
         XSSFFont font = workbook.createFont();
         font.setFontHeight(10);
         style.setFont(font);
@@ -117,6 +122,9 @@ public class VatDetailExportServiceImpl implements VatDetailExportService {
             createCell(row, columnCount++, vatDetail.getQty(), style);
             createCell(row, columnCount++, vatDetail.getPriceOne(), style);
             createCell(row, columnCount++, vatDetail.getPriceTotal(), style);
+            totalQty += vatDetail.getQty();
+            totalPriceOne = totalPriceOne.add(vatDetail.getPriceOne());
+            totalPriceTotal = totalPriceTotal.add(vatDetail.getPriceTotal());
         }
         for (int i = 0; i <= 5; i++) {
             if (i == 2 || i == 4 || i == 5) {
@@ -125,5 +133,19 @@ public class VatDetailExportServiceImpl implements VatDetailExportService {
                 sheet.setColumnWidth(i, 4000);
             }
         }
+        Row rowFooter = sheet.createRow(rowCount);
+        CellStyle style2 = workbook.createCellStyle();
+        style2.setWrapText(true);
+        XSSFFont font2 = workbook.createFont();
+        style2.setAlignment(HorizontalAlignment.RIGHT);
+        font2.setBold(true);
+        font2.setFontHeight(13);
+        style2.setFont(font2);
+        createCell(rowFooter, 0, "Total     ", style2);
+        sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 0, 2));
+        createCell(rowFooter, 3, totalQty, style);
+        createCell(rowFooter, 4, totalPriceOne, style);
+        createCell(rowFooter, 5, totalPriceTotal, style);
+
     }
 }

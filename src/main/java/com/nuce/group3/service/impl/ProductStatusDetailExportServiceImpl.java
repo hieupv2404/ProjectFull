@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -111,6 +112,10 @@ public class ProductStatusDetailExportServiceImpl implements ProductStatusDetail
         font.setFontHeight(10);
         style.setFont(font);
         int index = 1;
+        int totalQty = 0;
+        BigDecimal totalPriceOne = new BigDecimal(BigInteger.ZERO);
+        BigDecimal totalPriceTotal = new BigDecimal(BigInteger.ZERO);
+        int totalQtyRest = 0;
         for (ProductStatusDetailResponse productStatusDetail : productStatusDetails) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
@@ -122,6 +127,10 @@ public class ProductStatusDetailExportServiceImpl implements ProductStatusDetail
             createCell(row, columnCount++, productStatusDetail.getPriceOne(), style);
             createCell(row, columnCount++, productStatusDetail.getPriceTotal(), style);
             createCell(row, columnCount++, productStatusDetail.getQtyRest(), style);
+            totalQty += productStatusDetail.getQty();
+            totalPriceOne = totalPriceOne.add(productStatusDetail.getPriceOne());
+            totalPriceTotal = totalPriceTotal.add(productStatusDetail.getPriceTotal());
+            totalQtyRest = productStatusDetail.getQtyRest();
         }
         for (int i = 0; i <= 7; i++) {
             if (i == 2 || i == 3 || i == 5 || i == 6) {
@@ -130,5 +139,20 @@ public class ProductStatusDetailExportServiceImpl implements ProductStatusDetail
                 sheet.setColumnWidth(i, 4000);
             }
         }
+
+        Row rowFooter = sheet.createRow(rowCount);
+        CellStyle style2 = workbook.createCellStyle();
+        style2.setWrapText(true);
+        XSSFFont font2 = workbook.createFont();
+        style2.setAlignment(HorizontalAlignment.RIGHT);
+        font2.setBold(true);
+        font2.setFontHeight(13);
+        style2.setFont(font2);
+        createCell(rowFooter, 0, "Total     ", style2);
+        sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 0, 3));
+        createCell(rowFooter, 4, totalQty, style);
+        createCell(rowFooter, 5, totalPriceOne, style);
+        createCell(rowFooter, 6, totalPriceTotal, style);
+        createCell(rowFooter, 7, totalQtyRest, style);
     }
 }

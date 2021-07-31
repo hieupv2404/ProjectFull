@@ -108,6 +108,7 @@ public class IssueDetailExportServiceImpl implements IssueDetailExportService {
         font.setFontHeight(10);
         style.setFont(font);
         int index = 1;
+        BigDecimal total = new BigDecimal("0");
         for (IssueDetailResponse issueDetail : issueDetails) {
             Row row = sheet.createRow(rowCount++);
             int columnCount = 0;
@@ -116,6 +117,7 @@ public class IssueDetailExportServiceImpl implements IssueDetailExportService {
             createCell(row, columnCount++, issueDetail.getProductName(), style);
             createCell(row, columnCount++, issueDetail.getImei(), style);
             createCell(row, columnCount++, issueDetail.getPrice(), style);
+            total = total.add(issueDetail.getPrice());
         }
         for (int i = 0; i <= 4; i++) {
             if (i == 0) {
@@ -124,5 +126,17 @@ public class IssueDetailExportServiceImpl implements IssueDetailExportService {
                 sheet.setColumnWidth(i, 6000);
             }
         }
+
+        Row rowFooter = sheet.createRow(rowCount);
+        CellStyle style2 = workbook.createCellStyle();
+        style2.setWrapText(true);
+        XSSFFont font2 = workbook.createFont();
+        style2.setAlignment(HorizontalAlignment.RIGHT);
+        font2.setBold(true);
+        font2.setFontHeight(13);
+        style2.setFont(font2);
+        createCell(rowFooter, 0, "Total     ", style2);
+        sheet.addMergedRegion(new CellRangeAddress(rowCount, rowCount, 0, 3));
+        createCell(rowFooter, 4, total, style);
     }
 }
