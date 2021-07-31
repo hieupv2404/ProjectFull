@@ -58,11 +58,11 @@ public class IssueDetailServiceImpl implements IssueDetailService {
     }
 
     @Override
-    public GenericResponse findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo, Integer page, Integer size) {
+    public GenericResponse findIssueDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo, Integer branchId, Integer page, Integer size) {
         List<IssueDetailResponse> issueDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        issueDetailRepo.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, PageRequest.of(page, size)).forEach(issueDetail -> {
+        issueDetailRepo.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, branchId, PageRequest.of(page, size)).forEach(issueDetail -> {
             IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
                     .id(issueDetail.getId())
                     .productName(issueDetail.getProductInfo().getName())
@@ -76,9 +76,9 @@ public class IssueDetailServiceImpl implements IssueDetailService {
     }
 
     @Override
-    public List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo) {
+    public List<IssueDetailResponse> findIssueDetailForExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String imei, String issueCode, String productInfo, Integer branchId) {
         List<IssueDetailResponse> issueDetailResponses = new ArrayList<>();
-        issueDetailRepo.findIssueDetailForExport(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo).forEach(issueDetail -> {
+        issueDetailRepo.findIssueDetailForExport(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, branchId).forEach(issueDetail -> {
             IssueDetailResponse issueDetailResponse = IssueDetailResponse.builder()
                     .id(issueDetail.getId())
                     .productName(issueDetail.getProductInfo().getName())

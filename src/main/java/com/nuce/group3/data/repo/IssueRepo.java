@@ -19,7 +19,8 @@ public interface IssueRepo extends JpaRepository<Issue, Integer> {
     @Query(value = "select i.*" +
             " from issue i where i.active_flag=1 and (:code is null or i.code like %:code%)" +
             " and (:customerName is null or i.customer_id in (select c.id from customer c where c.active_flag=1 and c.name like %:customerName%))" +
-            " and (:userName is null or i.user_id in (select u.id from users u where i.active_flag=1 and u.name like %:userName% and u.branch_id = :branchId))", nativeQuery = true)
+            " and (:userName is null or i.user_id in (select u.id from users u where u.active_flag=1 and u.name like %:userName% and u.branch_id = :branchId))" +
+            " and (:branchId is null or i.user_id in (select u.id from users u where u.active_flag=1 and u.branch_id = :branchId))", nativeQuery = true)
     List<Issue> findIssueByFilter(@Param(value = "code") String code, @Param(value = "customerName") String customerName, @Param(value = "userName") String userName, @Param(value = "branchId") int branchId, Pageable pageable);
 
     Optional<Issue> findIssueByIdAndActiveFlag(int id, int activeFlag);
