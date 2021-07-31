@@ -32,4 +32,7 @@ public class ProductDetailResponse {
     private Date createDate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateDate;
+    private int productInfoId;
+    private int productStatusId;
+    private int shelfId;
 }

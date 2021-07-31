@@ -21,5 +21,6 @@ public class ShelfResponse {
     private int qty;
     private int qtyRest;
     private String branchName;
+    private Integer branchId;
 
 }

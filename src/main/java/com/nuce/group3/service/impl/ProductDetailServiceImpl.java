@@ -62,6 +62,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .imei(productDetail.getImei())
                     .shelfName(productDetail.getShelf().getName())
                     .status(productDetail.getStatus())
+                    .productInfoId(productDetail.getProductInfo().getId())
+                    .productStatusId(productDetail.getProductStatusList().getId())
+                    .shelfId(productDetail.getShelf().getId())
                     .build();
             productDetailResponses.add(productDetailResponse);
         });
@@ -86,6 +89,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .imei(productDetail.getImei())
                     .shelfName(productDetail.getShelf().getName())
                     .status(productDetail.getStatus())
+                    .productInfoId(productDetail.getProductInfo().getId())
+                    .productStatusId(productDetail.getProductStatusList().getId())
+                    .shelfId(productDetail.getShelf().getId())
                     .build();
             productDetailResponses.add(productDetailResponse);
         });
@@ -114,6 +120,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 .imei(productDetail.getImei())
                 .shelfName(productDetail.getShelf().getName())
                 .status(productDetail.getStatus())
+                .productInfoId(productDetail.getProductInfo().getId())
+                .productStatusId(productDetail.getProductStatusList().getId())
+                .shelfId(productDetail.getShelf().getId())
                 .build();
     }
 
@@ -203,6 +212,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .imei(productDetail.getImei())
                     .shelfName(productDetail.getShelf().getName())
                     .status(productDetail.getStatus())
+                    .productInfoId(productDetail.getProductInfo().getId())
+                    .productStatusId(productDetail.getProductStatusList().getId())
+                    .shelfId(productDetail.getShelf().getId())
                     .build();
         } catch (Exception e) {
             throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);

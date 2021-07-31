@@ -46,6 +46,7 @@ public class ShelfServiceImpl implements ShelfService {
                     .createDate(shelf.getCreateDate())
                     .updateDate(shelf.getUpdateDate())
                     .branchName(shelf.getBranch().getName())
+                    .branchId(shelf.getBranch().getId())
                     .build();
             shelfResponses.add(shelfResponse);
         });
@@ -68,6 +69,7 @@ public class ShelfServiceImpl implements ShelfService {
                     .createDate(shelf.getCreateDate())
                     .updateDate(shelf.getUpdateDate())
                     .branchName(shelf.getBranch().getName())
+                    .branchId(shelf.getBranch().getId())
                     .build();
             shelfResponses.add(shelfResponse);
         });
@@ -122,7 +124,7 @@ public class ShelfServiceImpl implements ShelfService {
         shelf.setActiveFlag(1);
         shelf.setUpdateDate(new Date());
         shelfRepo.save(shelf);
-       return ShelfResponse.builder()
+        return ShelfResponse.builder()
                 .id(shelfId)
                 .name(shelf.getName())
                 .description(shelf.getDescription())
@@ -132,6 +134,7 @@ public class ShelfServiceImpl implements ShelfService {
                 .createDate(shelf.getCreateDate())
                 .updateDate(shelf.getUpdateDate())
                 .branchName(branchOptional.get().getName())
+                .branchId(shelf.getBranch().getId())
                 .build();
     }
 
@@ -165,6 +168,7 @@ public class ShelfServiceImpl implements ShelfService {
                 .createDate(shelf.getCreateDate())
                 .updateDate(shelf.getUpdateDate())
                 .branchName(shelf.getBranch().getName())
+                .branchId(shelf.getBranch().getId())
                 .build();
     }
 }

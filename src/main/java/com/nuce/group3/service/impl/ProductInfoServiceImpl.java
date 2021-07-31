@@ -86,6 +86,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .imgUrl(productInfo.getImgUrl())
                     .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceIn())
                     .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceOut())
+                    .categoryId(productInfo.getCategory().getId())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -110,6 +111,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .qty(productInfo.getQty())
                     .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceIn())
                     .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceOut())
+                    .categoryId(productInfo.getCategory().getId())
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
@@ -137,6 +139,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                 .updateDate(productInfoOptional.get().getUpdateDate())
                 .priceIn(productInfoOptional.get().getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfoOptional.get().getPriceIn())
                 .priceOut(productInfoOptional.get().getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfoOptional.get().getPriceOut())
+                .categoryId(productInfoOptional.get().getCategory().getId())
                 .build();
     }
 
@@ -173,6 +176,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceIn())
                     .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceOut())
                     .qty(productInfo.getQty())
+                    .categoryId(productInfo.getCategory().getId())
                     .build();
         } catch (Exception e) {
             throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);

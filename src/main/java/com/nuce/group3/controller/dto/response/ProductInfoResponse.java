@@ -28,6 +28,7 @@ public class ProductInfoResponse {
     private Date createDate;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateDate;
+    private Integer categoryId;
 
 
 }
