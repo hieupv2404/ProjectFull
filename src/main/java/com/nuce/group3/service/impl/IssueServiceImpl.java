@@ -61,7 +61,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public GenericResponse findIssueByFilter(String code, String customerName, String userName, int branchId, Integer page, Integer size) {
+    public GenericResponse findIssueByFilter(String code, String customerName, String userName, Integer branchId, Integer page, Integer size) {
         List<IssueResponse> issueResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
