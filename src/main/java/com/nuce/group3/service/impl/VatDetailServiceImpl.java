@@ -64,11 +64,11 @@ public class VatDetailServiceImpl implements VatDetailService {
     }
 
     @Override
-    public GenericResponse findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size) {
+    public GenericResponse findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer branchId, Integer page, Integer size) {
         List<VatDetailResponse> vatDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        vatDetailRepo.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, PageRequest.of(page, size)).forEach(vatDetail -> {
+        vatDetailRepo.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId, PageRequest.of(page, size)).forEach(vatDetail -> {
             VatDetailResponse vatDetailResponse = VatDetailResponse.builder()
                     .id(vatDetail.getId())
                     .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))
@@ -83,9 +83,9 @@ public class VatDetailServiceImpl implements VatDetailService {
     }
 
     @Override
-    public List<VatDetailResponse> findVatDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo) {
+    public List<VatDetailResponse> findVatDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer branchId) {
         List<VatDetailResponse> vatDetailResponses = new ArrayList<>();
-        vatDetailRepo.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo).forEach(vatDetail -> {
+        vatDetailRepo.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId).forEach(vatDetail -> {
             VatDetailResponse vatDetailResponse = VatDetailResponse.builder()
                     .id(vatDetail.getId())
                     .priceTotal(vatDetail.getPriceOne().multiply(BigDecimal.valueOf(vatDetail.getQty())))

@@ -25,7 +25,7 @@ public class CustomerController {
     private IssueService issueService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findCustomer(@RequestParam(name = "name", required = false) String name,
                                                         @RequestParam(name = "phone", required = false) String phone,
                                                         @RequestParam(name = "address", required = false) String address,
@@ -34,33 +34,33 @@ public class CustomerController {
     }
 
     @PostMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> createCustomer(@Valid @RequestBody CustomerRequest customerRequest) throws ResourceNotFoundException, LogicException {
         customerService.save(customerRequest);
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 
     @GetMapping("/{customerId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<Customer> findById(@PathVariable Integer customerId) throws ResourceNotFoundException {
         return new ResponseEntity<>(customerService.findCustomerById(customerId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{customerId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<Customer> editCustomer(@PathVariable Integer customerId, @Valid @RequestBody CustomerRequest customerRequest) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(customerService.edit(customerId, customerRequest), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{customerId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> deleteCustomer(@PathVariable Integer customerId) throws ResourceNotFoundException {
         customerService.delete(customerId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @PostMapping("/{customerId}/add-issue")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> createIssue(@PathVariable Integer customerId, @RequestParam(name = "userName") String userName) throws ResourceNotFoundException, LogicException {
         issueService.save(customerId, userName);
         return new ResponseEntity<>("Created", HttpStatus.OK);

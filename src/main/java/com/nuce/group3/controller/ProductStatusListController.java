@@ -34,38 +34,39 @@ public class ProductStatusListController {
 
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findProductStatusList(@RequestParam(name = "code", required = false) String code,
                                                                  @RequestParam(name = "vatCode", required = false) String vatCode,
                                                                  @RequestParam(name = "priceFrom", required = false) BigDecimal priceFrom,
                                                                  @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
                                                                  @RequestParam(name = "type", required = false) int type,
+                                                                 @RequestParam(name = "branchId", required = false) Integer branchId,
                                                                  @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, page - 1, size), HttpStatus.OK);
+        return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, branchId, page - 1, size), HttpStatus.OK);
 
     }
 
     @GetMapping("/{productStatusListId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<ProductStatusListResponse> findById(@PathVariable Integer productStatusListId) throws ResourceNotFoundException {
         return new ResponseEntity<>(productStatusListService.findProductStatusListById(productStatusListId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{productStatusListId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<ProductStatusListResponse> editProductStatusList(@PathVariable Integer productStatusListId, @Valid @RequestBody ProductStatusListRequest productStatusListRequest, HttpServletRequest request) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(productStatusListService.edit(productStatusListId, productStatusListRequest, String.valueOf(request.getSession().getAttribute("Username"))), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{productStatusListId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> deleteProductStatusList(@PathVariable Integer productStatusListId) throws ResourceNotFoundException {
         productStatusListService.delete(productStatusListId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @PostMapping("/{productStatusListId}/add-items")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> createProductStatusListDetail(@PathVariable Integer productStatusListId, @Valid @RequestBody ProductStatusDetailRequest productStatusDetailRequest) throws ResourceNotFoundException, LogicException {
         productStatusDetailRequest.setProductStatusListId(productStatusListId);
         productStatusDetailService.save(productStatusDetailRequest);
@@ -73,19 +74,20 @@ public class ProductStatusListController {
     }
 
     @GetMapping("/{productStatusListCode}/product-status-details")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findProductStatusDetailByCode(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                                          @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                                          @PathVariable(name = "productStatusListCode", required = false) String productStatusListCode,
                                                                          @RequestParam(name = "productInfo", required = false) String productInfo,
                                                                          @RequestParam(name = "type", required = false) int type,
+                                                                         @RequestParam(name = "branchId", required = false) Integer branchId,
                                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, page - 1, size), HttpStatus.OK);
+        return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, branchId, type, page - 1, size), HttpStatus.OK);
 
     }
 
     @GetMapping("/get-count-records")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<Map<String, Long>> getCountRecords() {
         return new ResponseEntity<>(productStatusDetailService.getCountRecord(), HttpStatus.OK);
     }

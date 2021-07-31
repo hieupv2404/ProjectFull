@@ -69,11 +69,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public GenericResponse findProductDetailByFilter(String name, String imei, Integer page, Integer size) {
+    public GenericResponse findProductDetailByFilter(String name, String imei, Integer branchId, Integer page, Integer size) {
         List<ProductDetailResponse> productDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        productDetailRepo.findProductDetailByFilter(name, imei, PageRequest.of(page, size)).forEach(productDetail -> {
+        productDetailRepo.findProductDetailByFilter(name, imei, branchId, PageRequest.of(page, size)).forEach(productDetail -> {
             ProductDetailResponse productDetailResponse = ProductDetailResponse.builder()
                     .id(productDetail.getId())
                     .productName(productDetail.getProductInfo().getName())
@@ -230,8 +230,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!isDeletedParent) {
             productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
             if (productInfoOptional.get().getQty() == 0) {
-                productInfoOptional.get().setPriceIn(new BigDecimal("0"));
-                productInfoOptional.get().setPriceOut(new BigDecimal("0"));
+                productInfoOptional.get().setPriceIn(new BigDecimal("1"));
+                productInfoOptional.get().setPriceOut(new BigDecimal("1"));
             }
             productInfoRepo.save(productInfoOptional.get());
         }

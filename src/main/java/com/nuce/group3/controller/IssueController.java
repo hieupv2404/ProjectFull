@@ -27,7 +27,7 @@ public class IssueController {
     private IssueDetailService issueDetailService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findIssue(@RequestParam(name = "code", required = false) String code,
                                                      @RequestParam(name = "customerName", required = false) String customerName,
                                                      @RequestParam(name = "userName", required = false) String userName,
@@ -39,20 +39,20 @@ public class IssueController {
     }
 
     @GetMapping("/{issueId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<IssueResponse> findById(@PathVariable Integer issueId) throws ResourceNotFoundException {
         return new ResponseEntity<>(issueService.findIssueById(issueId), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{issueId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> deleteIssue(@PathVariable Integer issueId) throws ResourceNotFoundException {
         issueService.delete(issueId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @PostMapping("/{issueId}/add-items")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> createIssueDetail(@PathVariable Integer issueId, @Valid @RequestBody IssueDetailRequest issueDetailRequest) throws ResourceNotFoundException, LogicException {
         issueDetailRequest.setIssueId(issueId);
         issueDetailService.save(issueDetailRequest);
@@ -60,7 +60,7 @@ public class IssueController {
     }
 
     @GetMapping("/{issueCode}/issue-details")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findIssueDetail(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                            @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                            @RequestParam(name = "imei", required = false) String imei,

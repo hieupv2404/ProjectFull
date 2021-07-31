@@ -67,9 +67,9 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
         return productStatusDetailResponses;
     }
 
-    public List<ProductStatusDetailResponse> findProductStatusDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, Integer type) {
+    public List<ProductStatusDetailResponse> findProductStatusDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, Integer type, Integer branchId) {
         List<ProductStatusDetailResponse> productStatusDetailResponses = new ArrayList<>();
-        productStatusDetailRepo.findProductStatusDetailForExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type).forEach(productStatusDetail -> {
+        productStatusDetailRepo.findProductStatusDetailForExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId).forEach(productStatusDetail -> {
             ProductStatusDetailResponse productStatusDetailResponse = ProductStatusDetailResponse.builder()
                     .id(productStatusDetail.getId())
                     .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
@@ -85,11 +85,11 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
     }
 
     @Override
-    public GenericResponse findProductStatusDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, int type, Integer page, Integer size) {
+    public GenericResponse findProductStatusDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, int type, Integer branchId, Integer page, Integer size) {
         List<ProductStatusDetailResponse> productStatusDetailResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        productStatusDetailRepo.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, PageRequest.of(page, size)).forEach(productStatusDetail -> {
+        productStatusDetailRepo.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId, PageRequest.of(page, size)).forEach(productStatusDetail -> {
             ProductStatusDetailResponse productStatusDetailResponse = ProductStatusDetailResponse.builder()
                     .id(productStatusDetail.getId())
                     .priceTotal(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty())))
@@ -290,8 +290,8 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
             int oldQty = productInfo.getQty();
             productInfo.setQty(oldQty - productStatusDetail.getQty());
             if (productInfo.getQty() == 0) {
-                productInfo.setPriceIn(new BigDecimal("0"));
-                productInfo.setPriceOut(new BigDecimal("0"));
+                productInfo.setPriceIn(new BigDecimal("1"));
+                productInfo.setPriceOut(new BigDecimal("1"));
             } else {
                 productInfo.setPriceIn(productInfo.getPriceIn().multiply(BigDecimal.valueOf(oldQty)).subtract(productStatusDetail.getPriceOne().multiply(BigDecimal.valueOf(productStatusDetail.getQty()))).divide(BigDecimal.valueOf(productInfo.getQty()), 2, RoundingMode.HALF_UP));
                 productInfo.setPriceOut(productInfo.getPriceIn().add(productInfo.getPriceIn().multiply(BigDecimal.valueOf(0.2))));

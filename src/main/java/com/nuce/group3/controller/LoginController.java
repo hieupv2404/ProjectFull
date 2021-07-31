@@ -87,7 +87,11 @@ public class LoginController {
                 userResponseLogin.setRoleName(roleName);
                 userResponseLogin.setMenuSet(menuResponseLogins);
                 userResponseLogin.setBranchName(user.getBranch().getName());
-                userResponseLogin.setBranchId(user.getBranch().getId());
+                if (userResponseLogin.getRoleName().contains("ADMIN")) {
+                    userResponseLogin.setBranchId(null);
+                } else {
+                    userResponseLogin.setBranchId(user.getBranch().getId());
+                }
                 return new ResponseEntity<>(userResponseLogin, HttpStatus.OK);
             }
             return new ResponseEntity<>(new LogicException("Tài khoản hoặc mật khẩu không đúng", HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);

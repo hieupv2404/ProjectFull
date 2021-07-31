@@ -5,6 +5,7 @@ import com.nuce.group3.controller.dto.request.SupplierRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.data.model.Supplier;
 import com.nuce.group3.data.repo.SupplierRepo;
+import com.nuce.group3.data.repo.VatRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,14 @@ public class SupplierServiceImpl implements SupplierService {
     @Autowired
     private SupplierRepo supplierRepo;
 
+    @Autowired
+    private VatRepo vatRepo;
+
     @Override
     public List<Supplier> getAll(Integer page, Integer size) {
-        if (page==null) page = 0;
-        if (size==null) size = 5;
-        return supplierRepo.findSupplierByActiveFlag(1, PageRequest.of(page,size));
+        if (page == null) page = 0;
+        if (size == null) size = 5;
+        return supplierRepo.findSupplierByActiveFlag(1, PageRequest.of(page, size));
     }
 
     @Override
@@ -76,14 +80,17 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public void delete(Integer supplierId) throws ResourceNotFoundException {
-        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId,1);
-        if(!supplierOptional.isPresent())
-        {
-            throw new ResourceNotFoundException("Supplier with ID: " + supplierId +" not found!");
+    public void delete(Integer supplierId) throws ResourceNotFoundException, LogicException {
+        Optional<Supplier> supplierOptional = supplierRepo.findSupplierByIdAndActiveFlag(supplierId, 1);
+        if (!supplierOptional.isPresent()) {
+            throw new ResourceNotFoundException("Supplier with ID: " + supplierId + " not found!");
+        }
+        if (!vatRepo.findVatBySupplier(supplierId).isEmpty()) {
+            throw new LogicException("Supplier has Products in the System", HttpStatus.BAD_REQUEST);
         }
         supplierOptional.get().setActiveFlag(0);
         supplierRepo.save(supplierOptional.get());
+
     }
 
     @Override

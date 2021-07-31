@@ -22,7 +22,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findCategoryByFilter(@RequestParam(name = "name", required = false) String name,
                                                                 @RequestParam(name = "code", required = false) String code,
                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
@@ -30,20 +30,20 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<Category> findCategoryById(@PathVariable Integer categoryId) throws ResourceNotFoundException {
         return new ResponseEntity<>(categoryService.findById(categoryId), HttpStatus.OK);
     }
 
     @PostMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> createCategory(@RequestBody @Valid CategoryRequest categoryRequest) throws LogicException {
         categoryService.save(categoryRequest);
         return new ResponseEntity<>("Created!", HttpStatus.OK);
     }
 
     @PutMapping("/edit/{categoryId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<CategoryResponse> updateCategory(@RequestBody @Valid CategoryRequest categoryRequest,
                                                            @PathVariable Integer categoryId) throws LogicException, ResourceNotFoundException {
         if(categoryId==null)
@@ -52,7 +52,7 @@ public class CategoryController {
     }
 
     @PutMapping("/delete/{categoryId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> deleteCategory(@PathVariable Integer categoryId) throws ResourceNotFoundException, LogicException {
         if(categoryId==null)
             throw  new LogicException("Category is null", HttpStatus.BAD_REQUEST);

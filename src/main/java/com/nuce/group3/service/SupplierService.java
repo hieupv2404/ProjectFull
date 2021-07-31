@@ -17,7 +17,7 @@ public interface SupplierService {
 
     Supplier edit(Integer supplierId, SupplierRequest supplierRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer supplierId) throws ResourceNotFoundException;
+    void delete(Integer supplierId) throws ResourceNotFoundException, LogicException;
     
     Supplier findSupplierById(Integer supplierId) throws ResourceNotFoundException;
 }

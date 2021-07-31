@@ -20,15 +20,17 @@ public interface VatDetailRepo extends JpaRepository<VatDetail, Integer> {
             " from vat_detail vd where vd.active_flag=1 and (:priceTotalFrom is null or vd.price_one*vd.qty >= :priceTotalFrom)" +
             " and (:priceTotalTo is null or vd.price_one*vd.qty <= :priceTotalTo)" +
             " and (:vatCode is null or vd.vat_id in (select v.id from vat v where v.active_flag =1 and v.code like %:vatCode%))" +
+            " and (:branchId is null or vd.vat_id in (select v.id from vat v where v.active_flag =1 and v.branch_id = :branchId))" +
             " and (:productInfo is null or vd.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%)) ", nativeQuery = true)
-    List<VatDetail> findVatDetailByFilter(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "vatCode") String vatCode, @Param(value = "productInfo") String productInfo, Pageable pageable);
+    List<VatDetail> findVatDetailByFilter(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "vatCode") String vatCode, @Param(value = "productInfo") String productInfo, @Param(value = "branchId") Integer branchId, Pageable pageable);
 
     @Query(value = "select vd.*" +
             " from vat_detail vd where vd.active_flag=1 and (:priceTotalFrom is null or vd.price_one*vd.qty >= :priceTotalFrom)" +
             " and (:priceTotalTo is null or vd.price_one*vd.qty <= :priceTotalTo)" +
             " and (:vatCode is null or vd.vat_id in (select v.id from vat v where v.active_flag =1 and v.code like %:vatCode%))" +
+            " and (:branchId is null or vd.vat_id in (select v.id from vat v where v.active_flag =1 and v.branch_id = :branchId))" +
             " and (:productInfo is null or vd.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%)) ", nativeQuery = true)
-    List<VatDetail> findVatDetailToExport(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "vatCode") String vatCode, @Param(value = "productInfo") String productInfo);
+    List<VatDetail> findVatDetailToExport(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "vatCode") String vatCode, @Param(value = "productInfo") String productInfo, @Param(value = "branchId") Integer branchId);
 
     Optional<VatDetail> findVatDetailByIdAndActiveFlag(int id, int activeFlag);
 

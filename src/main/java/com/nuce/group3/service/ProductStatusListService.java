@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProductStatusListService {
     List<ProductStatusListResponse> getAll(int type, Integer page, Integer size);
 
-    GenericResponse findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer page, Integer size);
+    GenericResponse findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer branchId, Integer page, Integer size);
 
     ProductStatusListResponse findProductStatusListById(Integer productStatusListId) throws ResourceNotFoundException;
 

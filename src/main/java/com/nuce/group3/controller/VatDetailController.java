@@ -30,52 +30,55 @@ public class VatDetailController {
     private VatDetailExportService vatDetailExportService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findVatDetail(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                          @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                          @RequestParam(name = "vatCode", required = false) String vatCode,
                                                          @RequestParam(name = "productInfo", required = false) String productInfo,
+                                                         @RequestParam(name = "branchId", required = false) Integer branchId,
                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, page - 1, size), HttpStatus.OK);
+        return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId, page - 1, size), HttpStatus.OK);
 
     }
 
     @GetMapping("/{vatDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<VatDetailResponse> findById(@PathVariable Integer vatDetailId) throws ResourceNotFoundException {
         return new ResponseEntity<>(vatDetailService.findVatDetailById(vatDetailId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{vatDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<VatDetailResponse> editVatDetail(@PathVariable Integer vatDetailId, @Valid @RequestBody VatDetailRequest vatDetailRequest) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(vatDetailService.edit(vatDetailId, vatDetailRequest), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{vatDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> deleteVatDetail(@PathVariable Integer vatDetailId) throws ResourceNotFoundException {
         vatDetailService.delete(vatDetailId, false);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @GetMapping("/get-file-report")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ByteArrayResource getFileReportTest(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                @RequestParam(name = "vatCode", required = false) String vatCode,
-                                               @RequestParam(name = "productInfo", required = false) String productInfo) throws IOException {
-        List<VatDetailResponse> vatDetailResponses = vatDetailService.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo);
+                                               @RequestParam(name = "productInfo", required = false) String productInfo,
+                                               @RequestParam(name = "branchId", required = false) Integer branchId) throws IOException {
+        List<VatDetailResponse> vatDetailResponses = vatDetailService.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId);
         return vatDetailExportService.exportReport(vatDetailResponses);
     }
 
     @PostMapping("/export-excel")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<byte[]> exportToExcel(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                 @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                 @RequestParam(name = "vatCode", required = false) String vatCode,
-                                                @RequestParam(name = "productInfo", required = false) String productInfo) throws IOException {
-        List<VatDetailResponse> vatDetailResponses = vatDetailService.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo);
+                                                @RequestParam(name = "productInfo", required = false) String productInfo,
+                                                @RequestParam(name = "branchId", required = false) Integer branchId) throws IOException {
+        List<VatDetailResponse> vatDetailResponses = vatDetailService.findVatDetailToExport(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId);
         ByteArrayResource resource = vatDetailExportService.exportReport(vatDetailResponses);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))

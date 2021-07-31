@@ -21,7 +21,7 @@ public class ShelfController {
     private ShelfService shelfService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findShelf(@RequestParam(name = "name", required = false) String name,
                                                      @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
                                                      @RequestParam(name = "qtyTo", required = false) Integer qtyTo,
@@ -33,26 +33,26 @@ public class ShelfController {
     }
 
     @PostMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> createShelf(@Valid @RequestBody ShelfRequest shelfRequest) throws ResourceNotFoundException, LogicException {
         shelfService.save(shelfRequest);
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 
     @GetMapping("/{shelfId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<ShelfResponse> findById(@PathVariable Integer shelfId) throws ResourceNotFoundException {
         return new ResponseEntity<>(shelfService.findShelfById(shelfId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{shelfId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<ShelfResponse> editShelf(@PathVariable Integer shelfId, @Valid @RequestBody ShelfRequest shelfRequest) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(shelfService.edit(shelfId, shelfRequest), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{shelfId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> deleteShelf(@PathVariable Integer shelfId) throws ResourceNotFoundException, LogicException {
         shelfService.delete(shelfId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);

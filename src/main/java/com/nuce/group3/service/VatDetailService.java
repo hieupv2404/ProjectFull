@@ -12,7 +12,7 @@ import java.util.List;
 public interface VatDetailService {
     List<VatDetailResponse> getAll(Integer page, Integer size);
 
-    GenericResponse findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer page, Integer size);
+    GenericResponse findVatDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer branchId, Integer page, Integer size);
 
     void save(VatDetailRequest vatDetailRequest) throws LogicException, ResourceNotFoundException;
 
@@ -22,5 +22,5 @@ public interface VatDetailService {
 
     VatDetailResponse findVatDetailById(Integer vatDetailId) throws ResourceNotFoundException;
 
-    List<VatDetailResponse> findVatDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo);
+    List<VatDetailResponse> findVatDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String vatCode, String productInfo, Integer branchId);
 }

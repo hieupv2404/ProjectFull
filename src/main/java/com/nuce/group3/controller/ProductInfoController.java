@@ -36,7 +36,7 @@ public class ProductInfoController {
     private ProductInfoRepo productInfoRepo;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findProductInfo(@RequestParam(name = "name", required = false) String name,
                                                            @RequestParam(name = "categoryName", required = false) String categoryName,
                                                            @RequestParam(name = "qtyFrom", required = false) Integer qtyFrom,
@@ -49,7 +49,7 @@ public class ProductInfoController {
 
     @PostMapping(consumes = {"application/json",
             "multipart/form-data"}, produces = "application/json")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> createProductInfo(@RequestParam("image") MultipartFile multipartFile, @RequestParam("name") String name, @RequestParam("description") String description, @RequestParam("categoryId") Integer categoryId) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = multipartFile.getOriginalFilename();
         ProductInfoRequest productInfoRequest = new ProductInfoRequest();
@@ -104,7 +104,7 @@ public class ProductInfoController {
 
     @PutMapping(value = "/edit/{productId}", consumes = {"application/json",
             "multipart/form-data"}, produces = "application/json")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @RequestParam("image") MultipartFile multipartFile, @RequestParam("name") String name, @RequestParam("description") String description, @RequestParam("categoryId") Integer categoryId) throws IOException, ResourceNotFoundException, LogicException {
         String fileName = multipartFile.getOriginalFilename();
         ProductInfoRequest productInfoRequest = new ProductInfoRequest();
@@ -156,14 +156,14 @@ public class ProductInfoController {
     }
 
     @PutMapping("/delete/{productId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> deleteProductInfo(@PathVariable Integer productId) throws ResourceNotFoundException, LogicException {
         productInfoService.delete(productId);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 
     @GetMapping("/{productId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<ProductInfoResponse> findById(@PathVariable Integer productId) throws ResourceNotFoundException {
         return new ResponseEntity<>(productInfoService.findProductInfoById(productId), HttpStatus.OK);
     }

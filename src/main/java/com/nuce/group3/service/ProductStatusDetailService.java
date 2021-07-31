@@ -13,7 +13,7 @@ import java.util.Map;
 public interface ProductStatusDetailService {
     List<ProductStatusDetailResponse> getAll(int type, Integer page, Integer size);
 
-    GenericResponse findProductStatusDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, int type, Integer page, Integer size);
+    GenericResponse findProductStatusDetailByFilter(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, int type, Integer branchId, Integer page, Integer size);
 
     void save(ProductStatusDetailRequest productStatusDetailRequest) throws LogicException, ResourceNotFoundException;
 
@@ -23,7 +23,7 @@ public interface ProductStatusDetailService {
 
     ProductStatusDetailResponse findProductStatusDetailById(Integer productStatusDetailId) throws ResourceNotFoundException;
 
-    List<ProductStatusDetailResponse> findProductStatusDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, Integer type);
+    List<ProductStatusDetailResponse> findProductStatusDetailToExport(BigDecimal priceTotalFrom, BigDecimal priceTotalTo, String productStatusListCode, String productInfo, Integer type, Integer branchId);
 
     Map<String, Long> getCountRecord();
 

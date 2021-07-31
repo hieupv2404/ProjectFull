@@ -27,7 +27,7 @@ public class IssueDetailController {
     private IssueDetailExportService issueDetailExportService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findIssueDetail(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                            @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                            @RequestParam(name = "imei", required = false) String imei,
@@ -39,20 +39,20 @@ public class IssueDetailController {
     }
 
     @GetMapping("/{issueDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<IssueDetailResponse> findById(@PathVariable Integer issueDetailId) throws ResourceNotFoundException {
         return new ResponseEntity<>(issueDetailService.findIssueDetailById(issueDetailId), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{issueDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> deleteIssueDetail(@PathVariable Integer issueDetailId) throws ResourceNotFoundException {
         issueDetailService.delete(issueDetailId, false);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @GetMapping("/get-file-report")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ByteArrayResource getFileReportTest(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                @RequestParam(name = "imei", required = false) String imei,
@@ -63,7 +63,7 @@ public class IssueDetailController {
     }
 
     @PostMapping("/export-excel")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<byte[]> exportToExcel(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                 @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                 @RequestParam(name = "imei", required = false) String imei,

@@ -11,7 +11,7 @@ import java.util.List;
 public interface ProductDetailService {
     List<ProductDetailResponse> getAll(Integer page, Integer size);
 
-    GenericResponse findProductDetailByFilter(String name, String imei, Integer page, Integer size);
+    GenericResponse findProductDetailByFilter(String name, String imei, Integer branchId, Integer page, Integer size);
 
     ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException;
 

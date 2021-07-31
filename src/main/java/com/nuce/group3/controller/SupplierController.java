@@ -26,7 +26,7 @@ public class SupplierController {
     private VatService vatService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findSupplier(@RequestParam(name = "name", required = false) String name,
                                                         @RequestParam(name = "phone", required = false) String phone,
                                                         @RequestParam(name = "address", required = false) String address,
@@ -36,33 +36,33 @@ public class SupplierController {
     }
 
     @PostMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> createSupplier(@Valid @RequestBody SupplierRequest supplierRequest) throws ResourceNotFoundException, LogicException {
         supplierService.save(supplierRequest);
         return new ResponseEntity<>("Created", HttpStatus.OK);
     }
 
     @GetMapping("/{supplierId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<Supplier> findById(@PathVariable Integer supplierId) throws ResourceNotFoundException {
         return new ResponseEntity<>(supplierService.findSupplierById(supplierId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{supplierId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<Supplier> editSupplier(@PathVariable Integer supplierId, @Valid @RequestBody SupplierRequest supplierRequest) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(supplierService.edit(supplierId, supplierRequest), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{supplierId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> deleteSupplier(@PathVariable Integer supplierId) throws ResourceNotFoundException, LogicException {
         supplierService.delete(supplierId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @PostMapping("/{supplierId}/add-vat")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> createVat(@Valid @RequestBody VatRequest vatRequest, @PathVariable(required = true) Integer supplierId) throws ResourceNotFoundException, LogicException {
         vatService.save(vatRequest, supplierId);
         return new ResponseEntity<>("Created", HttpStatus.OK);

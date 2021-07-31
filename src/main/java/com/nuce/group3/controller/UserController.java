@@ -42,6 +42,7 @@ public class UserController {
     }
 
     @GetMapping("/testQuery")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<UserResponse>> testQuery() {
         Users users = new Users();
         users.setName("");
@@ -49,28 +50,33 @@ public class UserController {
     }
 
     @PostMapping("/forget-password")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> forgetPassword(@RequestBody @Valid UserForgetPassword userForgetPassword) throws LogicException, MessagingException, ResourceNotFoundException {
         return new ResponseEntity<>(userService.forgetPassword(userForgetPassword.getEmail()), HttpStatus.OK);
     }
 
     @PostMapping
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> createUser(@RequestBody @Valid UsersRequest usersRequest) throws ResourceNotFoundException, LogicException {
         userService.save(usersRequest);
         return new ResponseEntity<>("Created!", HttpStatus.OK);
     }
 
     @PutMapping("/edit/{userId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<UserResponse> editUser(@RequestBody @Valid UsersRequest usersRequest, @PathVariable("userId") int userId) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(userService.edit(userId, usersRequest), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{userId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> deleteUser(@PathVariable("userId") int userId) throws ResourceNotFoundException, LogicException {
         userService.delete(userId);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @PutMapping("/assign-role/{userId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<UserResponse> assignRole(@PathVariable("userId") int userId, @RequestParam(name = "roleIds") List<Integer> roleIds) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(userService.assignRole(userId, roleIds), HttpStatus.OK);
     }

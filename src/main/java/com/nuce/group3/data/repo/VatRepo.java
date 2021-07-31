@@ -26,4 +26,8 @@ public interface VatRepo extends JpaRepository<Vat, Integer> {
 
     Optional<Vat> findVatByIdAndActiveFlag(int id, int activeFlag);
 
+    @Query(value = "select v.*" +
+            " from vat v where v.active_flag=1 and v.supplier_id = :supplierId", nativeQuery = true)
+    List<Vat> findVatBySupplier(Integer supplierId);
+
 }

@@ -2,8 +2,6 @@ package com.nuce.group3.data.repo;
 
 import com.nuce.group3.controller.dto.response.ProductInfoResponseTest;
 import com.nuce.group3.data.model.ProductInfo;
-import com.nuce.group3.utils.Constant;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -29,7 +27,7 @@ public interface ProductInfoRepo extends JpaRepository<ProductInfo, Integer> {
                                               @Param(value = "qtyFrom") Integer qtyFrom, @Param(value = "qtyTo") Integer qtyTo,
                                               @Param(value = "priceFrom") BigDecimal priceFrom, @Param(value = "priceTo") BigDecimal priceTo, Pageable pageable);
 
-    @Cacheable(cacheNames = Constant.CACHE_PRODUCT_INFO_BY_ID)
+//    @Cacheable(cacheNames = Constant.CACHE_PRODUCT_INFO_BY_ID)
     Optional<ProductInfo> findProductInfoByIdAndActiveFlag(int id, int activeFlag);
 
     @Modifying

@@ -30,55 +30,58 @@ public class ProductStatusDetailController {
     private ProductStatusDetailExportService productStatusDetailExportService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findProductStatusDetail(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                                    @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                                    @RequestParam(name = "productStatusListCode", required = false) String productStatusListCode,
                                                                    @RequestParam(name = "productInfo", required = false) String productInfo,
                                                                    @RequestParam(name = "type", required = false) Integer type,
+                                                                   @RequestParam(name = "branchId", required = false) Integer branchId,
                                                                    @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, page - 1, size), HttpStatus.OK);
+        return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId, page - 1, size), HttpStatus.OK);
 
     }
 
     @GetMapping("/{productStatusDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<ProductStatusDetailResponse> findById(@PathVariable Integer productStatusDetailId) throws ResourceNotFoundException {
         return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailById(productStatusDetailId), HttpStatus.OK);
     }
 
     @PutMapping("/edit/{productStatusDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<ProductStatusDetailResponse> editProductStatusDetail(@PathVariable Integer productStatusDetailId, @Valid @RequestBody ProductStatusDetailRequest productStatusDetailRequest) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(productStatusDetailService.edit(productStatusDetailId, productStatusDetailRequest), HttpStatus.OK);
     }
 
     @PutMapping("/delete/{productStatusDetailId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
     public ResponseEntity<String> deleteProductStatusDetail(@PathVariable Integer productStatusDetailId) throws ResourceNotFoundException {
         productStatusDetailService.delete(productStatusDetailId, false);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
     }
 
     @GetMapping("/get-file-report")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ByteArrayResource getFileReportTest(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                @RequestParam(name = "productStatusListCode", required = false) String productStatusListCode,
                                                @RequestParam(name = "productInfo", required = false) String productInfo,
-                                               @RequestParam(name = "type", required = false) Integer type) throws IOException {
-        List<ProductStatusDetailResponse> productStatusDetailResponses = productStatusDetailService.findProductStatusDetailToExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type);
+                                               @RequestParam(name = "type", required = false) Integer type,
+                                               @RequestParam(name = "branchId", required = false) Integer branchId) throws IOException {
+        List<ProductStatusDetailResponse> productStatusDetailResponses = productStatusDetailService.findProductStatusDetailToExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId);
         return productStatusDetailExportService.exportReport(productStatusDetailResponses);
     }
 
     @PostMapping("/export-excel")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<byte[]> exportToExcel(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                 @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                 @RequestParam(name = "productStatusListCode", required = false) String productStatusListCode,
                                                 @RequestParam(name = "productInfo", required = false) String productInfo,
-                                                @RequestParam(name = "type", required = false) Integer type) throws IOException {
-        List<ProductStatusDetailResponse> productStatusDetailResponses = productStatusDetailService.findProductStatusDetailToExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type);
+                                                @RequestParam(name = "type", required = false) Integer type,
+                                                @RequestParam(name = "branchId", required = false) Integer branchId) throws IOException {
+        List<ProductStatusDetailResponse> productStatusDetailResponses = productStatusDetailService.findProductStatusDetailToExport(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId);
         ByteArrayResource resource = productStatusDetailExportService.exportReport(productStatusDetailResponses);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))

@@ -14,5 +14,9 @@ public class UserResponseLogin {
     private Set<MenuResponseLogin> menuSet = new HashSet<>();
     private String token;
     private String branchName;
-    private int branchId;
+    private Integer branchId;
+
+    public void setBranchId(Integer branchId) {
+        this.branchId = branchId;
+    }
 }
