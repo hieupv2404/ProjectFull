@@ -88,7 +88,7 @@ public class LoginController {
                 userResponseLogin.setMenuSet(menuResponseLogins);
                 userResponseLogin.setBranchName(user.getBranch().getName());
                 if (userResponseLogin.getRoleName().contains("ADMIN")) {
-                    userResponseLogin.setBranchId(null);
+                    userResponseLogin.setBranchId(99);
                 } else {
                     userResponseLogin.setBranchId(user.getBranch().getId());
                 }
