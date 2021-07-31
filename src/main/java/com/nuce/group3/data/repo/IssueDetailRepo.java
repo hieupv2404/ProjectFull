@@ -22,7 +22,7 @@ public interface IssueDetailRepo extends JpaRepository<IssueDetail, Integer> {
             " and (:imei is null or i.imei= :imei)" +
             " and (:issueCode is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.code like %:issueCode%))" +
             " and (:productInfo is null or i.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%)) " +
-            " and (:branchId is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.user_id in (select u.id from users u where u.active_flag=1 and u.branch_id = :branchId)) ))", nativeQuery = true)
+            " and (:branchId is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.user_id in (select u.id from users u where u.active_flag=1 and u.branch_id = :branchId)) )", nativeQuery = true)
     List<IssueDetail> findIssueDetailByFilter(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "imei") String imei, @Param(value = "issueCode") String issueCode, @Param(value = "productInfo") String productInfo, @Param(value = "branchId") Integer branchId, Pageable pageable);
 
     @Query(value = "select i.*" +
@@ -31,7 +31,7 @@ public interface IssueDetailRepo extends JpaRepository<IssueDetail, Integer> {
             " and (:imei is null or i.imei= :imei)" +
             " and (:issueCode is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.code like %:issueCode%))" +
             " and (:productInfo is null or i.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%)) " +
-            " and (:branchId is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.user_id in (select u.id from users u where u.active_flag=1 and u.branch_id = :branchId)) ))", nativeQuery = true)
+            " and (:branchId is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.user_id in (select u.id from users u where u.active_flag=1 and u.branch_id = :branchId)) )", nativeQuery = true)
     List<IssueDetail> findIssueDetailForExport(@Param(value = "priceTotalFrom") BigDecimal priceTotalFrom, @Param(value = "priceTotalTo") BigDecimal priceTotalTo, @Param(value = "imei") String imei, @Param(value = "issueCode") String issueCode, @Param(value = "productInfo") String productInfo, @Param(value = "branchId") Integer branchId);
 
     Optional<IssueDetail> findIssueDetailByIdAndActiveFlag(int i, int activeFlag);
