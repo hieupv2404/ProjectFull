@@ -29,10 +29,10 @@ public class UserController {
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<GenericResponse> getUsersByFilter(@RequestParam(name = "name", required = false) String name,
                                                             @RequestParam(name = "phone", required = false) String phone,
-                                                            @RequestParam(name = "branch", required = false) String branch,
+                                                            @RequestParam(name = "branchId", required = false) Integer branchId,
                                                             @RequestParam(name = "userName", required = false) String userName,
                                                             @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(userService.findUserByFilter(name, phone, branch, userName, page - 1, size), HttpStatus.OK);
+        return new ResponseEntity<>(userService.findUserByFilter(name, phone, branchId, userName, page - 1, size), HttpStatus.OK);
     }
 
     @GetMapping("/get-all")

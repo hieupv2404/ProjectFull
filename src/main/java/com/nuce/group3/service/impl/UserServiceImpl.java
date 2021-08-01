@@ -69,11 +69,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GenericResponse findUserByFilter(String name, String phone, String branch, String userName, Integer page, Integer size) {
+    public GenericResponse findUserByFilter(String name, String phone, Integer branchId, String userName, Integer page, Integer size) {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<UserResponse> userResponses = new ArrayList<>();
-        userRepo.findUserByFilter(name, phone, branch, userName, PageRequest.of(page, size)).forEach(users -> {
+        userRepo.findUserByFilter(name, phone, branchId, userName, PageRequest.of(page, size)).forEach(users -> {
             UserResponse userResponse = new UserResponse();
             userResponse.setId(users.getId());
             userResponse.setUserName(users.getUserName());

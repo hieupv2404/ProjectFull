@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -65,6 +62,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .productInfoId(productDetail.getProductInfo().getId())
                     .productStatusId(productDetail.getProductStatusList().getId())
                     .shelfId(productDetail.getShelf().getId())
+                    .imgUrl(productDetail.getProductInfo().getImgUrl())
                     .build();
             productDetailResponses.add(productDetailResponse);
         });
@@ -92,6 +90,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .productInfoId(productDetail.getProductInfo().getId())
                     .productStatusId(productDetail.getProductStatusList().getId())
                     .shelfId(productDetail.getShelf().getId())
+                    .imgUrl(productDetail.getProductInfo().getImgUrl())
                     .build();
             productDetailResponses.add(productDetailResponse);
         });
@@ -123,6 +122,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 .productInfoId(productDetail.getProductInfo().getId())
                 .productStatusId(productDetail.getProductStatusList().getId())
                 .shelfId(productDetail.getShelf().getId())
+                .imgUrl(productDetail.getProductInfo().getImgUrl())
                 .build();
     }
 
@@ -215,6 +215,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .productInfoId(productDetail.getProductInfo().getId())
                     .productStatusId(productDetail.getProductStatusList().getId())
                     .shelfId(productDetail.getShelf().getId())
+                    .imgUrl(productDetail.getProductInfo().getImgUrl())
                     .build();
         } catch (Exception e) {
             throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);
@@ -289,5 +290,14 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
         productDetailOptional.get().getShelf().setQty(productDetailOptional.get().getShelf().getQty() - 1);
         shelfRepo.save(productDetailOptional.get().getShelf());
+    }
+
+    @Override
+    public Map<String, Long> getCountRecord() {
+        Map<String, Long> mapCount = new HashMap<>();
+        mapCount.put("VALID", productDetailRepo.countProductDetailByStatus("VALID"));
+        mapCount.put("INVALID", productDetailRepo.countProductDetailByStatus("INVALID"));
+
+        return mapCount;
     }
 }

@@ -7,6 +7,7 @@ import com.nuce.group3.controller.dto.response.ProductDetailResponse;
 import com.nuce.group3.exception.LogicException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductDetailService {
     List<ProductDetailResponse> getAll(Integer page, Integer size);
@@ -24,5 +25,7 @@ public interface ProductDetailService {
     void changeStatusToValid(Integer productDetailId, String enumStatus) throws ResourceNotFoundException, LogicException;
 
     void changeStatusToInValid(Integer productDetailId, String enumStatus) throws ResourceNotFoundException, LogicException;
+
+    Map<String, Long> getCountRecord();
 
 }

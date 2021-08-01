@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value="/api/products-detail", headers = "Accept=application/json")
@@ -55,5 +56,11 @@ public class ProductDetailController {
     public ResponseEntity<String> deleteProductDetail(@PathVariable Integer productId) throws ResourceNotFoundException, LogicException {
         productDetailService.delete(productId, false);
         return new ResponseEntity<>("Deleted!", HttpStatus.OK);
+    }
+
+    @GetMapping("/get-count-records")
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
+    public ResponseEntity<Map<String, Long>> getCountRecords() {
+        return new ResponseEntity<>(productDetailService.getCountRecord(), HttpStatus.OK);
     }
 }

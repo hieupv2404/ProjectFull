@@ -18,7 +18,7 @@ public interface CategoryService {
 
     CategoryResponse edit(Integer categoryId, CategoryRequest categoryRequest) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer categoryId) throws ResourceNotFoundException;
+    void delete(Integer categoryId) throws ResourceNotFoundException, LogicException;
 
     Category findById(Integer categoryId) throws ResourceNotFoundException;
 }

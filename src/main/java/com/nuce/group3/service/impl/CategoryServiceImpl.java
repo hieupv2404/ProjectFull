@@ -8,6 +8,7 @@ import com.nuce.group3.data.model.Category;
 import com.nuce.group3.data.repo.CategoryRepo;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.CategoryService;
+import com.nuce.group3.service.ProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryRepo categoryRepo;
 
+    @Autowired
+    private ProductInfoService productInfoService;
 
     @Override
     public List<Category> getAll() {
@@ -90,10 +93,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void delete(Integer categoryId) throws ResourceNotFoundException {
+    public void delete(Integer categoryId) throws ResourceNotFoundException, LogicException {
         Optional<Category> categoryOptional = categoryRepo.findCategoryByActiveFlagAndId(1, categoryId);
         if (!categoryOptional.isPresent()) {
             throw new ResourceNotFoundException("Category with id " + categoryId + " not found");
+        }
+        if (!categoryOptional.get().getProductInfos().isEmpty()) {
+            throw new LogicException("Remain Products in the Branch!", HttpStatus.BAD_REQUEST);
         }
         categoryOptional.get().setActiveFlag(0);
         categoryRepo.save(categoryOptional.get());

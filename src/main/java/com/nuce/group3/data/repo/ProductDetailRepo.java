@@ -46,4 +46,8 @@ public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer>
             " from product_detail p where p.active_flag=1 " +
             " and (:shelf_id is null or p.shelf_id = :shelfId)", nativeQuery = true)
     List<ProductDetail> findProductDetailByShelf(Integer shelfId);
+
+    @Query(value = "SELECT COUNT(p.id) FROM product_detail p WHERE p.active_flag=1 " +
+            " and (:status is null or p.status = :status)", nativeQuery = true)
+    long countProductDetailByStatus(String status);
 }

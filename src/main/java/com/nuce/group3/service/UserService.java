@@ -17,7 +17,7 @@ public interface UserService {
 
     List<UserResponse> getUserRole();
 
-    GenericResponse findUserByFilter(String name, String phone, String address, String userName, Integer page, Integer size);
+    GenericResponse findUserByFilter(String name, String phone, Integer branchId, String userName, Integer page, Integer size);
 
     List<UserResponse> findUserByName(String query);
 
