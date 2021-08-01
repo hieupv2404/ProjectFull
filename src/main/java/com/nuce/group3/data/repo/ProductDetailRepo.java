@@ -50,4 +50,9 @@ public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer>
     @Query(value = "SELECT COUNT(p.id) FROM product_detail p WHERE p.active_flag=1 " +
             " and (:status is null or p.status = :status)", nativeQuery = true)
     long countProductDetailByStatus(String status);
+
+    @Query(value = "SELECT COUNT(p.id) FROM product_detail p WHERE p.active_flag=1 " +
+            " and (:productStatusList is null or p.product_status_list_id = :productStatusList)" +
+            " and (:productId is null or p.product_id = :productId)", nativeQuery = true)
+    long countProductDetailImported(Integer productStatusList, Integer productId);
 }

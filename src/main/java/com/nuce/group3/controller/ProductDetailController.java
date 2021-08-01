@@ -34,14 +34,13 @@ public class ProductDetailController {
 
     @PostMapping
     @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
-    public ResponseEntity<String> createProductDetail(@Valid @RequestBody ProductDetailRequest productDetailRequest) throws IOException, ResourceNotFoundException, LogicException {
-        productDetailService.save(productDetailRequest);
-        return new ResponseEntity<>("Created", HttpStatus.OK);
+    public ResponseEntity<Long> createProductDetail(@Valid @RequestBody ProductDetailRequest productDetailRequest) throws IOException, ResourceNotFoundException, LogicException {
+        return new ResponseEntity<>(productDetailService.save(productDetailRequest), HttpStatus.OK);
     }
 
     @GetMapping("/{productId}")
     @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
-    public ResponseEntity<ProductDetailResponse> findById(@PathVariable Integer productId) throws ResourceNotFoundException {
+    public ResponseEntity<ProductDetailResponse> findById(@PathVariable Integer productId) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(productDetailService.findProductDetailById(productId), HttpStatus.OK);
     }
 

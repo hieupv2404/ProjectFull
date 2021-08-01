@@ -98,13 +98,21 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     }
 
     @Override
-    public ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException {
+    public ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException, LogicException {
         if (productId == null) {
             throw new ResourceNotFoundException("Id not found!");
         }
         Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByIdAndActiveFlag(productId, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product detail with " + productId + " not found!");
+        }
+        Optional<ProductStatusDetail> productStatusDetailOptionalForProductExist = productStatusDetailRepo.findProductStatusDetailByProductStatusAndProduct(productDetailOptional.get().getProductStatusList().getId(), productDetailOptional.get().getProductInfo().getId());
+        if (!productStatusDetailOptionalForProductExist.isPresent()) {
+            throw new LogicException("Product Info doesn't exist in Product Status List", HttpStatus.BAD_REQUEST);
+        }
+        long qtyRest = productStatusDetailOptionalForProductExist.get().getQty() - productDetailRepo.countProductDetailImported(productDetailOptional.get().getProductStatusList().getId(), productDetailOptional.get().getProductInfo().getId());
+        if (qtyRest < 0) {
+            throw new LogicException("Imported all product in this Product Done List!", HttpStatus.BAD_REQUEST);
         }
         ProductDetail productDetail = productDetailOptional.get();
         return ProductDetailResponse.builder()
@@ -123,11 +131,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 .productStatusId(productDetail.getProductStatusList().getId())
                 .shelfId(productDetail.getShelf().getId())
                 .imgUrl(productDetail.getProductInfo().getImgUrl())
+                .qtyRest(qtyRest)
                 .build();
     }
 
     @Override
-    public void save(ProductDetailRequest productDetailRequest) throws LogicException, ResourceNotFoundException {
+    public long save(ProductDetailRequest productDetailRequest) throws LogicException, ResourceNotFoundException {
         Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndActiveFlag(productDetailRequest.getImei(), 1);
         if (productDetailOptional.isPresent()) {
             throw new LogicException("Product Detail Existed", HttpStatus.BAD_REQUEST);
@@ -148,6 +157,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!productStatusDetailOptionalForProductExist.isPresent()) {
             throw new LogicException("Product Info doesn't exist in Product Status List", HttpStatus.BAD_REQUEST);
         }
+        long qtyRest = productStatusDetailOptionalForProductExist.get().getQty() - productDetailRepo.countProductDetailImported(productDetailRequest.getProductStatusListId(), productDetailRequest.getProductId());
+        if (qtyRest <= 0) {
+            throw new LogicException("Imported all product in this Product Done List!", HttpStatus.BAD_REQUEST);
+        }
         ProductDetail productDetail = new ProductDetail();
         productDetail.setShelf(shelfOptional.get());
         productDetail.setProductInfo(productInfoOptional.get());
@@ -161,6 +174,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
         shelfOptional.get().setQty(shelfOptional.get().getQty() + 1);
         shelfRepo.save(shelfOptional.get());
+        return qtyRest - 1;
     }
 
     @Override
@@ -185,6 +199,14 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         Optional<ProductDetail> productDetailByImei = productDetailRepo.findProductDetailByImeiAndActiveFlag(productDetailRequest.getImei(), 1);
         if (!productDetailRequest.getImei().equals(productDetailOptional.get().getImei()) && productDetailByImei.isPresent()) {
             throw new ResourceNotFoundException("Product detail with imei" + productDetailRequest.getImei() + " existed!");
+        }
+        Optional<ProductStatusDetail> productStatusDetailOptionalForProductExist = productStatusDetailRepo.findProductStatusDetailByProductStatusAndProduct(productStatusListOptional.get().getId(), productDetailRequest.getProductId());
+        if (!productStatusDetailOptionalForProductExist.isPresent()) {
+            throw new LogicException("Product Info doesn't exist in Product Status List", HttpStatus.BAD_REQUEST);
+        }
+        long qtyRest = productStatusDetailOptionalForProductExist.get().getQty() - productDetailRepo.countProductDetailImported(productDetailRequest.getProductStatusListId(), productDetailRequest.getProductId());
+        if (qtyRest <= 0) {
+            throw new LogicException("Imported all product in this Product Done List!", HttpStatus.BAD_REQUEST);
         }
 
         productDetail.getShelf().setQty(productDetail.getShelf().getQty() - 1);
@@ -216,6 +238,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .productStatusId(productDetail.getProductStatusList().getId())
                     .shelfId(productDetail.getShelf().getId())
                     .imgUrl(productDetail.getProductInfo().getImgUrl())
+                    .qtyRest(qtyRest)
                     .build();
         } catch (Exception e) {
             throw new LogicException("Edit error", HttpStatus.BAD_REQUEST);

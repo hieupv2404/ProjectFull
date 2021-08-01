@@ -14,9 +14,9 @@ public interface ProductDetailService {
 
     GenericResponse findProductDetailByFilter(String name, String imei, Integer branchId, String status, Integer page, Integer size);
 
-    ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException;
+    ProductDetailResponse findProductDetailById(Integer productId) throws ResourceNotFoundException, LogicException;
 
-    void save(ProductDetailRequest productDetailRequest) throws LogicException, ResourceNotFoundException;
+    long save(ProductDetailRequest productDetailRequest) throws LogicException, ResourceNotFoundException;
 
     ProductDetailResponse edit(Integer productId, ProductDetailRequest productDetailRequest) throws ResourceNotFoundException, LogicException;
 

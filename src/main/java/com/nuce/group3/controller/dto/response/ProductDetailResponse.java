@@ -36,4 +36,5 @@ public class ProductDetailResponse {
     private int productStatusId;
     private int shelfId;
     private String imgUrl;
+    private long qtyRest;
 }
