@@ -26,8 +26,9 @@ public class ProductDetailController {
     public ResponseEntity<GenericResponse> findProductDetail(@RequestParam(name = "name", required = false) String name,
                                                              @RequestParam(name = "imei", required = false) String imei,
                                                              @RequestParam(name = "branchId", required = false) Integer branchId,
+                                                             @RequestParam(name = "status", required = true) String status,
                                                              @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(productDetailService.findProductDetailByFilter(name, imei, branchId, page - 1, size), HttpStatus.OK);
+        return new ResponseEntity<>(productDetailService.findProductDetailByFilter(name, imei, branchId, status, page - 1, size), HttpStatus.OK);
     }
 
     @PostMapping
