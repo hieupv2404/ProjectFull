@@ -41,6 +41,12 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserRole(), HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    public ResponseEntity<UserResponse> findById(@PathVariable Integer userId) throws ResourceNotFoundException {
+        return new ResponseEntity<>(userService.findUserById(userId), HttpStatus.OK);
+    }
+
     @GetMapping("/testQuery")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<List<UserResponse>> testQuery() {

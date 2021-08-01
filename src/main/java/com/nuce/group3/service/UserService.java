@@ -34,4 +34,5 @@ public interface UserService {
     UserResponse assignRole(Integer userId, List<Integer> roleIds) throws ResourceNotFoundException;
 
 
+    UserResponse findUserById(Integer userId) throws ResourceNotFoundException;
 }

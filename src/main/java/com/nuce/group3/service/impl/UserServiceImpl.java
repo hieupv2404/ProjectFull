@@ -322,4 +322,29 @@ public class UserServiceImpl implements UserService {
         });
         return userResponse;
     }
+
+    @Override
+    public UserResponse findUserById(Integer userId) throws ResourceNotFoundException {
+        Optional<Users> usersOptional = userRepo.findUsersByIdAndActiveFlag(userId, 1);
+        if (!usersOptional.isPresent()) {
+            throw new ResourceNotFoundException("User with ID " + userId + " not found!");
+        }
+
+        Users users = usersOptional.get();
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setUserName(users.getUserName());
+        userResponse.setId(users.getId());
+        userResponse.setEmail(users.getEmail());
+        userResponse.setName(users.getName());
+        userResponse.setPhone(users.getPhone());
+        userResponse.setCreateDate(users.getCreateDate());
+        userResponse.setUpdateDate(users.getUpdateDate());
+        userResponse.setBranchName(users.getBranch().getName());
+        userResponse.setBranchId(users.getBranch().getId());
+        users.getRoles().forEach(role -> {
+            userResponse.getRoleName().add(role.getRoleName());
+        });
+        return userResponse;
+    }
 }
