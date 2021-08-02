@@ -1,6 +1,7 @@
 package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
+import com.nuce.group3.controller.dto.request.ChangePassRequest;
 import com.nuce.group3.controller.dto.request.UsersRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.UserResponse;
@@ -346,5 +347,23 @@ public class UserServiceImpl implements UserService {
             userResponse.getRoleName().add(role.getRoleName());
         });
         return userResponse;
+    }
+
+    @Override
+    public void changePass(int userId, ChangePassRequest changePassRequest) throws ResourceNotFoundException, LogicException {
+        Optional<Users> usersOptional = userRepo.findUsersByIdAndActiveFlag(userId, 1);
+        if (!usersOptional.isPresent()) {
+            throw new ResourceNotFoundException("User with ID " + userId + " not found!");
+        }
+        if (!changePassRequest.getNewPassOnce().equals(changePassRequest.getNewPassTwice())) {
+            throw new LogicException("Re-entered password not match!", HttpStatus.BAD_REQUEST);
+        }
+        String passMDOld = HashingPassword.encrypt(changePassRequest.getOldPass());
+        if (usersOptional.get().getPassword().toUpperCase().equals(passMDOld.toUpperCase())) {
+            usersOptional.get().setPassword(changePassRequest.getNewPassOnce());
+            userRepo.save(usersOptional.get());
+        } else {
+            throw new LogicException("Wrong Password!", HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -80,6 +80,7 @@ public class LoginController {
                 request.getSession().setAttribute("Username", credential.getUserName());
                 request.getSession().setAttribute("BranchId", user.getBranch().getId());
                 UserResponseLogin userResponseLogin = new UserResponseLogin();
+                userResponseLogin.setId(user.getId());
                 userResponseLogin.setToken(token);
                 userResponseLogin.setName(user.getName());
                 userResponseLogin.setUserName(user.getUserName());

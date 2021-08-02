@@ -1,6 +1,7 @@
 package com.nuce.group3.service;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
+import com.nuce.group3.controller.dto.request.ChangePassRequest;
 import com.nuce.group3.controller.dto.request.UsersRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.UserResponse;
@@ -35,4 +36,6 @@ public interface UserService {
 
 
     UserResponse findUserById(Integer userId) throws ResourceNotFoundException;
+
+    void changePass(int userId, ChangePassRequest changePassRequest) throws ResourceNotFoundException, LogicException;
 }

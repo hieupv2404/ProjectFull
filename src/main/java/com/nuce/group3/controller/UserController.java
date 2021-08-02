@@ -1,5 +1,6 @@
 package com.nuce.group3.controller;
 
+import com.nuce.group3.controller.dto.request.ChangePassRequest;
 import com.nuce.group3.controller.dto.request.UserForgetPassword;
 import com.nuce.group3.controller.dto.request.UsersRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<UserResponse> findById(@PathVariable Integer userId) throws ResourceNotFoundException {
         return new ResponseEntity<>(userService.findUserById(userId), HttpStatus.OK);
     }
@@ -85,5 +86,12 @@ public class UserController {
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<UserResponse> assignRole(@PathVariable("userId") int userId, @RequestParam(name = "roleIds") List<Integer> roleIds) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(userService.assignRole(userId, roleIds), HttpStatus.OK);
+    }
+
+    @PutMapping("/change-pass/{userId}")
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
+    public ResponseEntity<String> changePass(@RequestBody @Valid ChangePassRequest changePassRequest, @PathVariable("userId") int userId) throws ResourceNotFoundException, LogicException {
+        userService.changePass(userId, changePassRequest);
+        return new ResponseEntity<>("Password Changed Successful!", HttpStatus.OK);
     }
 }

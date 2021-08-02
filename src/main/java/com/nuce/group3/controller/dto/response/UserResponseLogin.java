@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Data
 public class UserResponseLogin {
+    private Integer id;
     private String userName;
     private String email;
     private String name;
