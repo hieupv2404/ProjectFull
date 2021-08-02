@@ -126,11 +126,18 @@ public class IssueDetailServiceImpl implements IssueDetailService {
             throw new ResourceNotFoundException("Product Info with id: " + issueDetailRequest.getProductId() + " not found");
         }
 
+        if (productInfoOptional.get().getQty() <= 0) {
+            throw new LogicException("Not remain this product!", HttpStatus.BAD_REQUEST);
+        }
+
         Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(issueDetailRequest.getImei(), EnumStatus.VALID, 1);
         if (!productDetailOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Detail with imei: " + issueDetailRequest.getImei() + " not found");
         }
 
+        if (!productDetailOptional.get().getProductInfo().getName().equals(productInfoOptional.get().getName())) {
+            throw new ResourceNotFoundException("Product Info with name: " + productInfoOptional.get().getName() + " not found");
+        }
         IssueDetail issueDetail = new IssueDetail();
         issueDetail.setIssue(issueOptional.get());
         issueDetail.setProductInfo(productInfoOptional.get());
