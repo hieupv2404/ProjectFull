@@ -153,6 +153,7 @@ public class UserServiceImpl implements UserService {
         mailServerProperties.put("mail.smtp.port", "587");
         mailServerProperties.put("mail.smtp.auth", "true");
         mailServerProperties.put("mail.smtp.starttls.enable", "true");
+        mailServerProperties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
 
         getMailSession = Session.getDefaultInstance(mailServerProperties, null);
         mailMessage = new MimeMessage(getMailSession);
@@ -360,7 +361,7 @@ public class UserServiceImpl implements UserService {
         }
         String passMDOld = HashingPassword.encrypt(changePassRequest.getOldPass());
         if (usersOptional.get().getPassword().toUpperCase().equals(passMDOld.toUpperCase())) {
-            usersOptional.get().setPassword(changePassRequest.getNewPassOnce());
+            usersOptional.get().setPassword(HashingPassword.encrypt(changePassRequest.getNewPassOnce()));
             userRepo.save(usersOptional.get());
         } else {
             throw new LogicException("Wrong Password!", HttpStatus.BAD_REQUEST);
