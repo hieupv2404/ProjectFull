@@ -95,10 +95,10 @@ public class LoginController {
                 }
                 return new ResponseEntity<>(userResponseLogin, HttpStatus.OK);
             }
-            return new ResponseEntity<>(new LogicException("Tài khoản hoặc mật khẩu không đúng", HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new LogicException("Username or Password is wrong!", HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new LogicException("Tài khoản hoặc mật khẩu không đúng", HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new LogicException("Username or Password is wrong!", HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/logout")
