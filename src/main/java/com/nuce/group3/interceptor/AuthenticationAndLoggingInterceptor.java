@@ -29,6 +29,7 @@ public class AuthenticationAndLoggingInterceptor extends HandlerInterceptorAdapt
         allowURLs.add("/swagger-ui.html");
         allowURLs.add("/webjars/**");
         allowURLs.add("/v2/api-docs");
+        allowURLs.add("/api/users/forget-password");
     }
 
     @Override

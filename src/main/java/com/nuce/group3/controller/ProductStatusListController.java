@@ -78,10 +78,16 @@ public class ProductStatusListController {
     public ResponseEntity<GenericResponse> findProductStatusDetailByCode(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                                          @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                                          @PathVariable(name = "productStatusListCode", required = false) String productStatusListCode,
+                                                                         @RequestParam(name = "productStatusListCodeParam", required = false) String productStatusListCodeParam,
                                                                          @RequestParam(name = "productInfo", required = false) String productInfo,
                                                                          @RequestParam(name = "type", required = false) int type,
                                                                          @RequestParam(name = "branchId", required = false) Integer branchId,
                                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        if (productStatusListCodeParam.isBlank()) {
+            productStatusListCodeParam = productStatusListCode;
+        } else {
+            productStatusListCode = productStatusListCodeParam;
+        }
         return new ResponseEntity<>(productStatusDetailService.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId, page - 1, size), HttpStatus.OK);
 
     }

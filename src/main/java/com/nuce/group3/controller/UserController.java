@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PostMapping("/forget-password")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> forgetPassword(@RequestBody @Valid UserForgetPassword userForgetPassword) throws LogicException, MessagingException, ResourceNotFoundException {
         return new ResponseEntity<>(userService.forgetPassword(userForgetPassword.getEmail()), HttpStatus.OK);
     }
@@ -92,6 +92,6 @@ public class UserController {
     @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<String> changePass(@RequestBody @Valid ChangePassRequest changePassRequest, @PathVariable("userId") int userId) throws ResourceNotFoundException, LogicException {
         userService.changePass(userId, changePassRequest);
-        return new ResponseEntity<>("Password Changed Successful!", HttpStatus.OK);
+        return new ResponseEntity<>("Password Changed Successfully!", HttpStatus.OK);
     }
 }

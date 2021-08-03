@@ -76,10 +76,16 @@ public class VatController {
     public ResponseEntity<GenericResponse> findVatDetail(@RequestParam(name = "priceTotalFrom", required = false) BigDecimal priceTotalFrom,
                                                          @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                          @PathVariable(name = "vatCode", required = false) String vatCode,
+                                                         @RequestParam(name = "vatCodeParam", required = false) String vatCodeParam,
                                                          @RequestParam(name = "productInfo", required = false) String productInfo,
                                                          @RequestParam(name = "branchId", required = false) Integer branchId,
 
                                                          @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        if (vatCodeParam.isBlank()) {
+            vatCodeParam = vatCode;
+        } else {
+            vatCode = vatCodeParam;
+        }
         return new ResponseEntity<>(vatDetailService.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId, page - 1, size), HttpStatus.OK);
     }
 
