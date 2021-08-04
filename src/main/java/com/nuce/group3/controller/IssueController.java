@@ -65,9 +65,15 @@ public class IssueController {
                                                            @RequestParam(name = "priceTotalTo", required = false) BigDecimal priceTotalTo,
                                                            @RequestParam(name = "imei", required = false) String imei,
                                                            @PathVariable(name = "issueCode", required = false) String issueCode,
+                                                           @RequestParam(name = "issueCodeParam", required = false) String issueCodeParam,
                                                            @RequestParam(name = "productInfo", required = false) String productInfo,
                                                            @RequestParam(name = "branchId", required = false) Integer branchId,
                                                            @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
+        if (issueCodeParam == null) {
+            issueCodeParam = issueCode;
+        } else {
+            issueCode = issueCodeParam;
+        }
         return new ResponseEntity<>(issueDetailService.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, branchId, page - 1, size), HttpStatus.OK);
 
     }
