@@ -85,6 +85,7 @@ public class UserServiceImpl implements UserService {
             userResponse.setUpdateDate(users.getUpdateDate());
             userResponse.setBranchName(users.getBranch().getName());
             userResponse.setBranchId(users.getBranch().getId());
+            userResponse.setPassword(users.getPassword());
             users.getRoles().forEach(role -> {
                 userResponse.getRoleName().add(role.getRoleName());
             });
@@ -107,6 +108,7 @@ public class UserServiceImpl implements UserService {
             userResponse.setCreateDate(users1.getCreateDate());
             userResponse.setUpdateDate(users1.getUpdateDate());
             userResponse.setBranchName(users1.getBranch().getName());
+            userResponse.setPassword(users1.getPassword());
             userResponse.setBranchId(users1.getBranch().getId());
             Set<Role> roleSet = users1.getRoles();
             for (Role role : roleSet) {
@@ -410,7 +412,6 @@ public class UserServiceImpl implements UserService {
         users.setRoles(roles);
         users.setBranch(branchOptional.get());
         users.setUpdateDate(new Date());
-        users.setPassword(HashingPassword.encrypt(usersRequest.getPassword()));
         UserResponse userResponse = new UserResponse();
 
         userRepo.save(users);
@@ -422,6 +423,7 @@ public class UserServiceImpl implements UserService {
         userResponse.setCreateDate(users.getCreateDate());
         userResponse.setUpdateDate(users.getUpdateDate());
         userResponse.setBranchName(users.getBranch().getName());
+        userResponse.setPassword(users.getPassword());
         Set<Role> roleSet = users.getRoles();
         for (Role role : roleSet) {
             userResponse.getRoleName().add(role.getRoleName());
@@ -467,6 +469,7 @@ public class UserServiceImpl implements UserService {
         userResponse.setUpdateDate(users.getUpdateDate());
         userResponse.setBranchName(users.getBranch().getName());
         userResponse.setBranchId(users.getBranch().getId());
+        userResponse.setPassword(users.getPassword());
         users.getRoles().forEach(role -> {
             userResponse.getRoleName().add(role.getRoleName());
         });
@@ -491,6 +494,7 @@ public class UserServiceImpl implements UserService {
         userResponse.setCreateDate(users.getCreateDate());
         userResponse.setUpdateDate(users.getUpdateDate());
         userResponse.setBranchName(users.getBranch().getName());
+        userResponse.setPassword(users.getPassword());
         userResponse.setBranchId(users.getBranch().getId());
         users.getRoles().forEach(role -> {
             userResponse.getRoleName().add(role.getRoleName());

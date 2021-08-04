@@ -75,6 +75,7 @@ public class UserController {
         return new ResponseEntity<>(userService.edit(userId, usersRequest), HttpStatus.OK);
     }
 
+
     @PutMapping("/delete/{userId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
     public ResponseEntity<String> deleteUser(@PathVariable("userId") int userId) throws ResourceNotFoundException, LogicException {
