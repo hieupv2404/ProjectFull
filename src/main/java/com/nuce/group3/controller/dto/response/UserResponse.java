@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -24,5 +25,6 @@ public class UserResponse {
     private Set<String> roleName = new HashSet<>();
     private String branchName;
     private int branchId;
+    private List<Integer> roleIds;
 //    private Integer roleId;
 }

@@ -483,6 +483,7 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("User with ID " + userId + " not found!");
         }
 
+        List<Integer> roleIds = new ArrayList<>();
         Users users = usersOptional.get();
         UserResponse userResponse = new UserResponse();
 
@@ -495,6 +496,10 @@ public class UserServiceImpl implements UserService {
         userResponse.setUpdateDate(users.getUpdateDate());
         userResponse.setBranchName(users.getBranch().getName());
         userResponse.setPassword(users.getPassword());
+        users.getRoles().forEach(role -> {
+            roleIds.add(role.getId());
+        });
+        userResponse.setRoleIds(roleIds);
         userResponse.setBranchId(users.getBranch().getId());
         users.getRoles().forEach(role -> {
             userResponse.getRoleName().add(role.getRoleName());
