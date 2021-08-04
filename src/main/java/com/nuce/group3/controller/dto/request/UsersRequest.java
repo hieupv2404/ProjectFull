@@ -20,6 +20,9 @@ public class UsersRequest {
             message = Constant.UNAVAILABLE_NAME)
     private String userName;
 
+    @NotBlank(message = "Required Password")
+    private String password;
+
     @Pattern(regexp = "^(.+)@(.+)\\.(.+)$", message = "Wrong Format Email")
     private String email;
 
