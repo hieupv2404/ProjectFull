@@ -1,6 +1,7 @@
 package com.nuce.group3.service;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
+import com.nuce.group3.controller.dto.request.AssignRoleRequest;
 import com.nuce.group3.controller.dto.request.ChangePassRequest;
 import com.nuce.group3.controller.dto.request.UsersRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
@@ -32,7 +33,7 @@ public interface UserService {
 
     void delete(Integer userId) throws ResourceNotFoundException;
 
-    UserResponse assignRole(Integer userId, List<Integer> roleIds) throws ResourceNotFoundException;
+    UserResponse assignRole(Integer userId, AssignRoleRequest assignRoleRequest) throws ResourceNotFoundException;
 
 
     UserResponse findUserById(Integer userId) throws ResourceNotFoundException;

@@ -1,5 +1,6 @@
 package com.nuce.group3.controller;
 
+import com.nuce.group3.controller.dto.request.AssignRoleRequest;
 import com.nuce.group3.controller.dto.request.ChangePassRequest;
 import com.nuce.group3.controller.dto.request.UserForgetPassword;
 import com.nuce.group3.controller.dto.request.UsersRequest;
@@ -85,8 +86,8 @@ public class UserController {
 
     @PutMapping("/assign-role/{userId}")
     @HasRole({"ADMIN", "ADMIN_PTTK"})
-    public ResponseEntity<UserResponse> assignRole(@PathVariable("userId") int userId, @RequestParam(name = "roleIds") List<Integer> roleIds) throws ResourceNotFoundException, LogicException {
-        return new ResponseEntity<>(userService.assignRole(userId, roleIds), HttpStatus.OK);
+    public ResponseEntity<UserResponse> assignRole(@PathVariable("userId") int userId, @RequestBody AssignRoleRequest assignRoleRequest) throws ResourceNotFoundException, LogicException {
+        return new ResponseEntity<>(userService.assignRole(userId, assignRoleRequest), HttpStatus.OK);
     }
 
     @PutMapping("/change-pass/{userId}")

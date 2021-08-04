@@ -1,6 +1,7 @@
 package com.nuce.group3.service.impl;
 
 import com.nuce.group3.controller.ResourceNotFoundException;
+import com.nuce.group3.controller.dto.request.AssignRoleRequest;
 import com.nuce.group3.controller.dto.request.ChangePassRequest;
 import com.nuce.group3.controller.dto.request.UsersRequest;
 import com.nuce.group3.controller.dto.response.GenericResponse;
@@ -442,13 +443,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse assignRole(Integer userId, List<Integer> roleIds) throws ResourceNotFoundException {
+    public UserResponse assignRole(Integer userId, AssignRoleRequest roleIds) throws ResourceNotFoundException {
         Optional<Users> usersOptional = userRepo.findUsersByIdAndActiveFlag(userId, 1);
         if (!usersOptional.isPresent()) {
             throw new ResourceNotFoundException("User with ID " + userId + " not found!");
         }
         Set<Role> roleSet = new HashSet<>();
-        for (Integer roleId : roleIds) {
+        for (Integer roleId : roleIds.getRoleIds()) {
             Optional<Role> roleOptional = roleRepo.findRoleByIdAndActiveFlag(roleId, 1);
             if (!roleOptional.isPresent()) {
                 throw new ResourceNotFoundException("Role with ID " + roleId + " not found!");
