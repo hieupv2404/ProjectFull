@@ -134,15 +134,18 @@ public class VatServiceImpl implements VatService {
             throw new ResourceNotFoundException("Supplier with id " + supplierId + " not found");
         }
 
+        Optional<Users> usersOptional = userRepo.findUsersByUserName(vatRequest.getUserName());
+        if (!usersOptional.isPresent()) {
+            throw new ResourceNotFoundException("User with user name: " + vatRequest.getUserName() + " not found");
+        }
+
+        vatRequest.setBranchId(usersOptional.get().getBranch().getId());
+
         Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(vatRequest.getBranchId(), 1);
         if (!branchOptional.isPresent()) {
             throw new ResourceNotFoundException("Branch with id " + vatRequest.getBranchId() + " not found");
         }
 
-        Optional<Users> usersOptional = userRepo.findUsersByUserName(vatRequest.getUserName());
-        if (!usersOptional.isPresent()) {
-            throw new ResourceNotFoundException("User with user name: " + vatRequest.getUserName() + " not found");
-        }
 
         Vat vat = new Vat();
         vat.setCode(vatRequest.getCode());

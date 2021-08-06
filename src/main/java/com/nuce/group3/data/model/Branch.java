@@ -19,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Branch extends BaseEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @NotBlank(message = Constant.REQUIRE_NAME)

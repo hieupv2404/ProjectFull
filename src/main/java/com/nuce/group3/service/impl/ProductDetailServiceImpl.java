@@ -173,6 +173,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productDetailRepo.save(productDetail);
 
         shelfOptional.get().setQty(shelfOptional.get().getQty() + 1);
+        if (shelfOptional.get().getTotal() < shelfOptional.get().getQty()) {
+            throw new LogicException("The shelf is full!", HttpStatus.BAD_REQUEST);
+        }
         shelfRepo.save(shelfOptional.get());
         return qtyRest - 1;
     }
