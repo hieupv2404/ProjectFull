@@ -389,19 +389,6 @@ public class UserServiceImpl implements UserService {
 
         Users users = usersOptional.get();
 
-        Set<Role> roles = new HashSet<>();
-        usersRequest.getRoles().forEach(roleId -> {
-            Optional<Role> roleOptional = roleRepo.findRoleByIdAndActiveFlag(roleId, 1);
-            if (!roleOptional.isPresent()) {
-                try {
-                    throw new ResourceNotFoundException("Role with ID " + roleId + "is not existed!");
-                } catch (ResourceNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                roles.add(roleOptional.get());
-            }
-        });
 
         Optional<Branch> branchOptional = branchRepo.findBranchByIdAndActiveFlag(usersRequest.getBranchId(), 1);
         if (!branchOptional.isPresent()) {
@@ -410,7 +397,6 @@ public class UserServiceImpl implements UserService {
 
         users.setPhone(usersRequest.getPhone());
         users.setName(usersRequest.getName());
-        users.setRoles(roles);
         users.setBranch(branchOptional.get());
         users.setUpdateDate(new Date());
         UserResponse userResponse = new UserResponse();
