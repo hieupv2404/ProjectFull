@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +22,9 @@ public interface VatRepo extends JpaRepository<Vat, Integer> {
             " and (:tax is null or v.tax like %:tax%) " +
             " and (:supplierName is null or v.supplier_id in (select s.id from supplier s where s.active_flag =1 and s.name like %:supplierName%))" +
             " and (:userName is null or v.user_id in (select u.id from users u where u.active_flag =1 and u.name like %:userName%)) " +
-            " and (:branchId is null or v.branch_id=:branchId) ", nativeQuery = true)
-    List<Vat> findVatByFilter(@Param(value = "code") String code, @Param(value = "tax") String tax, @Param(value = "supplierName") String supplierName, @Param(value = "userName") String userName, @Param(value = "branchId") Integer branchId, Pageable pageable);
+            " and (:branchId is null or v.branch_id=:branchId) " +
+            "and (:dateFrom is null or v.create_date >= :dateFrom) and (:dateTo is null or v.create_date <= :dateTo)", nativeQuery = true)
+    List<Vat> findVatByFilter(@Param(value = "code") String code, @Param(value = "tax") String tax, @Param(value = "supplierName") String supplierName, @Param(value = "userName") String userName, @Param(value = "branchId") Integer branchId, @Param(value = "dateFrom") Date dateFrom, @Param(value = "dateTo") Date dateTo, Pageable pageable);
 
     Optional<Vat> findVatByIdAndActiveFlag(int id, int activeFlag);
 

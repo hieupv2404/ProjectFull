@@ -76,11 +76,11 @@ public class VatServiceImpl implements VatService {
     }
 
     @Override
-    public GenericResponse findVatByFilter(String code, String tax, String supplierName, String userName, Integer branchId, Integer page, Integer size) {
+    public GenericResponse findVatByFilter(String code, String tax, String supplierName, String userName, Integer branchId, Date dateFrom, Date dateTo, Integer page, Integer size) {
         List<VatResponse> vatResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        vatRepo.findVatByFilter(code, tax, supplierName, userName, branchId, PageRequest.of(page, size)).forEach(vat -> {
+        vatRepo.findVatByFilter(code, tax, supplierName, userName, branchId, dateFrom, dateTo, PageRequest.of(page, size)).forEach(vat -> {
             VatResponse vatResponse = VatResponse.builder()
                     .id(vat.getId())
                     .code(vat.getCode())

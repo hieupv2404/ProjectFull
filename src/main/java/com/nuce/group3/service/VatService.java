@@ -6,12 +6,13 @@ import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.VatResponse;
 import com.nuce.group3.exception.LogicException;
 
+import java.util.Date;
 import java.util.List;
 
 public interface VatService {
     List<VatResponse> getAll(Integer page, Integer size);
 
-    GenericResponse findVatByFilter(String code, String tax, String supplierName, String userName, Integer branchId, Integer page, Integer size);
+    GenericResponse findVatByFilter(String code, String tax, String supplierName, String userName, Integer branchId, Date dateFrom, Date dateTo, Integer page, Integer size);
 
     VatResponse findVatById(Integer vatId) throws ResourceNotFoundException;
 

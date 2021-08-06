@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/api/vats", headers = "Accept=application/json")
@@ -38,8 +41,18 @@ public class VatController {
                                                    @RequestParam(name = "supplierName", required = false) String supplierName,
                                                    @RequestParam(name = "userName", required = false) String userName,
                                                    @RequestParam(name = "branchId", required = false) Integer branchId,
-                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchId, page - 1, size), HttpStatus.OK);
+                                                   @RequestParam(name = "dateFrom", required = false) String dateFrom,
+                                                   @RequestParam(name = "dateTo", required = false) String dateTo,
+                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) throws ParseException {
+        Date dateFrom1 = null;
+        Date dateTo1 = null;
+        if (dateFrom != null) {
+            dateFrom1 = new SimpleDateFormat("yyyy/MM/dd").parse(dateFrom);
+        }
+        if (dateTo != null) {
+            dateTo1 = new SimpleDateFormat("yyyy/MM/dd").parse(dateTo);
+        }
+        return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchId, dateFrom1, dateTo1, page - 1, size), HttpStatus.OK);
 
     }
 
