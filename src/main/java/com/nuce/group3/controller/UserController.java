@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @PutMapping("/edit/{userId}")
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<UserResponse> editUser(@RequestBody @Valid UsersRequest usersRequest, @PathVariable("userId") int userId) throws ResourceNotFoundException, LogicException {
         return new ResponseEntity<>(userService.edit(userId, usersRequest), HttpStatus.OK);
     }

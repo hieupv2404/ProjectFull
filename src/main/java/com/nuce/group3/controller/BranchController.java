@@ -21,7 +21,7 @@ public class BranchController {
     private BranchService branchService;
 
     @GetMapping
-    @HasRole({"ADMIN", "ADMIN_PTTK"})
+    @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER", "STAFF"})
     public ResponseEntity<GenericResponse> findBranchByFilter(@RequestParam(name = "name", required = false) String name,
                                                               @RequestParam(name = "code", required = false) String code,
                                                               @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
