@@ -49,10 +49,10 @@ public class ProductStatusListController {
                                                                  @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) throws ParseException {
         Date dateFrom1 = null;
         Date dateTo1 = null;
-        if (dateFrom != null) {
+        if (dateFrom != null || !dateFrom.isBlank()) {
             dateFrom1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateFrom);
         }
-        if (dateTo != null) {
+        if (dateTo != null || !dateTo.isBlank()) {
             dateTo1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateTo);
         }
         return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, branchId, dateFrom1, dateTo1, page - 1, size), HttpStatus.OK);

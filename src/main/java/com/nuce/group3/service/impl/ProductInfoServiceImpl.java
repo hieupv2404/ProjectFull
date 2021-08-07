@@ -161,8 +161,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         productInfo.setCategory(categoryOptional.get());
         productInfo.setDescription(productInfoRequest.getDescription());
-        productInfo.setImgName(productInfoRequest.getImgName());
-        productInfo.setImgUrl(productInfoRequest.getImgUrl());
+        if (!productInfoRequest.getImgName().isBlank() || productInfoRequest.getImgName() != null) {
+            productInfo.setImgName(productInfoRequest.getImgName());
+            productInfo.setImgUrl(productInfoRequest.getImgUrl());
+        }
         productInfo.setUpdateDate(new Date());
         try {
             productInfoRepo.save(productInfo);

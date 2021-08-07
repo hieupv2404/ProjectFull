@@ -105,52 +105,58 @@ public class ProductInfoController {
     @PutMapping(value = "/edit/{productId}", consumes = {"application/json",
             "multipart/form-data"}, produces = "application/json")
     @HasRole({"ADMIN", "ADMIN_PTTK", "MANAGER"})
-    public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @RequestParam("image") MultipartFile multipartFile, @RequestParam("name") String name, @RequestParam("description") String description, @RequestParam("categoryId") Integer categoryId) throws IOException, ResourceNotFoundException, LogicException {
-        String fileName = multipartFile.getOriginalFilename();
+    public ResponseEntity<ProductInfoResponse> editProductInfo(@PathVariable Integer productId, @RequestParam(value = "image", required = false) MultipartFile multipartFile, @RequestParam("name") String name, @RequestParam("description") String description, @RequestParam("categoryId") Integer categoryId) throws IOException, ResourceNotFoundException, LogicException {
         ProductInfoRequest productInfoRequest = new ProductInfoRequest();
-        try {
-            File directory = new File(String.valueOf(Constant.UPLOAD_PATH));
-            File file = new File(fileName);
-            if (!directory.exists()) {
+        if (multipartFile != null) {
+            String fileName = multipartFile.getOriginalFilename();
+            try {
+                File directory = new File(String.valueOf(Constant.UPLOAD_PATH));
+                File file = new File(fileName);
+                if (!directory.exists()) {
 
-                directory.mkdir();
-                if (!file.exists()) {
-                    file.getParentFile().mkdir();
-                    file.createNewFile();
+                    directory.mkdir();
+                    if (!file.exists()) {
+                        file.getParentFile().mkdir();
+                        file.createNewFile();
+                    }
                 }
+
+                FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
+
+                File uploadFile = new File(Constant.UPLOAD_PATH + fileName);
+
+                // Create Google File:
+
+                com.google.api.services.drive.model.File googleFile = CreateGoogleFile.createGoogleFile(null, "image/*", fileName, uploadFile);
+
+                log.info("Created Google file!");
+                log.info("WebContentLink: " + googleFile.getWebContentLink());
+                log.info("WebViewLink: " + googleFile.getWebViewLink());
+                log.info("ID CODE: " + googleFile.getId());
+                log.info("Done!");
+
+                String permissionType = "anyone";
+                // All values: organizer - owner - writer - commenter - reader
+                String permissionRole = "writer";
+                Permission newPermission = new Permission();
+                newPermission.setType(permissionType);
+                newPermission.setRole(permissionRole);
+
+                Drive driveService = GoogleDriveUtils.getDriveService();
+                driveService.permissions().create(googleFile.getId(), newPermission).execute();
+
+                productInfoRequest.setImgName(fileName);
+                productInfoRequest.setName(name);
+                productInfoRequest.setDescription(description);
+                productInfoRequest.setCategoryId(categoryId);
+                productInfoRequest.setImgUrl("https://drive.google.com/uc?id=" + googleFile.getId());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            FileCopyUtils.copy(multipartFile.getBytes(), new File(Constant.UPLOAD_PATH + fileName));
-
-            File uploadFile = new File(Constant.UPLOAD_PATH + fileName);
-
-            // Create Google File:
-
-            com.google.api.services.drive.model.File googleFile = CreateGoogleFile.createGoogleFile(null, "image/*", fileName, uploadFile);
-
-            log.info("Created Google file!");
-            log.info("WebContentLink: " + googleFile.getWebContentLink());
-            log.info("WebViewLink: " + googleFile.getWebViewLink());
-            log.info("ID CODE: " + googleFile.getId());
-            log.info("Done!");
-
-            String permissionType = "anyone";
-            // All values: organizer - owner - writer - commenter - reader
-            String permissionRole = "writer";
-            Permission newPermission = new Permission();
-            newPermission.setType(permissionType);
-            newPermission.setRole(permissionRole);
-
-            Drive driveService = GoogleDriveUtils.getDriveService();
-            driveService.permissions().create(googleFile.getId(), newPermission).execute();
-
-            productInfoRequest.setImgName(fileName);
+        } else {
             productInfoRequest.setName(name);
             productInfoRequest.setDescription(description);
             productInfoRequest.setCategoryId(categoryId);
-            productInfoRequest.setImgUrl("https://drive.google.com/uc?id=" + googleFile.getId());
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return new ResponseEntity<>(productInfoService.edit(productId, productInfoRequest), HttpStatus.OK);
     }
