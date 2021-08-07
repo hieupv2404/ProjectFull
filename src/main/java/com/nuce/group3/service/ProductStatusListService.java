@@ -21,5 +21,5 @@ public interface ProductStatusListService {
 
     ProductStatusListResponse edit(Integer productStatusListId, ProductStatusListRequest productStatusListRequest, String userName) throws ResourceNotFoundException, LogicException;
 
-    void delete(Integer productStatusListId) throws ResourceNotFoundException;
+    void delete(Integer productStatusListId) throws ResourceNotFoundException, LogicException;
 }

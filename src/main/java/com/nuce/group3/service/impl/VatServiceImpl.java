@@ -226,7 +226,7 @@ public class VatServiceImpl implements VatService {
         productStatusListRepo.findProductStatusListByVat(vatId).forEach(productStatusList -> {
             try {
                 productStatusListService.delete(productStatusList.getId());
-            } catch (ResourceNotFoundException resourceNotFoundException) {
+            } catch (ResourceNotFoundException | LogicException resourceNotFoundException) {
                 resourceNotFoundException.printStackTrace();
             }
         });

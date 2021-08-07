@@ -7,10 +7,7 @@ import com.nuce.group3.controller.dto.response.ProductStatusListResponse;
 import com.nuce.group3.data.model.ProductStatusList;
 import com.nuce.group3.data.model.Users;
 import com.nuce.group3.data.model.Vat;
-import com.nuce.group3.data.repo.ProductStatusDetailRepo;
-import com.nuce.group3.data.repo.ProductStatusListRepo;
-import com.nuce.group3.data.repo.UserRepo;
-import com.nuce.group3.data.repo.VatRepo;
+import com.nuce.group3.data.repo.*;
 import com.nuce.group3.exception.LogicException;
 import com.nuce.group3.service.ProductStatusDetailService;
 import com.nuce.group3.service.ProductStatusListService;
@@ -42,6 +39,9 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
 
     @Autowired
     private ProductStatusDetailService productStatusDetailService;
+
+    @Autowired
+    private ProductDetailRepo productDetailRepo;
 
     @Override
     public List<ProductStatusListResponse> getAll(int type, Integer page, Integer size) {
@@ -178,10 +178,13 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     }
 
     @Override
-    public void delete(Integer productStatusListId) throws ResourceNotFoundException {
+    public void delete(Integer productStatusListId) throws ResourceNotFoundException, LogicException {
         Optional<ProductStatusList> productStatusListOptional = productStatusListRepo.findProductStatusListByIdAndActiveFlag(productStatusListId, 1);
         if (!productStatusListOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Status List with " + productStatusListId + " not found!");
+        }
+        if (!productDetailRepo.findProductDetailsByProductStatusListAndInvalid(productStatusListId).isEmpty()) {
+            throw new LogicException("The product has been purchase!", HttpStatus.BAD_REQUEST);
         }
         productStatusListOptional.get().setActiveFlag(0);
         productStatusListRepo.save(productStatusListOptional.get());

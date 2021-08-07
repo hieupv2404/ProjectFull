@@ -161,7 +161,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         }
         productInfo.setCategory(categoryOptional.get());
         productInfo.setDescription(productInfoRequest.getDescription());
-        if (productInfoRequest.getImgName() != null || !productInfoRequest.getImgName().isBlank()) {
+        if (productInfoRequest.getImgName() != null) {
             productInfo.setImgName(productInfoRequest.getImgName());
             productInfo.setImgUrl(productInfoRequest.getImgUrl());
         }
