@@ -63,11 +63,11 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
     }
 
     @Override
-    public GenericResponse findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer branchId, Integer page, Integer size) {
+    public GenericResponse findProductStatusListByFilter(String code, String vatCode, BigDecimal priceFrom, BigDecimal priceTo, int type, Integer branchId, Date dateFrom, Date dateTo, Integer page, Integer size) {
         List<ProductStatusListResponse> productStatusListResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        productStatusListRepo.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, branchId, PageRequest.of(page, size)).forEach(productStatusList -> {
+        productStatusListRepo.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, branchId, dateFrom, dateTo, PageRequest.of(page, size)).forEach(productStatusList -> {
             ProductStatusListResponse productStatusListResponse = ProductStatusListResponse.builder()
                     .id(productStatusList.getId())
                     .code(productStatusList.getCode())

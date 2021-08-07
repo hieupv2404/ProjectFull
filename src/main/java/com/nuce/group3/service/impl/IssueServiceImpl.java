@@ -61,11 +61,11 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public GenericResponse findIssueByFilter(String code, String customerName, String userName, Integer branchId, Integer page, Integer size) {
+    public GenericResponse findIssueByFilter(String code, String customerName, String userName, Integer branchId, Date dateFrom, Date dateTo, Integer page, Integer size) {
         List<IssueResponse> issueResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        issueRepo.findIssueByFilter(code, customerName, userName, branchId, PageRequest.of(page, size)).forEach(issue -> {
+        issueRepo.findIssueByFilter(code, customerName, userName, branchId, dateFrom, dateTo, PageRequest.of(page, size)).forEach(issue -> {
             IssueResponse issueResponse = IssueResponse.builder()
                     .id(issue.getId())
                     .code(issue.getCode())

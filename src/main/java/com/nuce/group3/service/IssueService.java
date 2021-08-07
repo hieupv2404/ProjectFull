@@ -5,12 +5,13 @@ import com.nuce.group3.controller.dto.response.GenericResponse;
 import com.nuce.group3.controller.dto.response.IssueResponse;
 import com.nuce.group3.exception.LogicException;
 
+import java.util.Date;
 import java.util.List;
 
 public interface IssueService {
     List<IssueResponse> getAll(Integer page, Integer size);
 
-    GenericResponse findIssueByFilter(String code, String customerName, String userName, Integer branchId, Integer page, Integer size);
+    GenericResponse findIssueByFilter(String code, String customerName, String userName, Integer branchId, Date dateFrom, Date dateTo, Integer page, Integer size);
 
     IssueResponse findIssueById(Integer issueId) throws ResourceNotFoundException;
 

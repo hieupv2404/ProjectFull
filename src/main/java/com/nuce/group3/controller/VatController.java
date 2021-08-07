@@ -47,10 +47,10 @@ public class VatController {
         Date dateFrom1 = null;
         Date dateTo1 = null;
         if (dateFrom != null) {
-            dateFrom1 = new SimpleDateFormat("yyyy/MM/dd").parse(dateFrom);
+            dateFrom1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateFrom);
         }
         if (dateTo != null) {
-            dateTo1 = new SimpleDateFormat("yyyy/MM/dd").parse(dateTo);
+            dateTo1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateTo);
         }
         return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchId, dateFrom1, dateTo1, page - 1, size), HttpStatus.OK);
 

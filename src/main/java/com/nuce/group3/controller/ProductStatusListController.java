@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -41,8 +44,18 @@ public class ProductStatusListController {
                                                                  @RequestParam(name = "priceTo", required = false) BigDecimal priceTo,
                                                                  @RequestParam(name = "type", required = false) int type,
                                                                  @RequestParam(name = "branchId", required = false) Integer branchId,
-                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) {
-        return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, branchId, page - 1, size), HttpStatus.OK);
+                                                                 @RequestParam(name = "dateFrom", required = false) String dateFrom,
+                                                                 @RequestParam(name = "dateTo", required = false) String dateTo,
+                                                                 @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) throws ParseException {
+        Date dateFrom1 = null;
+        Date dateTo1 = null;
+        if (dateFrom != null) {
+            dateFrom1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateFrom);
+        }
+        if (dateTo != null) {
+            dateTo1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateTo);
+        }
+        return new ResponseEntity<>(productStatusListService.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, branchId, dateFrom1, dateTo1, page - 1, size), HttpStatus.OK);
 
     }
 
