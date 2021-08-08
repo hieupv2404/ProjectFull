@@ -43,7 +43,7 @@ public class VatController {
                                                    @RequestParam(name = "branchId", required = false) Integer branchId,
                                                    @RequestParam(name = "dateFrom", required = false) String dateFrom,
                                                    @RequestParam(name = "dateTo", required = false) String dateTo,
-                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) throws ParseException {
+                                                   @RequestParam(name = "page", required = false) Integer page, @RequestParam(name = "size", required = false) Integer size) throws ParseException, LogicException {
         Date dateFrom1 = null;
         Date dateTo1 = null;
         if (dateFrom != null) {
@@ -51,6 +51,9 @@ public class VatController {
         }
         if (dateTo != null) {
             dateTo1 = new SimpleDateFormat("yyyy-MM-dd").parse(dateTo);
+        }
+        if (dateFrom1 != null && dateTo1 != null && dateFrom1.after(dateTo1)) {
+            throw new LogicException("Date From must to before Date To!", HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(vatService.findVatByFilter(code, tax, supplierName, userName, branchId, dateFrom1, dateTo1, page - 1, size), HttpStatus.OK);
 
