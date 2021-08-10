@@ -77,7 +77,7 @@ public class IssueServiceImpl implements IssueService {
                     .build();
             issueResponses.add(issueResponse);
         });
-        return new GenericResponse(issueResponses.size(), issueResponses);
+        return new GenericResponse(issueRepo.findIssueByFilter(code, customerName, userName, branchId, dateFrom, dateTo, PageRequest.of(page, 1000)).size(), issueResponses);
     }
 
     @Override

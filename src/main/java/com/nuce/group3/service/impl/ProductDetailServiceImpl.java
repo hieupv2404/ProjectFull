@@ -94,7 +94,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                     .build();
             productDetailResponses.add(productDetailResponse);
         });
-        return new GenericResponse(productDetailResponses.size(), productDetailResponses);
+        return new GenericResponse(productDetailRepo.findProductDetailByFilter(name, imei, branchId, status, PageRequest.of(page, 1000)).size(), productDetailResponses);
     }
 
     @Override

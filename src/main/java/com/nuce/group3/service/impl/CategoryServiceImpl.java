@@ -50,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
                     .build();
             categoryResponses.add(categoryResponse);
         });
-        return new GenericResponse(categoryResponses.size(), categoryResponses);
+        return new GenericResponse(categoryRepo.findCategoryByFilter(name, code, PageRequest.of(page, 1000)).size(), categoryResponses);
     }
 
     @Override

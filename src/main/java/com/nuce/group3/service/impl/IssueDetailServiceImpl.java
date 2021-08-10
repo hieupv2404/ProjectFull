@@ -72,7 +72,7 @@ public class IssueDetailServiceImpl implements IssueDetailService {
                     .build();
             issueDetailResponses.add(issueDetailResponse);
         });
-        return new GenericResponse(issueDetailResponses.size(), issueDetailResponses);
+        return new GenericResponse(issueDetailRepo.findIssueDetailByFilter(priceTotalFrom, priceTotalTo, imei, issueCode, productInfo, branchId, PageRequest.of(page, 1000)).size(), issueDetailResponses);
     }
 
     @Override

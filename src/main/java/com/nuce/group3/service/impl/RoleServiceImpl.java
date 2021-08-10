@@ -36,7 +36,7 @@ public class RoleServiceImpl implements RoleService {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<Role> roles = roleRepo.findRoleByFilter(name, PageRequest.of(page, size));
-        return new GenericResponse(roles.size(), roles);
+        return new GenericResponse(roleRepo.findRoleByFilter(name, PageRequest.of(page, 1000)).size(), roles);
     }
 
 

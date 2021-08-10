@@ -39,7 +39,7 @@ public class SupplierServiceImpl implements SupplierService {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<Supplier> supplierList = supplierRepo.findSupplierByFilter(name, phone, address, PageRequest.of(page, size));
-        return new GenericResponse(supplierList.size(), supplierList);
+        return new GenericResponse(supplierRepo.findSupplierByFilter(name, phone, address, PageRequest.of(page, 1000)).size(), supplierList);
     }
 
     @Override

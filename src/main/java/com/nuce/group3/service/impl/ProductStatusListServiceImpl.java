@@ -79,7 +79,7 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
                     .build();
             productStatusListResponses.add(productStatusListResponse);
         });
-        return new GenericResponse(productStatusListResponses.size(), productStatusListResponses);
+        return new GenericResponse(productStatusListRepo.findProductStatusListByFilter(code, vatCode, priceFrom, priceTo, type, branchId, dateFrom, dateTo, PageRequest.of(page, 1000)).size(), productStatusListResponses);
     }
 
     @Override
