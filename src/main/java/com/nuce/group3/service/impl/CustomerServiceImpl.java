@@ -35,7 +35,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (page == null) page = 0;
         if (size == null) size = 5;
         List<Customer> customerList = customerRepo.findCustomerByFilter(name, phone, address, PageRequest.of(page, size));
-        return new GenericResponse(customerRepo.findCustomerByFilter(name, phone, address, PageRequest.of(page, 1000)).size(), customerList);
+        return new GenericResponse(customerRepo.findCustomerByFilter(name, phone, address, PageRequest.of(0, 1000)).size(), customerList);
     }
 
     @Override

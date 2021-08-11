@@ -115,7 +115,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .build();
             productInfoResponses.add(productInfoResponse);
         });
-        return new GenericResponse(productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo, PageRequest.of(page, 1000)).size(), productInfoResponses);
+        return new GenericResponse(productInfoRepo.findProductInfoByFilter(name, categoryName, qtyFrom, qtyTo, priceFrom, priceTo, PageRequest.of(0, 1000)).size(), productInfoResponses);
     }
 
     @Override

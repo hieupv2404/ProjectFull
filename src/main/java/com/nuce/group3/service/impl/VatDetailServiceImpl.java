@@ -79,7 +79,7 @@ public class VatDetailServiceImpl implements VatDetailService {
                     .build();
             vatDetailResponses.add(vatDetailResponse);
         });
-        return new GenericResponse(vatDetailRepo.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId, PageRequest.of(page, 1000)).size(), vatDetailResponses);
+        return new GenericResponse(vatDetailRepo.findVatDetailByFilter(priceTotalFrom, priceTotalTo, vatCode, productInfo, branchId, PageRequest.of(0, 1000)).size(), vatDetailResponses);
     }
 
     @Override

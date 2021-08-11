@@ -74,7 +74,7 @@ public class BranchServiceImpl implements BranchService {
                     .build();
             branchResponses.add(branchResponse);
         });
-        return new GenericResponse(branchRepo.findBranchByFilter(name, code, PageRequest.of(page, 1000)).size(), branchResponses);
+        return new GenericResponse(branchRepo.findBranchByFilter(name, code, PageRequest.of(0, 1000)).size(), branchResponses);
     }
 
     @Override

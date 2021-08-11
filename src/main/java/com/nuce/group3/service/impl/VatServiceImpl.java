@@ -95,7 +95,7 @@ public class VatServiceImpl implements VatService {
                     .build();
             vatResponses.add(vatResponse);
         });
-        return new GenericResponse(vatRepo.findVatByFilter(code, tax, supplierName, userName, branchId, dateFrom, dateTo, PageRequest.of(page, 1000)).size(), vatResponses);
+        return new GenericResponse(vatRepo.findVatByFilter(code, tax, supplierName, userName, branchId, dateFrom, dateTo, PageRequest.of(0, 1000)).size(), vatResponses);
     }
 
     @Override

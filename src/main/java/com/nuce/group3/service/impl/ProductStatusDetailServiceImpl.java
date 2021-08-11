@@ -101,7 +101,7 @@ public class ProductStatusDetailServiceImpl implements ProductStatusDetailServic
                     .build();
             productStatusDetailResponses.add(productStatusDetailResponse);
         });
-        return new GenericResponse(productStatusDetailRepo.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId, PageRequest.of(page, 1000)).size(), productStatusDetailResponses);
+        return new GenericResponse(productStatusDetailRepo.findProductStatusDetailByFilter(priceTotalFrom, priceTotalTo, productStatusListCode, productInfo, type, branchId, PageRequest.of(0, 1000)).size(), productStatusDetailResponses);
     }
 
     @Override

@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
             });
             userResponses.add(userResponse);
         });
-        return new GenericResponse(userRepo.findUserByFilter(name, phone, branchId, userName, PageRequest.of(page, 1000)).size(), userResponses);
+        return new GenericResponse(userRepo.findUserByFilter(name, phone, branchId, userName, PageRequest.of(0, 1000)).size(), userResponses);
     }
 
     @Override

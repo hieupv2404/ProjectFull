@@ -77,7 +77,7 @@ public class ShelfServiceImpl implements ShelfService {
                     .build();
             shelfResponses.add(shelfResponse);
         });
-        return new GenericResponse(shelfRepo.findShelfByFilter(name, qtyFrom, qtyTo, qtyRestFrom, qtyRestTo, branchId, PageRequest.of(page, 1000)).size(), shelfResponses);
+        return new GenericResponse(shelfRepo.findShelfByFilter(name, qtyFrom, qtyTo, qtyRestFrom, qtyRestTo, branchId, PageRequest.of(0, 1000)).size(), shelfResponses);
     }
 
     @Override
