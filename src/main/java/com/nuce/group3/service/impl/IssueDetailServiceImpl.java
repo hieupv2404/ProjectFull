@@ -147,6 +147,9 @@ public class IssueDetailServiceImpl implements IssueDetailService {
         issueDetailRepo.save(issueDetail);
 
         productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
+        if (productInfoOptional.get().getQty() < 0) {
+            throw new LogicException("Product's quantity must be greater or equal 0", HttpStatus.BAD_REQUEST);
+        }
         productInfoRepo.save(productInfoOptional.get());
 
         issueOptional.get().setPrice(issueOptional.get().getPrice().add(issueDetail.getPriceOne()));

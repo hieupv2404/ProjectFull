@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ProductDetailRepo extends JpaRepository<ProductDetail, Integer> {
-    Optional<ProductDetail> findProductDetailByImeiAndActiveFlag(String imei, int activeFlag);
+    Optional<ProductDetail> findProductDetailByImeiAndStatusAndActiveFlag(String imei, String status, int activeFlag);
 
     List<ProductDetail> findProductDetailByActiveFlag(int activeFlag, Pageable pageable);
 

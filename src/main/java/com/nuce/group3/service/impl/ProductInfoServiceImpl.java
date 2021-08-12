@@ -109,8 +109,8 @@ public class ProductInfoServiceImpl implements ProductInfoService {
                     .updateDate(productInfo.getUpdateDate())
                     .categoryName(productInfo.getCategory().getName())
                     .qty(productInfo.getQty())
-                    .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceIn())
-                    .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) ? new BigDecimal(0) : productInfo.getPriceOut())
+                    .priceIn(productInfo.getPriceIn().equals(new BigDecimal("1.00")) || productInfo.getQty() == 0 ? new BigDecimal(0) : productInfo.getPriceIn())
+                    .priceOut(productInfo.getPriceOut().equals(new BigDecimal("1.00")) || productInfo.getQty() == 0 ? new BigDecimal(0) : productInfo.getPriceOut())
                     .categoryId(productInfo.getCategory().getId())
                     .build();
             productInfoResponses.add(productInfoResponse);

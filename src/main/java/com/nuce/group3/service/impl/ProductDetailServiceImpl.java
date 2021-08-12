@@ -8,6 +8,7 @@ import com.nuce.group3.data.model.*;
 import com.nuce.group3.data.repo.*;
 import com.nuce.group3.enums.EnumStatus;
 import com.nuce.group3.exception.LogicException;
+import com.nuce.group3.service.IssueDetailService;
 import com.nuce.group3.service.ProductDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -25,7 +25,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private ProductDetailRepo productDetailRepo;
 
     @Autowired
-    private CategoryRepo categoryRepo;
+    private IssueRepo issueRepo;
 
     @Autowired
     private ProductInfoRepo productInfoRepo;
@@ -41,6 +41,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Autowired
     private ProductStatusDetailRepo productStatusDetailRepo;
+
+    @Autowired
+    private IssueDetailService issueDetailService;
 
     @Override
     public List<ProductDetailResponse> getAll(Integer page, Integer size) {
@@ -137,9 +140,22 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     public long save(ProductDetailRequest productDetailRequest) throws LogicException, ResourceNotFoundException {
-        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndActiveFlag(productDetailRequest.getImei(), 1);
+        Optional<ProductDetail> productDetailOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(productDetailRequest.getImei(), EnumStatus.VALID, 1);
         if (productDetailOptional.isPresent()) {
             throw new LogicException("Product Detail Existed", HttpStatus.BAD_REQUEST);
+        }
+        Optional<ProductDetail> productDetailInValidOptional = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(productDetailRequest.getImei(), EnumStatus.INVALID, 1);
+        if (productDetailInValidOptional.isPresent()) {
+            productDetailInValidOptional.get().setActiveFlag(0);
+            productDetailRepo.save(productDetailInValidOptional.get());
+            Optional<IssueDetail> issueDetail = issueDetailRepo.findIssueDetailByImeiAndActiveFlag(productDetailRequest.getImei(), 1);
+            if (issueDetail.isPresent()) {
+                issueDetail.get().setActiveFlag(0);
+                issueDetailRepo.save(issueDetail.get());
+                Issue issue = issueDetail.get().getIssue();
+                issue.setPrice(issue.getPrice().subtract(issueDetail.get().getPriceOne()));
+                issueRepo.save(issue);
+            }
         }
         Optional<Shelf> shelfOptional = shelfRepo.findShelfByIdAndActiveFlag(productDetailRequest.getShelfId(), 1);
         if (!shelfOptional.isPresent()) {
@@ -199,7 +215,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Info with id " + productDetailRequest.getShelfId() + " not found");
         }
-        Optional<ProductDetail> productDetailByImei = productDetailRepo.findProductDetailByImeiAndActiveFlag(productDetailRequest.getImei(), 1);
+        Optional<ProductDetail> productDetailByImei = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(productDetailRequest.getImei(), "VALID", 1);
         if (!productDetailRequest.getImei().equals(productDetailOptional.get().getImei()) && productDetailByImei.isPresent()) {
             throw new ResourceNotFoundException("Product detail with imei" + productDetailRequest.getImei() + " existed!");
         }
@@ -268,9 +284,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
         if (!isDeletedParent) {
             productInfoOptional.get().setQty(productInfoOptional.get().getQty() - 1);
-            if (productInfoOptional.get().getQty() == 0) {
-                productInfoOptional.get().setPriceIn(new BigDecimal("1"));
-                productInfoOptional.get().setPriceOut(new BigDecimal("1"));
+            if (productInfoOptional.get().getQty() < 0) {
+                throw new LogicException("Product's quantity must be greater or equal 0", HttpStatus.BAD_REQUEST);
             }
             productInfoRepo.save(productInfoOptional.get());
         }
