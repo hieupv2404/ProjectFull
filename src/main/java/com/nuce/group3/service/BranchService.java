@@ -11,7 +11,7 @@ import java.util.List;
 public interface BranchService {
     List<BranchResponse> getAll();
 
-    GenericResponse findBranchByFilter(String name, String code, Integer page, Integer size);
+    GenericResponse findBranchByFilter(String name, String code, Integer branchId, Integer page, Integer size);
 
     void save(BranchRequest branchRequest) throws LogicException;
 

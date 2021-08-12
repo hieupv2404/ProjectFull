@@ -20,8 +20,9 @@ public interface BranchRepo extends JpaRepository<Branch, Integer> {
 
     @Query(value = "select b.*" +
             " from branch b where b.active_flag=1 and (:name is null or b.name like %:name%)" +
-            " and (:code is null or b.code like %:code%)", nativeQuery = true)
-    List<Branch> findBranchByFilter(@Param(value = "name") String name, @Param(value = "code") String code, Pageable pageable);
+            " and (:code is null or b.code like %:code%)" +
+            " and (:branchId is null or b.id = : branchId)", nativeQuery = true)
+    List<Branch> findBranchByFilter(@Param(value = "name") String name, @Param(value = "code") String code, @Param(value = "branchId") Integer branchId, Pageable pageable);
 
     List<Branch> findBranchByActiveFlag(int activeFlag);
 }

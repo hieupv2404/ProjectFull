@@ -116,7 +116,7 @@ public class IssueServiceImpl implements IssueService {
         Calendar calendar = Calendar.getInstance();
         long maxId = issueRepo.countIssue() + 1;
         Issue issue = new Issue();
-        issue.setCode("ISSUE" + calendar.get(Calendar.DAY_OF_MONTH) + calendar.get(Calendar.MONTH + 1) + calendar.get(Calendar.YEAR) + maxId);
+        issue.setCode("ISSUE" + calendar.get(Calendar.DAY_OF_MONTH) + (calendar.get(Calendar.MONTH) + 1) + calendar.get(Calendar.YEAR) + maxId);
         issue.setCustomer(customerOptional.get());
         issue.setUser(usersOptional.get());
         issue.setActiveFlag(1);

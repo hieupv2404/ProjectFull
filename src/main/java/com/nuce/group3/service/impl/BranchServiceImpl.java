@@ -58,11 +58,11 @@ public class BranchServiceImpl implements BranchService {
     }
 
     @Override
-    public GenericResponse findBranchByFilter(String name, String code, Integer page, Integer size) {
+    public GenericResponse findBranchByFilter(String name, String code, Integer branchId, Integer page, Integer size) {
         List<BranchResponse> branchResponses = new ArrayList<>();
         if (page == null) page = 0;
         if (size == null) size = 5;
-        branchRepo.findBranchByFilter(name, code, PageRequest.of(page, size)).forEach(branch -> {
+        branchRepo.findBranchByFilter(name, code, branchId, PageRequest.of(page, size)).forEach(branch -> {
             BranchResponse branchResponse = BranchResponse.builder()
                     .id(branch.getId())
                     .name(branch.getName())
@@ -74,7 +74,7 @@ public class BranchServiceImpl implements BranchService {
                     .build();
             branchResponses.add(branchResponse);
         });
-        return new GenericResponse(branchRepo.findBranchByFilter(name, code, PageRequest.of(0, 1000)).size(), branchResponses);
+        return new GenericResponse(branchRepo.findBranchByFilter(name, code, branchId, PageRequest.of(0, 1000)).size(), branchResponses);
     }
 
     @Override
