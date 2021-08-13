@@ -19,7 +19,7 @@ public interface IssueDetailRepo extends JpaRepository<IssueDetail, Integer> {
     @Query(value = "select i.*" +
             " from issue_detail i where i.active_flag=1 and (:priceTotalFrom is null or i.price_one >= :priceTotalFrom)" +
             " and (:priceTotalTo is null or i.price_one <= :priceTotalTo)" +
-            " and (:imei is null or i.imei= :imei)" +
+            " and (:imei is null or i.imei like %:imei%)" +
             " and (:issueCode is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.code like %:issueCode%))" +
             " and (:productInfo is null or i.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%)) " +
             " and (:branchId is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.user_id in (select u.id from users u where u.active_flag=1 and u.branch_id = :branchId)) )", nativeQuery = true)
@@ -28,7 +28,7 @@ public interface IssueDetailRepo extends JpaRepository<IssueDetail, Integer> {
     @Query(value = "select i.*" +
             " from issue_detail i where i.active_flag=1 and (:priceTotalFrom is null or i.price_one >= :priceTotalFrom)" +
             " and (:priceTotalTo is null or i.price_one <= :priceTotalTo)" +
-            " and (:imei is null or i.imei= :imei)" +
+            " and (:imei is null or i.imei like %:imei%)" +
             " and (:issueCode is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.code like %:issueCode%))" +
             " and (:productInfo is null or i.product_id in (select p.id from product_info p where p.active_flag =1 and p.name like %:productInfo%)) " +
             " and (:branchId is null or i.issue_id in (select s.id from issue s where s.active_flag=1 and s.user_id in (select u.id from users u where u.active_flag=1 and u.branch_id = :branchId)) )", nativeQuery = true)
