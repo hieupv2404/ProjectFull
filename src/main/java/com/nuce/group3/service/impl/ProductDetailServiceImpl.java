@@ -215,7 +215,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         if (!shelfOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Info with id " + productDetailRequest.getShelfId() + " not found");
         }
-        Optional<ProductDetail> productDetailByImei = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(productDetailRequest.getImei(), "VALID", 1);
+        Optional<ProductDetail> productDetailByImei = productDetailRepo.findProductDetailByImeiAndStatusAndActiveFlag(productDetailRequest.getImei(), EnumStatus.VALID, 1);
         if (!productDetailRequest.getImei().equals(productDetailOptional.get().getImei()) && productDetailByImei.isPresent()) {
             throw new ResourceNotFoundException("Product detail with imei" + productDetailRequest.getImei() + " existed!");
         }
