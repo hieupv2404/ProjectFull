@@ -189,7 +189,6 @@ public class UserServiceImpl implements UserService {
                 "            <tr style=\"\">\n" +
                 "                <td width=\"50%\" colspan=\"2\" style=\"padding: 40px 20px 20px 20px;text-align: center;\">\n" +
                 "                    <a href=\"#\" target=\"_blank\" style=\"text-decoration: none\">\n" +
-//                "            \t\t\t<img src=\"https://api.vimo.vn/media/files/MjAyMTA1MjQtNDk1NDQxOjUwNDQ0MS0wLTE0OjExOjU5LjA4MS1yaXNrX2NvbG9y.png\" height=\"90px\">\n" +
                 "                    </a>\n" +
                 "                </td>\n" +
                 "            </tr>\n" +
