@@ -208,9 +208,9 @@ public class VatDetailServiceImpl implements VatDetailService {
 
             productStatusListRepo.findProductStatusListByVat(vat.getId()).forEach(productStatusList -> {
                 Optional<ProductStatusDetail> productStatusDetail = productStatusDetailRepo.findProductStatusDetailByProductStatusAndProduct(productStatusList.getId(), vatDetailOptional.get().getProductInfo().getId());
-                if (!productStatusDetail.isPresent()) {
+                if (productStatusDetail.isPresent()) {
                     try {
-                        throw new ResourceNotFoundException("Product Status Detail not found!");
+                        throw new ResourceNotFoundException("Product Status Detail has been imported!");
                     } catch (ResourceNotFoundException resourceNotFoundException) {
                         resourceNotFoundException.printStackTrace();
                     }
