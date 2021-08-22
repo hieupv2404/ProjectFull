@@ -183,8 +183,11 @@ public class ProductStatusListServiceImpl implements ProductStatusListService {
         if (!productStatusListOptional.isPresent()) {
             throw new ResourceNotFoundException("Product Status List with " + productStatusListId + " not found!");
         }
+        if (!productStatusListOptional.get().getPrice().equals("0")) {
+            throw new LogicException("The product has been imported!", HttpStatus.BAD_REQUEST);
+        }
         if (!productDetailRepo.findProductDetailsByProductStatusListAndInvalid(productStatusListId).isEmpty()) {
-            throw new LogicException("The product has been purchase!", HttpStatus.BAD_REQUEST);
+            throw new LogicException("The product has been purchased!", HttpStatus.BAD_REQUEST);
         }
         productStatusListOptional.get().setActiveFlag(0);
         productStatusListRepo.save(productStatusListOptional.get());
